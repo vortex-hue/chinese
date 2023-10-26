@@ -1,0 +1,218 @@
+{% extends 'fenXi/base.html' %}
+
+{% block head %}
+    <script>
+
+        function showprogress(evt) {
+            var loaded = evt.loaded;
+            var tot = evt.total;
+            var percent = Math.floor(100*loaded/tot);
+            var progressbar = $('#progressbar');
+            progressbar.html(percent+'%');
+            progressbar.attr('aria-valuenow',percent);
+            progressbar.css('width',percent +'%');
+        }
+        function hideprogressbar() {
+            var progressbar = $('#progressbar');
+            progressbar.html('0%');
+            progressbar.attr('aria-valuenow',0);
+            progressbar.css('width','0%');
+            $('#showbar').hide();
+        }
+        // upobj:触发对象; toobj:目标对象; types:类型方法; posturl:目标url; thumb_img:修改目标img的对象;
+        function upload_file_func(upobj,toobj,action,posturl,thumb_img,data_uuid,progress,callbackfunc) {
+            if (typeof(upobj)=='undefined' || upobj=='undefined') {xtalert.alertErrorToast('upobj不能为空!');return false}
+            if (action=='' || typeof(action)=='undefined' || action=='undefined') {var action='upimg'}
+            if (typeof(toobj)=='undefined' || toobj=='undefined') {var toobj=''}
+            if (typeof(posturl)=='undefined' || posturl=='undefined') {var posturl=''}
+            if (typeof(thumb_img)=='undefined' || thumb_img=='undefined') {var thumb_img=''}
+            if (typeof(data_uuid)=='undefined' || data_uuid=='undefined') {var data_uuid=''}
+            if (typeof(progress)=='undefined' || progress=='undefined') {var progress=''}
+            var imgpath = upobj.get(0).files[0];
+            if(imgpath==''){
+                xtalert.alertErrorToast('请选择文件！')
+            }else{
+                let html = '<div class="boxHtml" style="position: relative; overflow: hidden;">';
+                html += '<div id="showbar">' +
+                    '<div class="progress">' +
+                    '<div id="progressbar" class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em;width: 0%">' +
+                    '0%</div></div>'
+                    '</div>'
+                html += '</div>';
+                Swal({
+                    title: '数据提交中,请勿刷新页面',
+                    text: '数据提交中...',
+                    html: html,
+                    showCloseButton: false,
+                    showCancelButton: false,
+                    showconfirmButton: false,
+                    allowOutsideClick: false,
+                    onBeforeOpen: () => {
+                        Swal.showLoading()
+                    }
+                });
+                // 控制进度条
+                $('#showbar').show(500);
+                var formdata = new FormData();
+                formdata.append("upload",imgpath);
+                formdata.append("action",action);
+                formdata.append("data_uuid",data_uuid);
+                params = {
+                    'url':posturl,
+                    'data':formdata,
+                    'contentType':false,
+                    'processData': false,
+                    'success':function (data) {
+                        if(data.code==200){
+
+                            //upobj.val('');
+                            //if(toobj){toobj.val(data.message);}
+                            //if(thumb_img){thumb_img.attr('src',data.message)}
+                            //if(callbackfunc){
+                            //    callbackfunc()
+                            //}else{
+                            //    if (data.message){
+                            //        xtalert.alertSuccessToast(data.message);
+                            //    }else {
+                            //        xtalert.alertSuccessToast('上传成功！');
+                            //    }
+                            //    reloadpage();
+                            //}
+
+                            let html = '<div style="position: relative; overflow: hidden; box-sizing: border-box; display: block; text-align: center;">数据处理当前进度：' + data.data.total + ' / ' + '0</div>'
+                            $(".boxHtml").html(html);
+
+                            var progres_func = function (dataKey, total) {
+                                xtajax.post({
+                                    'data': {'action': 'getProgres', 'dataKey': dataKey},
+                                    'success': function (data) {
+                                        if (data.code == 200){
+                                            if (total < data.data.v){
+                                                clearInterval(progresSet)
+                                                xtalert.alertSuccessToast();
+                                                return reloadpage();
+                                            }
+                                            let html = '<div style="position: relative; overflow: hidden; box-sizing: border-box; display: block; text-align: center;">数据处理当前进度：' + total + ' / ' + data.data.v + '</div>'
+                                            $(".boxHtml").html(html);
+                                        }else {
+                                            return xtalert.alertError(data.message);
+                                        }
+                                    }
+                                })
+                            }
+
+                            var progresSet = setInterval(function () {
+                                let total = data.data.total;
+                                let dataKey = data.data.dataKey;
+                                progres_func(dataKey, total)
+                            }, 2000)
+
+                        }else{
+                            xtalert.alertError(data.message)
+                        }
+                         if(progress=='progress'){
+                            hideprogressbar();
+                        }
+                    }
+                };
+                if(progress=='progress'){
+                    params['progress'] = showprogress;
+                }
+                xtajax.post(params);
+            }
+        }
+
+    </script>
+{% endblock %}
+
+{% block content_main %}
+    <div class="col-lg-12">
+
+        <div class="alert alert-primary mb-2" role="alert" style="line-height: 30px;">
+            <b>提示：</b><br>
+            &ensp;&ensp;<b>1.</b> 导入数据以每列第一行中文名称来区分每列数据。<br>
+            &ensp;&ensp;<b>2.</b> 导入黑名单账户，只需账户一列即可，默认将第一行视为中文名称， 数据从第二行开始。
+        </div>
+
+        <div class="list-group-item pb-0">
+            <form class="form-inline">
+                <label for=""><strong>筛选：</strong></label>
+                <select class="form-control mr-sm-2 mb-2" name="blacklistState" aria-label="">
+                    <option value="">状态</option>
+                    <option value="0" {% if search_res.statu == '0' %}selected{% endif %}>正常</option>
+                    <option value="1" {% if search_res.statu == '1' %}selected{% endif %}>黑名单</option>
+                </select>
+                <input type="text" class="form-control mb-2 mr-sm-2" name="account" value="{{ search_res.account }}" placeholder="账户" aria-label="">
+                <button class="btn btn-primary mb-2">筛选</button>
+                <span class="btn btn-default ml-1 mb-2" onclick="exitsearch()">重置</span>
+                <span class="btn btn-success ml-1 mb-2 file-button">
+                    <span>导入数据</span>
+                    <input type="file" id="upload1" onchange="upload_file_func($('#upload1'),'','importData', '', '', '', 'progress')">
+                </span>
+                <span class="btn btn-success ml-1 mb-2" onclick="post_update_statu('exportCrrData', '666', '确实导出当次数据账户的输赢信息？')">导出本次输赢</span>
+                <a href="{{ url_for('admin.layeredResult') }}" class="btn btn-primary ml-1 mb-2" target="_blank">输赢分层</a>
+                <span class="btn btn-danger ml-1 mb-2 file-button">
+                    <span>导入黑名单</span>
+                    <input type="file" id="upload2" onchange="upload_file_func($('#upload2'),'','importBlacklistState', '', '', '', 'progress')">
+                </span>
+                <span class="btn btn-danger ml-1 mb-2 file-button">
+                    <span>解除黑名单</span>
+                    <input type="file" id="upload3" onchange="upload_file_func($('#upload3'),'','jcBlacklistState', '', '', '', 'progress')">
+                </span>
+                <span class="btn btn-danger ml-1 mb-2" onclick="post_update_statu('del_all', '666', '确定删除全部数据？')">删除全部</span>
+            </form>
+        </div>
+        <table class="table table-bordered table-hover text-center" style="background-color: #ffffff;">
+            <thead>
+                <tr>
+                    <th>账号 [{{ total or 0 }}]</th>
+                    <th>上级代理</th>
+                    <th>下注笔数</th>
+                    <th>状态</th>
+                    <th>投注金额</th>
+                    <th>盈利投注（金额）</th>
+                    <th>代理返水（金额）</th>
+                    <th>会员输赢（不含退水）</th>
+                    <th>实际退水</th>
+                    <th>实际输赢（含退水）</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for data in all_datas %}
+                    <tr>
+                        <td>{{ data.account or '' }}</td>
+                        <td>{{ data.parent_agent or '' }}</td>
+                        <td>{{ format_money(data.betting_count or 0) }}</td>
+                        <td>
+                            {% if data.blacklistState %}
+                            <span class="btn btn-danger btn-xs">黑名单</span>
+                            {% else %}
+                            <span class="btn btn-success btn-xs">正常</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ format_money(data.betting_money or 0) }}</td>
+                        <td>{{ format_money(data.profit_money or 0) }}</td>
+                        <td>{{ format_money(data.agent_backwater or 0) }}</td>
+                        <td>{{ format_money(data.vip_winlose_money or 0) }}</td>
+                        <td>{{ format_money(data.actual_backwater or 0) }}</td>
+                        <td>{{ format_money(data.actual_winlose_money or 0) }}</td>
+                        <td>
+                            <span class="btn btn-danger btn-xs" onclick="post_update_statu('del', '{{ data.uuid }}', '确定删除该会员信息？')">删除</span>
+                        </td>
+                    </tr>
+                {% endfor %}
+                
+            </tbody>
+        </table>
+        {% if not all_datas %}
+        <div class="no_data">
+            <img src="/static/common/images/no_data.png" alt="暂无数据">
+            <p>暂无数据</p>
+        </div>
+        {% endif %}
+        {% if pagination and pagination.links %}
+        <div class="text-center">{{ pagination.links }}</div>
+        {% endif %}
+    </div>
+{% endblock %}

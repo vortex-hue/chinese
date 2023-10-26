@@ -1,0 +1,72 @@
+{% extends 'data_form/formList_base.html' %}
+
+{% block other_head %}
+    <script>
+
+    </script>
+{% endblock %}
+
+{% block content_main %}
+
+    <div class="col-12">
+        <div class="list-group-item pb-0">
+            <form class="form-inline">
+                <label for=""><strong>筛选：</strong></label>
+                <input type="text" class="form-control mb-2 mr-sm-2" name="game_name" value="{{ search_res.game_name }}" placeholder="游戏" aria-label="">
+                <input type="text" class="form-control mb-2 mr-sm-2 pickerdate" name="form_date" value="{{ search_res.form_date }}" placeholder="时间" aria-label="" readonly>
+                <button class="btn btn-primary mb-2">筛选</button>
+                <span class="btn btn-default ml-1 mb-2" onclick="exitsearch()">重置</span>
+                <span class="btn btn-success ml-1 mb-2" onclick="post_form_html({'action': 'upload_form_html'}, '', '上传报表', 600)">上传报表</span>
+                <span class="btn btn-danger ml-1 mb-2" onclick="post_update_statu('del_search_data', '666', '确定删除搜索数据？')">删除搜索数据</span>
+                <span class="btn btn-danger ml-1 mb-2" onclick="post_update_statu('del_all', '666', '确定删除全部数据？')">删除全部</span>
+                <span class="btn btn-primary ml-1 mb-2" onclick="ch_func()">撤销上传数据</span>
+            </form>
+        </div>
+
+        <table class="table table-bordered table-hover text-center" style="background-color: #ffffff;">
+            <thead>
+                <tr>
+                    <th>游戏[{{ total }}]</th>
+                    <th>笔数</th>
+                    <th>投注金额</th>
+                    <th>盈利投注金额</th>
+                    <th>代理赔率金额</th>
+                    <th>代理返水金额</th>
+                    <th>会员输赢（不含退水）</th>
+                    <th>实际退水</th>
+                    <th>实际输赢（含退水）</th>
+                    <th>下注会员数</th>
+                    <th>更新时间</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for data in all_datas %}
+                    <tr>
+                        <td>{{ data.game_name or '' }}</td>
+                        <td>{{ data.bs_number or 0 }}</td>
+                        <td>{{ data.betting_money or 0 }}</td>
+                        <td>{{ data.profit_money or 0 }}</td>
+                        <td>{{ data.agent_odds or 0 }}</td>
+                        <td>{{ data.agent_backwater or 0 }}</td>
+                        <td>{{ data.vip_winlose_money or 0 }}</td>
+                        <td>{{ data.actual_backwater or 0 }}</td>
+                        <td>{{ data.actual_winlose_money or 0 }}</td>
+                        <td>{{ data.xzhy_count or 0 }}</td>
+                        <td>{{ format_money(data.form_date or '', '%Y-%m-%d') }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% if not all_datas %}
+        <div class="no_data">
+            <img src="/static/common/images/no_data.png" alt="暂无数据">
+            <p>暂无数据</p>
+        </div>
+        {% endif %}
+        {% if pagination and pagination.links %}
+        <div class="text-center">{{ pagination.links }}</div>
+        {% endif %}
+
+    </div>
+
+{% endblock %}

@@ -1,0 +1,99 @@
+{% extends 'data_form/formList_base.html' %}
+
+{% block other_head %}
+    <script>
+        function export_func() {
+            navigator.clipboard.readText().then((v) => {
+                xtajax.post({
+                    'data': {'action': 'add_form_data', 'data_text': v},
+                    'success': function (data) {
+                        if (data.code === 200){
+                            xtalert.alertSuccessToast('数据导入成功！')
+                            return  reloadpage();
+                        }else{
+                            return xtalert.alertError(data.message);
+                        }
+                    }
+                })
+            }).catch((v) => {
+                return xtalert.alertError('无数据！')
+            });
+
+        }
+    </script>
+{% endblock %}
+
+{% block content_main %}
+
+    <div class="col-12">
+        <div class="list-group-item pb-0">
+            <form class="form-inline">
+                <label for=""><strong>筛选：</strong></label>
+                <input type="text" class="form-control mb-2 mr-sm-2" name="platform" value="{{ search_res.platform }}" placeholder="平台" aria-label="">
+                <button class="btn btn-primary mb-2">筛选</button>
+                <span class="btn btn-default ml-1 mb-2" onclick="exitsearch()">重置</span>
+                <span class="btn btn-success ml-1 mb-2 file-button">
+                    <span>导入数据</span>
+                    <input type="file" id="upload1" onchange="upload_file_func($('#upload1'),'','importData', '', '', '', 'progress')">
+                </span>
+                <span class="btn btn-danger ml-1 mb-2" onclick="post_update_statu('del_all', '666', '确定删除全部数据？')">删除全部</span>
+            </form>
+        </div>
+
+        <table class="table table-bordered table-hover text-center" style="background-color: #ffffff;">
+            <thead>
+                <tr>
+                    <th>报表时间[{{ total }}]</th>
+                    <th>日期/APP注册/首充</th>
+                    <th>新增会员(彩票/三方)</th>
+                    <th>有效用户总数</th>
+                    <th>有效用户(彩票/三方)</th>
+                    <th>彩票/三方(余额)</th>
+                    <th>充值/提现</th>
+                    <th>投注/退水(总额)</th>
+                    <th>实际输赢(含退水)</th>
+                    <th>代理赔率/退水金额</th>
+                    <th>jackpot/jackBonus</th>
+                    <th>三方有效/输赢/反水金额</th>
+                    <th>三方其他费用</th>
+                    <th>充值优惠/活动金额/红包金额</th>
+                    <th>平台盈利</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for data in all_datas %}
+                    <tr>
+                        <td>{{ format_money(data.form_date or '', '%Y-%m-%d') }}</td>
+                        <td>{{ data.data_date or '' }}/{{ data.app_regist or '' }}/{{ data.shou_chong or '' }}</td>
+                        <td>{{ data.xzyxhy_cp or 0 }}/<br>{{ data.xzyxhy_dsfyx or 0 }}</td>
+                        <td>{{ data.yxyh_count or 0 }}</td>
+                        <td>{{ data.yxyh_cp_count or 0 }}/<br>{{ data.yxyh_sfyx_count or 0 }}</td>
+                        <td>{{ data.cpye_money or 0 }}/<br>{{ data.sfye_money or 0 }}</td>
+                        <td>{{ data.recharge_money or 0 }}/<br>{{ data.withdraw_money or 0 }}</td>
+                        <td>{{ data.touzhu_money or 0 }}/<br>{{ data.tsze_money or 0 }}</td>
+                        <td>{{ data.sjsy_money or 0 }}</td>
+                        <td>{{ data.agent_odds or 0 }}/<br>{{ data.tuishui_money or 0 }}</td>
+                        <td>{{ data.jackpot or 0 }}/<br>{{ data.jackBonus or 0 }}</td>
+                        <td>{{ data.sfyx_money or 0 }}/<br>{{ data.sy_money or 0 }}/<br>{{ data.fs_money or 0 }}</td>
+                        <td>{{ data.sfqtfy_money or 0 }}</td>
+                        <td>{{ data.czyh_money }}/<br>{{ data.hd_money or 0 }}/<br>{{ data.hb_money or 0 }}</td>
+                        <td>{{ data.yk_mongey or 0 }}</td>
+                        <td onclick="post_update_statu('del', '{{ data.uuid }}', '确认删除当前数据？')"><span class="btn btn-danger btn-xs">删除</span></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% if not all_datas %}
+        <div class="no_data">
+            <img src="/static/common/images/no_data.png" alt="暂无数据">
+            <p>暂无数据</p>
+        </div>
+        {% endif %}
+        {% if pagination and pagination.links %}
+        <div class="text-center">{{ pagination.links }}</div>
+        {% endif %}
+
+    </div>
+
+{% endblock %}

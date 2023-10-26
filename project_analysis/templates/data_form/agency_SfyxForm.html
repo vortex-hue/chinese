@@ -1,0 +1,79 @@
+{% extends 'data_form/formList_base.html' %}
+
+{% block other_head %}
+    <script>
+
+    </script>
+{% endblock %}
+
+{% block content_main %}
+
+    <div class="col-12">
+        <div class="list-group-item pb-0">
+            <form class="form-inline">
+                <label for=""><strong>筛选：</strong></label>
+                <input type="text" class="form-control mb-2 mr-sm-2" name="account" value="{{ search_res.account }}" placeholder="账户" aria-label="">
+                <input type="text" class="form-control mb-2 mr-sm-2" name="name" value="{{ search_res.name }}" placeholder="姓名" aria-label="">
+                <input type="text" class="form-control mb-2 mr-sm-2" name="parent_agent" value="{{ search_res.parent_agent }}" placeholder="上级代理" aria-label="">
+                <input type="text" class="form-control mb-2 mr-sm-2 pickerdate" name="form_date" value="{{ search_res.form_date }}" placeholder="时间" aria-label="" readonly>
+                <button class="btn btn-primary mb-2">筛选</button>
+                <span class="btn btn-default ml-1 mb-2" onclick="exitsearch()">重置</span>
+                <span class="btn btn-success ml-1 mb-2" onclick="post_form_html({'action': 'upload_form_html'}, '', '上传报表', 600)">上传报表</span>
+                <span class="btn btn-danger ml-1 mb-2" onclick="post_update_statu('del_search_data', '666', '确定删除搜索数据？')">删除搜索数据</span>
+                <span class="btn btn-danger ml-1 mb-2" onclick="post_update_statu('del_all', '666', '确定删除全部数据？')">删除全部</span>
+            </form>
+        </div>
+
+        <table class="table table-bordered table-hover text-center" style="background-color: #ffffff;">
+            <thead>
+                <tr>
+                    <th>账号[{{ total }}]</th>
+                    <th>姓名</th>
+                    <th>上级代理</th>
+                    <th>会员数</th>
+                    <th>笔数</th>
+                    <th>投注金额</th>
+                    <th>有效投注金额</th>
+                    <th>第三方Jackpot预抽金额</th>
+                    <th>第三方Jackpot派彩金额</th>
+                    <th>输赢金额</th>
+                    <th>会员反水金额</th>
+                    <th>代理反水金额</th>
+                    <th>实际输赢（含反水）</th>
+                    <th>更新时间</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for data in all_datas %}
+                    <tr>
+                        <td>{{ data.account or '' }}</td>
+                        <td>{{ data.name or '' }}</td>
+                        <td>{{ data.parent_agent or '' }}</td>
+                        <td>{{ data.hy_count or 0 }}</td>
+                        <td>{{ data.bs_number or 0 }}</td>
+                        <td>{{ data.betting_money or 0 }}</td>
+                        <td>{{ data.yx_betting_money or 0 }}</td>
+                        <td>{{ data.sf_jackpot_yc_money or 0 }}</td>
+                        <td>{{ data.sf_jackpot_pj_money or 0 }}</td>
+                        <td>{{ data.sy_money or 0 }}</td>
+                        <td>{{ data.dlfs_money or 0 }}</td>
+                        <td>{{ data.hyfs_moneyhyfs_money or 0 }}</td>
+                        <td>{{ data.sjsy_money or 0 }}</td>
+                        <td>{{ format_money(data.form_date or '', '%Y-%m-%d') }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% if not all_datas %}
+        <div class="no_data">
+            <img src="/static/common/images/no_data.png" alt="暂无数据">
+            <p>暂无数据</p>
+        </div>
+        {% endif %}
+        {% if pagination and pagination.links %}
+        <div class="text-center">{{ pagination.links }}</div>
+        {% endif %}
+
+    </div>
+
+{% endblock %}

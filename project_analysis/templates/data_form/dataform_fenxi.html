@@ -1,0 +1,581 @@
+{% extends 'fenXi/base.html' %}
+
+{% block head %}
+    <script src="/static/common/echarts/echarts.min.js"></script>
+    <style>
+        .panel{
+            position: relative;
+            overflow: hidden;
+            box-sizing: border-box;
+            box-shadow: 0 2px 4px rgba(41,48,66,.1);
+            padding: 20px;
+            background: #FFFFFF;
+            margin-bottom: 15px;
+        }
+        .panel h3{
+            {#color: #3D3D3D;#}
+            font-size: 20px;
+            color: #1E9FFF;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .panel .panel-body{
+            position: relative;
+            overflow: hidden;
+            box-sizing: border-box;
+            padding-top: 10px;
+        }
+        .panel-body .list-group-item{
+            border: none;
+            color: #545b62;
+        }
+        .numberList{
+            position: relative;
+            box-sizing: border-box;
+            padding-left: 100px;
+            padding-bottom: 20px;
+            overflow: hidden;
+        }
+        .numberList span.number:not(:last-child){
+            width: 35px;
+            height: 35px;
+            position: relative;
+            box-sizing: border-box;
+            box-shadow:0 5px 8px 0 rgba(0,0,0,0.2),0 8px 10px 0 rgba(0,0,0,0.19);
+            border-radius: 50%;
+            margin-right: 15px;
+            float: left;
+            line-height: 36px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .kjNavs{
+            position: relative;
+            display: block;
+            margin: 0 0 10px 0;
+            box-sizing: border-box;
+        }
+        .kjNavs li{
+            position: relative;
+            overflow: hidden;
+            box-sizing: border-box;
+            border: 1px solid #dbdbdb;
+            display: inline-block;
+            cursor: pointer;
+            padding: 5px 10px;
+            font-size: 13px;
+        }
+        .kjNavs li:not(:last-child){
+            border-right: 0;
+        }
+        .kjNavs li:first-child{
+            border-radius: 3px 0px 0px 3px;
+        }
+        .kjNavs li:last-child{
+            border-radius: 0px 3px 3px 0px;
+        }
+
+        /* 表格页面 */
+        .dataTableBottom{background-color: #FFFFFF;padding: 20px;line-height: 60px;height: 60px;overflow: hidden;display: flex;justify-content: space-between;align-items: center;border-top: 1px solid #eee;}
+
+    </style>
+    <script>
+    
+        function fenxi_func() {
+            let formType = $.trim($("#formType").val());
+            let date_range = $.trim($("#date_range").val());
+            if (!formType){ return xtalert.alertError('请选择报表类型！') }
+            if (!date_range){ return xtalert.alertError('请选择日期范围！') }
+            Swal({
+                title: false,
+                text: '分析中...',
+                showCloseButton: false,
+                showCancelButton: false,
+                showconfirmButton: false,
+                allowOutsideClick: false,
+                onBeforeOpen: () => {
+                    Swal.showLoading()
+                }
+            })
+            xtajax.post({
+                'data': {'action': 'fxMaintain', 'formType': formType, 'date_range': date_range},
+                'success': function (data) {
+                    console.log('data:', data)
+                    if (data.code === 200){
+                        let htmlBoxObj = $("#htmlBox")
+                        htmlBoxObj.empty();
+                        htmlBoxObj.append(data.message)
+                        return xtalert.alertSuccessToast('数据分析成功！');
+                    }else{
+                        return xtalert.alertError(data.message);
+                    }
+                }
+            })
+        }
+
+        function post_form_html(data, title, width) {
+            Swal({
+                title: false,
+                text: '请求中...',
+                showCloseButton: false,
+                showCancelButton: false,
+                showconfirmButton: false,
+                allowOutsideClick: false,
+                onBeforeOpen: () => {
+                    Swal.showLoading()
+                }
+            })
+            if (confirmCallback === '' || typeof(confirmCallback)==='undefined' || confirmCallback==='undefined') {var confirmCallback=''}
+            if (funcargs === '' || typeof(funcargs)==='undefined' || funcargs==='undefined') {var funcargs=''}
+            console.log(data)
+            xtajax.post({
+                'data': data,
+                'success':function (data) {
+                    if(data.code === 200){
+                        Swal({
+                            title: title ? title : '操作',
+                            width: width ? width : '',
+                            html: data.message,
+                            showCloseButton: true,
+                            showCancelButton: false,
+                            showConfirmButton: false,
+                            allowOutsideClick: false,
+                            allowEscapeKey: false
+                        }).then(function (results) {
+                            if (results.value){
+                                if (confirmCallback){
+                                    if (funcargs){ return confirmCallback(funcargs)}else { return confirmCallback()}
+                                }
+                            }
+                        })
+                    }else{
+                        return xtalert.alertError(data.message);
+                    }
+                }
+            })
+        }
+
+        function post_db_func(action) {
+            let account = '';
+            let game_name = '';
+            if (action === 'yx_dbfx'){
+                game_name = $.trim($("#game_name").val())
+                if (!game_name){ return xtalert.showValidationError('请输入游戏/平台！')}
+            }else{
+                account = $.trim($("#db_account").val())
+                if (!account){ return xtalert.showValidationError('请输入账户！')}
+            }
+            let db_date = $.trim($("#db_date").val())
+            if (!db_date){ return xtalert.showValidationError('请选择日期！')}
+            xtajax.post({
+                'data': {'action': action, 'acount': account, 'game_name': game_name, 'db_date': db_date},
+                'success': function (data) {
+                    if (data.code === 200){
+                        Swal({
+                            title: data.data.title,
+                            html: data.message,
+                            width: 800,
+                            showCloseButton: true,
+                            showCancelButton: false,
+                            showConfirmButton: false,
+                            allowOutsideClick: false,
+                            allowEscapeKey: true
+                        })
+                    }else{
+                        return xtalert.alertError(data.message);
+                    }
+                }
+            })
+
+        }
+
+        // 代理报表
+        function dl_request_data(page, reset) {
+            let account = '';
+            let form_date = '';
+            if (reset){
+                $(".dailiTab input[name='account']").val(account);
+                $(".dailiTab input[name='form_date']").val(form_date);
+            }else {
+                account = $.trim($(".dailiTab input[name='account']").val());
+                form_date = $.trim($(".dailiTab input[name='form_date']").val());
+            }
+           let _pdata = {'action': 'get_dl_table_html', 'page': page ? page : 1, 'account': account, 'form_date': form_date}
+            Swal({
+                title: false,
+                text: '数据请求中...',
+                showCloseButton: false,
+                showCancelButton: false,
+                showconfirmButton: false,
+                allowOutsideClick: false,
+                onBeforeOpen: () => {
+                    Swal.showLoading()
+                }
+            })
+            xtajax.post({
+                'data': _pdata,
+                'success': function (data) {
+                    if (data.code === 200){
+                        let search_res = data.data.search_res;
+                        if (search_res){
+                            $(".dailiTab input[name='account']").val(search_res.account ? search_res.account : '');
+                            $(".dailiTab input[name='form_date']").val(search_res.form_date ? search_res.form_date : '');
+                        }
+                        $(".dailiTab .table tbody").empty().append(data.data.table_html);
+                        $(".dailiTab .dataTableBottom").empty().append(data.data.dataTableBottom_html);
+                        if (data.data.total === 0){
+                            $(".dailiTab .no_data").show(0);
+                        }else{
+                            $(".dailiTab .no_data").hide(0);
+                        }
+                        xtalert.close();
+                    }
+                }
+            })
+        }
+
+        // 会员报表
+        function hy_request_daat(page, reset) {
+            let account = '';
+            let parent_agent = '';
+            let form_date = '';
+            if (reset){
+                $(".huiyuanTab input[name='account']").val(account);
+                $(".huiyuanTab input[name='form_date']").val(form_date);
+                $(".huiyuanTab input[name='parent_agent']").val(parent_agent);
+            }else {
+                account = $.trim($(".huiyuanTab input[name='account']").val());
+                form_date = $.trim($(".huiyuanTab input[name='form_date']").val());
+                parent_agent = $.trim($(".huiyuanTab input[name='parent_agent']").val());
+            }
+            let _pdata = {'action': 'get_hy_table_html', 'page': page ? page : 1, 'account': account, 'parent_agent': parent_agent, 'form_date': form_date}
+            Swal({
+                title: false,
+                text: '数据请求中...',
+                showCloseButton: false,
+                showCancelButton: false,
+                showconfirmButton: false,
+                allowOutsideClick: false,
+                onBeforeOpen: () => {
+                    Swal.showLoading()
+                }
+            })
+            xtajax.post({
+                'data': _pdata,
+                'success': function (data) {
+                    if (data.code === 200){
+                        let search_res = data.data.search_res;
+                        if (search_res){
+                            $(".huiyuanTab input[name='account']").val(search_res.account ? search_res.account : '');
+                            $(".huiyuanTab input[name='form_date']").val(search_res.form_date ? search_res.form_date : '');
+                            $(".huiyuanTab input[name='parent_agent']").val(search_res.parent_agent ? search_res.parent_agent : '');
+                        }
+                        $(".huiyuanTab .table tbody").empty().append(data.data.table_html);
+                        $(".huiyuanTab .dataTableBottom").empty().append(data.data.dataTableBottom_html);
+                        if (data.data.total === 0){
+                            $(".huiyuanTab .no_data").show(0);
+                        }else{
+                            $(".huiyuanTab .no_data").hide(0);
+                        }
+                        xtalert.close();
+                    }
+                }
+            })
+        }
+
+        // 游戏报表
+        function yx_request_data(page, reset) {
+            let game_name = '';
+            let form_date = '';
+            if (reset){
+                $(".youxiTab input[name='game_name']").val(game_name);
+                $(".youxiTab input[name='form_date']").val(form_date);
+            }else {
+                game_name = $.trim($(".youxiTab input[name='game_name']").val());
+                form_date = $.trim($(".youxiTab input[name='form_date']").val());
+            }
+            let _pdata = {'action': 'get_yx_table_html', 'page': page ? page : 1, 'game_name': game_name, 'form_date': form_date}
+            Swal({
+                title: false,
+                text: '数据请求中...',
+                showCloseButton: false,
+                showCancelButton: false,
+                showconfirmButton: false,
+                allowOutsideClick: false,
+                onBeforeOpen: () => {
+                    Swal.showLoading()
+                }
+            })
+            xtajax.post({
+                'data': _pdata,
+                'success': function (data) {
+                    if (data.code === 200){
+                        let search_res = data.data.search_res;
+                        if (search_res){
+                            $(".youxiTab input[name='game_name']").val(search_res.game_name ? search_res.game_name : '');
+                            $(".youxiTab input[name='form_date']").val(search_res.form_date ? search_res.form_date : '');
+                        }
+                        $(".youxiTab .table tbody").empty().append(data.data.table_html);
+                        $(".youxiTab .dataTableBottom").empty().append(data.data.dataTableBottom_html);
+                        if (data.data.total === 0){
+                            $(".youxiTab .no_data").show(0);
+                        }else{
+                            $(".youxiTab .no_data").hide(0);
+                        }
+                        xtalert.close();
+                    }
+                }
+            })
+        }
+
+        // 平台分析
+        function pt_fenxi_func() {
+            let pt_date = $.trim($("#pt_date").val());
+            if (!pt_date){ return xtalert.alertError('请选择日期！')}
+            Swal({
+                title: false,
+                text: '分析中...',
+                showCloseButton: false,
+                showCancelButton: false,
+                showconfirmButton: false,
+                allowOutsideClick: false,
+                onBeforeOpen: () => {
+                    Swal.showLoading()
+                }
+            })
+            xtajax.post({
+                'data': {'action': 'pt_fx', 'pt_date': pt_date},
+                'success': function (data) {
+                    if (data.code === 200){
+                        $("#htmlBox").empty().append(data.message);
+                        xtalert.alertSuccessToast('分析成功！');
+                    }else{
+
+                    }
+                }
+            })
+        }
+
+        // 导出流失人数
+        function export_ls_func(data) {
+            Swal({
+                title: false,
+                text: '请求中...',
+                showCloseButton: false,
+                showCancelButton: false,
+                showconfirmButton: false,
+                allowOutsideClick: false,
+                onBeforeOpen: () => {
+                    Swal.showLoading()
+                }
+            })
+            xtajax.post({
+                'data': data,
+                'success': function (data) {
+                    if (data.code === 200){
+                        return xtalert.alertSuccess('数据导出成功，请稍等到“文件下载"页面下载"！')
+                    }else{
+                        return xtalert.alertError(data.message);
+                    }
+                }
+            })
+        }
+
+        // 总代理分析
+        function zdl_fx_func() {
+            let pt_dateg = $.trim($("#pt_dateg").val());
+            let main_agency = $.trim($("#main_agency").val());
+            if (!pt_dateg){ return xtalert.alertError('请选择日期！') }
+            if (!main_agency){ return xtalert.alertError('请输入总代理账户！') }
+            Swal({
+                title: false,
+                text: '数据分析中...',
+                showCloseButton: false,
+                showCancelButton: false,
+                showconfirmButton: false,
+                allowOutsideClick: false,
+                onBeforeOpen: () => {
+                    Swal.showLoading()
+                }
+            })
+            xtajax.post({
+                'data': {'action': 'zdl_fx', 'main_agency': main_agency, 'pt_dateg': pt_dateg},
+                'success': function (data) {
+                    if (data.code === 200){
+                        return xtalert.alertSuccessToast('分析成功！请到文件下载页面下载数据！')
+                    }else{
+                        return xtalert.alertError(data.message);
+                    }
+                }
+            })
+
+        }
+
+    </script>
+{% endblock %}
+
+{% block content_main %}
+
+    <div class="col-lg-12">
+        <div class="panel" id="onePanel">
+            <div class="panel-body">
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item" role="presentation" onclick="dl_request_data(1, true)">
+                        <button class="nav-link active" style="cursor: pointer; background-color: #FFFFFF; border-bottom: 1px solid #dee2e6;" id="home-tab" data-toggle="tab" data-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">代理报表</button>
+                    </li>
+                    <li class="nav-item" role="presentation" onclick="hy_request_daat(1)">
+                        <button class="nav-link" style="cursor: pointer; background-color: #FFFFFF; border-bottom: 1px solid #dee2e6;" id="profile-tab" data-toggle="tab" data-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">会员报表</button>
+                    </li>
+                    <li class="nav-item" role="presentation" onclick="yx_request_data(1, true)">
+                        <button class="nav-link" style="cursor: pointer; background-color: #FFFFFF; border-bottom: 1px solid #dee2e6;" id="contact-tab" data-toggle="tab" data-target="#youxiForm" type="button" role="tab" aria-controls="youxiForm" aria-selected="false">游戏报表</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" style="cursor: pointer; background-color: #FFFFFF; border-bottom: 1px solid #dee2e6;" id="contact-tab" data-toggle="tab" data-target="#contact" type="button" role="tab" aria-controls="contact" aria-selected="false">平台报表</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" style="cursor: pointer; background-color: #FFFFFF; border-bottom: 1px solid #dee2e6;" id="contact-tab" data-toggle="tab" data-target="#zdlForm" type="button" role="tab" aria-controls="contact" aria-selected="false">总代理报表</button>
+                    </li>
+                </ul>
+                <div class="tab-content" id="myTabContent">
+
+                    <div class="tab-pane fade show active dailiTab" id="home" role="tabpanel" aria-labelledby="home-tab" style="padding: 0 10px">
+                        <div class="list-group-item pb-0 ml-0 pl-0 mt-3 mb-2">
+                            <form class="form-inline">
+                                <input type="text" class="form-control mb-2 mr-sm-2" name="account" value="" placeholder="账户" aria-label="">
+                                <input type="text" class="form-control mb-2 mr-sm-2 pickerdate" name="form_date" value="" placeholder="时间" aria-label="" readonly>
+                                <span class="btn btn-primary mb-2" onclick="dl_request_data(1)">查询</span>
+                                <span class="btn btn-default ml-2 mb-2" onclick="dl_request_data(1, true)">刷新</span>
+                                <span class="btn btn-primary ml-2 mb-2" onclick="post_form_html({'action': 'get_dl_db_html'}, '对比分析')">分析对比</span>
+                                <span class="btn btn-primary ml-2 mb-2" onclick="">游戏分析</span>
+                                <span class="btn btn-primary ml-2 mb-2" onclick="post_form_html({'action': 'get_dl_adb_html'}, '所有代理报告')">所有代理报告</span>
+                            </form>
+                        </div>
+
+{#                        <ul class="kjNavs">#}
+{#                            <li>今日报表</li><li>昨日报表</li><li>周报表</li><li>本月报表</li><li>上月报表</li>#}
+{#                        </ul>#}
+
+                        <table class="table table-bordered table-hover text-center" style="background-color: #ffffff; font-size: 13px;">
+                            <tbody>
+                            {{ table_html | safe }}
+                            </tbody>
+                        </table>
+                        <div class="no_data" data-total="{{ total }}" {% if total != 0 %} style="display: none;" {% endif %}>
+                            <img src="/static/common/images/no_data.png" alt="暂无数据">
+                            <p>暂无数据</p>
+                        </div>
+
+                        <div class="dataTableBottom">
+                            {{ dataTableBottom_html | safe }}
+                        </div>
+
+                    </div>
+
+                    <div class="tab-pane fade huiyuanTab" id="profile" role="tabpanel" aria-labelledby="profile-tab" style="padding: 0 10px">
+                        <div class="list-group-item pb-0 ml-0 pl-0 mt-3 mb-2">
+                            <form class="form-inline">
+                                <input type="text" class="form-control mb-2 mr-sm-2" name="account" value="" placeholder="账户" aria-label="">
+                                <input type="text" class="form-control mb-2 mr-sm-2" name="parent_agent" value="" placeholder="上级代理" aria-label="">
+                                <input type="text" class="form-control mb-2 mr-sm-2 pickerdate" name="form_date" value="" placeholder="时间" aria-label="" readonly>
+                                <span class="btn btn-primary mb-2" onclick="hy_request_daat(1)">查询</span>
+                                <span class="btn btn-default ml-2 mb-2" onclick="hy_request_daat(1, true)">刷新</span>
+                                <span class="btn btn-primary ml-2 mb-2" onclick="post_form_html({'action': 'get_hy_db_html'}, '对比分析')">分析对比</span>
+                                <span class="btn btn-primary ml-2 mb-2" onclick="post_form_html({'action': 'get_hy_tzfx_html'}, '投注量降低分析')">投注量降低分析</span>
+                            </form>
+                        </div>
+                        <table class="table table-bordered table-hover text-center" style="background-color: #ffffff; font-size: 13px;">
+                            <tbody>
+
+                            </tbody>
+                        </table>
+                        <div class="no_data">
+                            <img src="/static/common/images/no_data.png" alt="暂无数据">
+                            <p>暂无数据</p>
+                        </div>
+
+                        <div class="dataTableBottom">
+
+                        </div>
+
+                    </div>
+
+                    <div class="tab-pane fade pingtaiTab" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+
+                        <ul class="list-group pt-3">
+                            <li class="list-group-item">
+                                <span style="width: 100px; text-align: right; display: inline-block; position: relative;"><span class="text-danger">*</span>日期：</span>
+                                <input type="text" style="width: 300px; display: inline-block;" class="form-control pickerdate" onmouseenter="$.picker_YY_HH_DD_HH_MM_SS('.pickerdate')" id="pt_date" placeholder="日期">
+                            </li>
+                            <li class="list-group-item">
+                                <span style="width: 100%; background: #e3e3e3; height: 1px; margin: 5px 0 20px; display: block;"></span>
+                                <button class="btn btn-primary" style="margin-left: 100px;" onclick="pt_fenxi_func()">开始分析</button>
+                            </li>
+                        </ul>
+
+                        <div id="htmlBox" style="width: 60%; display: flex; text-align: center; padding-top: 30px; justify-content: center;">
+
+                        </div>
+
+                    </div>
+
+                    <div class="tab-pane fade youxiTab" id="youxiForm" role="tabpanel" aria-labelledby="contact-tab">
+
+                        <div class="list-group-item pb-0 ml-0 pl-0 mt-3 mb-2">
+                            <form class="form-inline">
+                                <input type="text" class="form-control mb-2 mr-sm-2" name="game_name" value="" placeholder="游戏" aria-label="">
+                                <input type="text" class="form-control mb-2 mr-sm-2 pickerdate" name="form_date" value="" placeholder="时间" aria-label="" readonly>
+                                <span class="btn btn-primary mb-2" onclick="yx_request_data(1)">查询</span>
+                                <span class="btn btn-default ml-2 mb-2" onclick="yx_request_data(1, true)">刷新</span>
+                                <span class="btn btn-primary ml-2 mb-2" onclick="post_form_html({'action': 'get_yx_db_html'}, '对比分析')">分析对比</span>
+                            </form>
+                        </div>
+                        <table class="table table-bordered table-hover text-center" style="background-color: #ffffff; font-size: 13px;">
+                            <tbody>
+
+                            </tbody>
+                        </table>
+                        <div class="no_data">
+                            <img src="/static/common/images/no_data.png" alt="暂无数据">
+                            <p>暂无数据</p>
+                        </div>
+
+                        <div class="dataTableBottom">
+
+                        </div>
+
+                    </div>
+
+                    <div class="tab-pane fade zdlForm" id="zdlForm" role="tabpanel" aria-labelledby="contact-tab">
+
+                        <ul class="list-group pt-3">
+                            <li class="list-group-item">
+                                <span style="width: 100px; text-align: right; display: inline-block; position: relative;"><span class="text-danger">*</span>总代理账户：</span>
+                                <input type="text" style="width: 300px; display: inline-block;" class="form-control" id="main_agency" placeholder="总代理账户" aria-label="">
+                            </li>
+                            <li class="list-group-item">
+                                <span style="width: 100px; text-align: right; display: inline-block; position: relative;"><span class="text-danger">*</span>日期：</span>
+                                <input type="text" style="width: 300px; display: inline-block;" class="form-control pickerdate" onmouseenter="$.picker_YY_HH_DD_HH_MM_SS('.pickerdate')" id="pt_dateg" placeholder="日期" aria-label="">
+                            </li>
+                            <li class="list-group-item">
+                                <span style="width: 100%; background: #e3e3e3; height: 1px; margin: 5px 0 20px; display: block;"></span>
+                                <button class="btn btn-primary" style="margin-left: 100px;" onclick="zdl_fx_func()">开始分析</button>
+                            </li>
+                        </ul>
+
+                        <div id="htmlBoxtt" style="width: 60%; display: flex; text-align: center; padding-top: 30px; justify-content: center;">
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+
+{% endblock %}
+

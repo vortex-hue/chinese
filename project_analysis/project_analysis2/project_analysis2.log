@@ -1,0 +1,120 @@
+[Thu Aug 03 00:09:26.532812 2023] [wsgi:error] [pid 46677:tid 139894671746816] [remote 172.71.215.85:44000] mod_wsgi (pid=46677): Exception occurred processing WSGI script '/www/project_analysis/project_analysis2/project_analysis2.wsgi'.
+[Thu Aug 03 00:09:26.539015 2023] [wsgi:error] [pid 46677:tid 139894671746816] [remote 172.71.215.85:44000] Traceback (most recent call last):
+[Thu Aug 03 00:09:26.539134 2023] [wsgi:error] [pid 46677:tid 139894671746816] [remote 172.71.215.85:44000]   File "/usr/local/lib/python3.8/dist-packages/flask/app.py", line 2548, in __call__
+[Thu Aug 03 00:09:26.539147 2023] [wsgi:error] [pid 46677:tid 139894671746816] [remote 172.71.215.85:44000]     return self.wsgi_app(environ, start_response)
+[Thu Aug 03 00:09:26.539159 2023] [wsgi:error] [pid 46677:tid 139894671746816] [remote 172.71.215.85:44000]   File "/usr/local/lib/python3.8/dist-packages/flask/app.py", line 2528, in wsgi_app
+[Thu Aug 03 00:09:26.539167 2023] [wsgi:error] [pid 46677:tid 139894671746816] [remote 172.71.215.85:44000]     response = self.handle_exception(e)
+[Thu Aug 03 00:09:26.539178 2023] [wsgi:error] [pid 46677:tid 139894671746816] [remote 172.71.215.85:44000]   File "/usr/local/lib/python3.8/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+[Thu Aug 03 00:09:26.539186 2023] [wsgi:error] [pid 46677:tid 139894671746816] [remote 172.71.215.85:44000]     return cors_after_request(app.make_response(f(*args, **kwargs)))
+[Thu Aug 03 00:09:26.539196 2023] [wsgi:error] [pid 46677:tid 139894671746816] [remote 172.71.215.85:44000]   File "/usr/local/lib/python3.8/dist-packages/flask/app.py", line 2525, in wsgi_app
+[Thu Aug 03 00:09:26.539203 2023] [wsgi:error] [pid 46677:tid 139894671746816] [remote 172.71.215.85:44000]     response = self.full_dispatch_request()
+[Thu Aug 03 00:09:26.539213 2023] [wsgi:error] [pid 46677:tid 139894671746816] [remote 172.71.215.85:44000]   File "/usr/local/lib/python3.8/dist-packages/flask/app.py", line 1822, in full_dispatch_request
+[Thu Aug 03 00:09:26.539221 2023] [wsgi:error] [pid 46677:tid 139894671746816] [remote 172.71.215.85:44000]     rv = self.handle_user_exception(e)
+[Thu Aug 03 00:09:26.539231 2023] [wsgi:error] [pid 46677:tid 139894671746816] [remote 172.71.215.85:44000]   File "/usr/local/lib/python3.8/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+[Thu Aug 03 00:09:26.539238 2023] [wsgi:error] [pid 46677:tid 139894671746816] [remote 172.71.215.85:44000]     return cors_after_request(app.make_response(f(*args, **kwargs)))
+[Thu Aug 03 00:09:26.539248 2023] [wsgi:error] [pid 46677:tid 139894671746816] [remote 172.71.215.85:44000]   File "/usr/local/lib/python3.8/dist-packages/flask/app.py", line 1820, in full_dispatch_request
+[Thu Aug 03 00:09:26.539255 2023] [wsgi:error] [pid 46677:tid 139894671746816] [remote 172.71.215.85:44000]     rv = self.dispatch_request()
+[Thu Aug 03 00:09:26.539265 2023] [wsgi:error] [pid 46677:tid 139894671746816] [remote 172.71.215.85:44000]   File "/usr/local/lib/python3.8/dist-packages/flask/app.py", line 1796, in dispatch_request
+[Thu Aug 03 00:09:26.539272 2023] [wsgi:error] [pid 46677:tid 139894671746816] [remote 172.71.215.85:44000]     return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+[Thu Aug 03 00:09:26.539283 2023] [wsgi:error] [pid 46677:tid 139894671746816] [remote 172.71.215.85:44000]   File "/usr/local/lib/python3.8/dist-packages/flask/views.py", line 107, in view
+[Thu Aug 03 00:09:26.539290 2023] [wsgi:error] [pid 46677:tid 139894671746816] [remote 172.71.215.85:44000]     return current_app.ensure_sync(self.dispatch_request)(**kwargs)
+[Thu Aug 03 00:09:26.539300 2023] [wsgi:error] [pid 46677:tid 139894671746816] [remote 172.71.215.85:44000]   File "/usr/local/lib/python3.8/dist-packages/flask/views.py", line 188, in dispatch_request
+[Thu Aug 03 00:09:26.539308 2023] [wsgi:error] [pid 46677:tid 139894671746816] [remote 172.71.215.85:44000]     return current_app.ensure_sync(meth)(**kwargs)
+[Thu Aug 03 00:09:26.539318 2023] [wsgi:error] [pid 46677:tid 139894671746816] [remote 172.71.215.85:44000]   File "/www/project_analysis/views/cms_views/cms_base.py", line 375, in post
+[Thu Aug 03 00:09:26.539355 2023] [wsgi:error] [pid 46677:tid 139894671746816] [remote 172.71.215.85:44000]     return self.view_post(*args, **kwargs)
+[Thu Aug 03 00:09:26.539370 2023] [wsgi:error] [pid 46677:tid 139894671746816] [remote 172.71.215.85:44000]   File "/www/project_analysis/views/cms_views/cms_base.py", line 420, in view_post
+[Thu Aug 03 00:09:26.539377 2023] [wsgi:error] [pid 46677:tid 139894671746816] [remote 172.71.215.85:44000]     res = self.post_data_other_way()
+[Thu Aug 03 00:09:26.539387 2023] [wsgi:error] [pid 46677:tid 139894671746816] [remote 172.71.215.85:44000]   File "/www/project_analysis/views/cms_views/customer_view.py", line 352, in post_data_other_way
+[Thu Aug 03 00:09:26.539395 2023] [wsgi:error] [pid 46677:tid 139894671746816] [remote 172.71.215.85:44000]     os.remove(filePath)
+[Thu Aug 03 00:09:26.539425 2023] [wsgi:error] [pid 46677:tid 139894671746816] [remote 172.71.215.85:44000] FileNotFoundError: [Errno 2] No such file or directory: '/www/project_analysis/static/project_analysis2/assets/export_data/20230803000800_280.xlsx'
+[Thu Aug 03 00:09:31.444134 2023] [wsgi:error] [pid 46677:tid 139894705317632] [remote 172.71.215.86:64036] mod_wsgi (pid=46677): Exception occurred processing WSGI script '/www/project_analysis/project_analysis2/project_analysis2.wsgi'.
+[Thu Aug 03 00:09:31.444411 2023] [wsgi:error] [pid 46677:tid 139894705317632] [remote 172.71.215.86:64036] Traceback (most recent call last):
+[Thu Aug 03 00:09:31.444504 2023] [wsgi:error] [pid 46677:tid 139894705317632] [remote 172.71.215.86:64036]   File "/usr/local/lib/python3.8/dist-packages/flask/app.py", line 2548, in __call__
+[Thu Aug 03 00:09:31.444516 2023] [wsgi:error] [pid 46677:tid 139894705317632] [remote 172.71.215.86:64036]     return self.wsgi_app(environ, start_response)
+[Thu Aug 03 00:09:31.444528 2023] [wsgi:error] [pid 46677:tid 139894705317632] [remote 172.71.215.86:64036]   File "/usr/local/lib/python3.8/dist-packages/flask/app.py", line 2528, in wsgi_app
+[Thu Aug 03 00:09:31.444536 2023] [wsgi:error] [pid 46677:tid 139894705317632] [remote 172.71.215.86:64036]     response = self.handle_exception(e)
+[Thu Aug 03 00:09:31.444546 2023] [wsgi:error] [pid 46677:tid 139894705317632] [remote 172.71.215.86:64036]   File "/usr/local/lib/python3.8/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+[Thu Aug 03 00:09:31.444554 2023] [wsgi:error] [pid 46677:tid 139894705317632] [remote 172.71.215.86:64036]     return cors_after_request(app.make_response(f(*args, **kwargs)))
+[Thu Aug 03 00:09:31.444565 2023] [wsgi:error] [pid 46677:tid 139894705317632] [remote 172.71.215.86:64036]   File "/usr/local/lib/python3.8/dist-packages/flask/app.py", line 2525, in wsgi_app
+[Thu Aug 03 00:09:31.444572 2023] [wsgi:error] [pid 46677:tid 139894705317632] [remote 172.71.215.86:64036]     response = self.full_dispatch_request()
+[Thu Aug 03 00:09:31.444582 2023] [wsgi:error] [pid 46677:tid 139894705317632] [remote 172.71.215.86:64036]   File "/usr/local/lib/python3.8/dist-packages/flask/app.py", line 1822, in full_dispatch_request
+[Thu Aug 03 00:09:31.444589 2023] [wsgi:error] [pid 46677:tid 139894705317632] [remote 172.71.215.86:64036]     rv = self.handle_user_exception(e)
+[Thu Aug 03 00:09:31.444600 2023] [wsgi:error] [pid 46677:tid 139894705317632] [remote 172.71.215.86:64036]   File "/usr/local/lib/python3.8/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+[Thu Aug 03 00:09:31.444607 2023] [wsgi:error] [pid 46677:tid 139894705317632] [remote 172.71.215.86:64036]     return cors_after_request(app.make_response(f(*args, **kwargs)))
+[Thu Aug 03 00:09:31.444617 2023] [wsgi:error] [pid 46677:tid 139894705317632] [remote 172.71.215.86:64036]   File "/usr/local/lib/python3.8/dist-packages/flask/app.py", line 1820, in full_dispatch_request
+[Thu Aug 03 00:09:31.444624 2023] [wsgi:error] [pid 46677:tid 139894705317632] [remote 172.71.215.86:64036]     rv = self.dispatch_request()
+[Thu Aug 03 00:09:31.444634 2023] [wsgi:error] [pid 46677:tid 139894705317632] [remote 172.71.215.86:64036]   File "/usr/local/lib/python3.8/dist-packages/flask/app.py", line 1796, in dispatch_request
+[Thu Aug 03 00:09:31.444657 2023] [wsgi:error] [pid 46677:tid 139894705317632] [remote 172.71.215.86:64036]     return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+[Thu Aug 03 00:09:31.444670 2023] [wsgi:error] [pid 46677:tid 139894705317632] [remote 172.71.215.86:64036]   File "/usr/local/lib/python3.8/dist-packages/flask/views.py", line 107, in view
+[Thu Aug 03 00:09:31.444677 2023] [wsgi:error] [pid 46677:tid 139894705317632] [remote 172.71.215.86:64036]     return current_app.ensure_sync(self.dispatch_request)(**kwargs)
+[Thu Aug 03 00:09:31.444687 2023] [wsgi:error] [pid 46677:tid 139894705317632] [remote 172.71.215.86:64036]   File "/usr/local/lib/python3.8/dist-packages/flask/views.py", line 188, in dispatch_request
+[Thu Aug 03 00:09:31.444694 2023] [wsgi:error] [pid 46677:tid 139894705317632] [remote 172.71.215.86:64036]     return current_app.ensure_sync(meth)(**kwargs)
+[Thu Aug 03 00:09:31.444703 2023] [wsgi:error] [pid 46677:tid 139894705317632] [remote 172.71.215.86:64036]   File "/www/project_analysis/views/cms_views/cms_base.py", line 375, in post
+[Thu Aug 03 00:09:31.444710 2023] [wsgi:error] [pid 46677:tid 139894705317632] [remote 172.71.215.86:64036]     return self.view_post(*args, **kwargs)
+[Thu Aug 03 00:09:31.444720 2023] [wsgi:error] [pid 46677:tid 139894705317632] [remote 172.71.215.86:64036]   File "/www/project_analysis/views/cms_views/cms_base.py", line 420, in view_post
+[Thu Aug 03 00:09:31.444727 2023] [wsgi:error] [pid 46677:tid 139894705317632] [remote 172.71.215.86:64036]     res = self.post_data_other_way()
+[Thu Aug 03 00:09:31.444736 2023] [wsgi:error] [pid 46677:tid 139894705317632] [remote 172.71.215.86:64036]   File "/www/project_analysis/views/cms_views/customer_view.py", line 352, in post_data_other_way
+[Thu Aug 03 00:09:31.444743 2023] [wsgi:error] [pid 46677:tid 139894705317632] [remote 172.71.215.86:64036]     os.remove(filePath)
+[Thu Aug 03 00:09:31.444767 2023] [wsgi:error] [pid 46677:tid 139894705317632] [remote 172.71.215.86:64036] FileNotFoundError: [Errno 2] No such file or directory: '/www/project_analysis/static/project_analysis2/assets/export_data/20230803000800_280.xlsx'
+[Thu Aug 03 01:21:51.415197 2023] [wsgi:error] [pid 47484:tid 140532398860032] [remote 172.70.189.170:59668] mod_wsgi (pid=47484): Exception occurred processing WSGI script '/www/project_analysis/project_analysis2/project_analysis2.wsgi'.
+[Thu Aug 03 01:21:51.418624 2023] [wsgi:error] [pid 47484:tid 140532398860032] [remote 172.70.189.170:59668] Traceback (most recent call last):
+[Thu Aug 03 01:21:51.418725 2023] [wsgi:error] [pid 47484:tid 140532398860032] [remote 172.70.189.170:59668]   File "/usr/local/lib/python3.8/dist-packages/flask/app.py", line 2548, in __call__
+[Thu Aug 03 01:21:51.418738 2023] [wsgi:error] [pid 47484:tid 140532398860032] [remote 172.70.189.170:59668]     return self.wsgi_app(environ, start_response)
+[Thu Aug 03 01:21:51.418749 2023] [wsgi:error] [pid 47484:tid 140532398860032] [remote 172.70.189.170:59668]   File "/usr/local/lib/python3.8/dist-packages/flask/app.py", line 2528, in wsgi_app
+[Thu Aug 03 01:21:51.418756 2023] [wsgi:error] [pid 47484:tid 140532398860032] [remote 172.70.189.170:59668]     response = self.handle_exception(e)
+[Thu Aug 03 01:21:51.418767 2023] [wsgi:error] [pid 47484:tid 140532398860032] [remote 172.70.189.170:59668]   File "/usr/local/lib/python3.8/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+[Thu Aug 03 01:21:51.418774 2023] [wsgi:error] [pid 47484:tid 140532398860032] [remote 172.70.189.170:59668]     return cors_after_request(app.make_response(f(*args, **kwargs)))
+[Thu Aug 03 01:21:51.418783 2023] [wsgi:error] [pid 47484:tid 140532398860032] [remote 172.70.189.170:59668]   File "/usr/local/lib/python3.8/dist-packages/flask/app.py", line 2525, in wsgi_app
+[Thu Aug 03 01:21:51.418790 2023] [wsgi:error] [pid 47484:tid 140532398860032] [remote 172.70.189.170:59668]     response = self.full_dispatch_request()
+[Thu Aug 03 01:21:51.418810 2023] [wsgi:error] [pid 47484:tid 140532398860032] [remote 172.70.189.170:59668]   File "/usr/local/lib/python3.8/dist-packages/flask/app.py", line 1822, in full_dispatch_request
+[Thu Aug 03 01:21:51.418818 2023] [wsgi:error] [pid 47484:tid 140532398860032] [remote 172.70.189.170:59668]     rv = self.handle_user_exception(e)
+[Thu Aug 03 01:21:51.418827 2023] [wsgi:error] [pid 47484:tid 140532398860032] [remote 172.70.189.170:59668]   File "/usr/local/lib/python3.8/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+[Thu Aug 03 01:21:51.418834 2023] [wsgi:error] [pid 47484:tid 140532398860032] [remote 172.70.189.170:59668]     return cors_after_request(app.make_response(f(*args, **kwargs)))
+[Thu Aug 03 01:21:51.418843 2023] [wsgi:error] [pid 47484:tid 140532398860032] [remote 172.70.189.170:59668]   File "/usr/local/lib/python3.8/dist-packages/flask/app.py", line 1820, in full_dispatch_request
+[Thu Aug 03 01:21:51.418849 2023] [wsgi:error] [pid 47484:tid 140532398860032] [remote 172.70.189.170:59668]     rv = self.dispatch_request()
+[Thu Aug 03 01:21:51.418859 2023] [wsgi:error] [pid 47484:tid 140532398860032] [remote 172.70.189.170:59668]   File "/usr/local/lib/python3.8/dist-packages/flask/app.py", line 1796, in dispatch_request
+[Thu Aug 03 01:21:51.418865 2023] [wsgi:error] [pid 47484:tid 140532398860032] [remote 172.70.189.170:59668]     return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+[Thu Aug 03 01:21:51.418874 2023] [wsgi:error] [pid 47484:tid 140532398860032] [remote 172.70.189.170:59668]   File "/usr/local/lib/python3.8/dist-packages/flask/views.py", line 107, in view
+[Thu Aug 03 01:21:51.418881 2023] [wsgi:error] [pid 47484:tid 140532398860032] [remote 172.70.189.170:59668]     return current_app.ensure_sync(self.dispatch_request)(**kwargs)
+[Thu Aug 03 01:21:51.418890 2023] [wsgi:error] [pid 47484:tid 140532398860032] [remote 172.70.189.170:59668]   File "/usr/local/lib/python3.8/dist-packages/flask/views.py", line 188, in dispatch_request
+[Thu Aug 03 01:21:51.418902 2023] [wsgi:error] [pid 47484:tid 140532398860032] [remote 172.70.189.170:59668]     return current_app.ensure_sync(meth)(**kwargs)
+[Thu Aug 03 01:21:51.418913 2023] [wsgi:error] [pid 47484:tid 140532398860032] [remote 172.70.189.170:59668]   File "/www/project_analysis/views/cms_views/cms_base.py", line 375, in post
+[Thu Aug 03 01:21:51.418920 2023] [wsgi:error] [pid 47484:tid 140532398860032] [remote 172.70.189.170:59668]     return self.view_post(*args, **kwargs)
+[Thu Aug 03 01:21:51.418929 2023] [wsgi:error] [pid 47484:tid 140532398860032] [remote 172.70.189.170:59668]   File "/www/project_analysis/views/cms_views/cms_base.py", line 402, in view_post
+[Thu Aug 03 01:21:51.418935 2023] [wsgi:error] [pid 47484:tid 140532398860032] [remote 172.70.189.170:59668]     res = self.post_other_way()
+[Thu Aug 03 01:21:51.418944 2023] [wsgi:error] [pid 47484:tid 140532398860032] [remote 172.70.189.170:59668]   File "/www/project_analysis/views/cms_views/data_form.py", line 2959, in post_other_way
+[Thu Aug 03 01:21:51.418951 2023] [wsgi:error] [pid 47484:tid 140532398860032] [remote 172.70.189.170:59668]     return self.export_ls_func()
+[Thu Aug 03 01:21:51.418960 2023] [wsgi:error] [pid 47484:tid 140532398860032] [remote 172.70.189.170:59668]   File "/www/project_analysis/views/cms_views/data_form.py", line 2439, in export_ls_func
+[Thu Aug 03 01:21:51.418966 2023] [wsgi:error] [pid 47484:tid 140532398860032] [remote 172.70.189.170:59668]     return self.xtjson.json
+[Thu Aug 03 01:21:51.418991 2023] [wsgi:error] [pid 47484:tid 140532398860032] [remote 172.70.189.170:59668] AttributeError: module 'common_utils.xtjson' has no attribute 'json'
+[Thu Aug 03 01:27:37.441012 2023] [wsgi:error] [pid 47484:tid 140532348503808] [remote 162.158.178.78:53922] mod_wsgi (pid=47484): Exception occurred processing WSGI script '/www/project_analysis/project_analysis2/project_analysis2.wsgi'.
+[Thu Aug 03 01:27:37.441315 2023] [wsgi:error] [pid 47484:tid 140532348503808] [remote 162.158.178.78:53922] Traceback (most recent call last):
+[Thu Aug 03 01:27:37.441424 2023] [wsgi:error] [pid 47484:tid 140532348503808] [remote 162.158.178.78:53922]   File "/usr/local/lib/python3.8/dist-packages/flask/app.py", line 2548, in __call__
+[Thu Aug 03 01:27:37.441436 2023] [wsgi:error] [pid 47484:tid 140532348503808] [remote 162.158.178.78:53922]     return self.wsgi_app(environ, start_response)
+[Thu Aug 03 01:27:37.441448 2023] [wsgi:error] [pid 47484:tid 140532348503808] [remote 162.158.178.78:53922]   File "/usr/local/lib/python3.8/dist-packages/flask/app.py", line 2528, in wsgi_app
+[Thu Aug 03 01:27:37.441455 2023] [wsgi:error] [pid 47484:tid 140532348503808] [remote 162.158.178.78:53922]     response = self.handle_exception(e)
+[Thu Aug 03 01:27:37.441465 2023] [wsgi:error] [pid 47484:tid 140532348503808] [remote 162.158.178.78:53922]   File "/usr/local/lib/python3.8/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+[Thu Aug 03 01:27:37.441472 2023] [wsgi:error] [pid 47484:tid 140532348503808] [remote 162.158.178.78:53922]     return cors_after_request(app.make_response(f(*args, **kwargs)))
+[Thu Aug 03 01:27:37.441482 2023] [wsgi:error] [pid 47484:tid 140532348503808] [remote 162.158.178.78:53922]   File "/usr/local/lib/python3.8/dist-packages/flask/app.py", line 2525, in wsgi_app
+[Thu Aug 03 01:27:37.441489 2023] [wsgi:error] [pid 47484:tid 140532348503808] [remote 162.158.178.78:53922]     response = self.full_dispatch_request()
+[Thu Aug 03 01:27:37.441498 2023] [wsgi:error] [pid 47484:tid 140532348503808] [remote 162.158.178.78:53922]   File "/usr/local/lib/python3.8/dist-packages/flask/app.py", line 1822, in full_dispatch_request
+[Thu Aug 03 01:27:37.441505 2023] [wsgi:error] [pid 47484:tid 140532348503808] [remote 162.158.178.78:53922]     rv = self.handle_user_exception(e)
+[Thu Aug 03 01:27:37.441514 2023] [wsgi:error] [pid 47484:tid 140532348503808] [remote 162.158.178.78:53922]   File "/usr/local/lib/python3.8/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+[Thu Aug 03 01:27:37.441521 2023] [wsgi:error] [pid 47484:tid 140532348503808] [remote 162.158.178.78:53922]     return cors_after_request(app.make_response(f(*args, **kwargs)))
+[Thu Aug 03 01:27:37.441530 2023] [wsgi:error] [pid 47484:tid 140532348503808] [remote 162.158.178.78:53922]   File "/usr/local/lib/python3.8/dist-packages/flask/app.py", line 1820, in full_dispatch_request
+[Thu Aug 03 01:27:37.441537 2023] [wsgi:error] [pid 47484:tid 140532348503808] [remote 162.158.178.78:53922]     rv = self.dispatch_request()
+[Thu Aug 03 01:27:37.441546 2023] [wsgi:error] [pid 47484:tid 140532348503808] [remote 162.158.178.78:53922]   File "/usr/local/lib/python3.8/dist-packages/flask/app.py", line 1796, in dispatch_request
+[Thu Aug 03 01:27:37.441553 2023] [wsgi:error] [pid 47484:tid 140532348503808] [remote 162.158.178.78:53922]     return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+[Thu Aug 03 01:27:37.441562 2023] [wsgi:error] [pid 47484:tid 140532348503808] [remote 162.158.178.78:53922]   File "/usr/local/lib/python3.8/dist-packages/flask/views.py", line 107, in view
+[Thu Aug 03 01:27:37.441569 2023] [wsgi:error] [pid 47484:tid 140532348503808] [remote 162.158.178.78:53922]     return current_app.ensure_sync(self.dispatch_request)(**kwargs)
+[Thu Aug 03 01:27:37.441578 2023] [wsgi:error] [pid 47484:tid 140532348503808] [remote 162.158.178.78:53922]   File "/usr/local/lib/python3.8/dist-packages/flask/views.py", line 188, in dispatch_request
+[Thu Aug 03 01:27:37.441584 2023] [wsgi:error] [pid 47484:tid 140532348503808] [remote 162.158.178.78:53922]     return current_app.ensure_sync(meth)(**kwargs)
+[Thu Aug 03 01:27:37.441593 2023] [wsgi:error] [pid 47484:tid 140532348503808] [remote 162.158.178.78:53922]   File "/www/project_analysis/views/cms_views/cms_base.py", line 375, in post
+[Thu Aug 03 01:27:37.441600 2023] [wsgi:error] [pid 47484:tid 140532348503808] [remote 162.158.178.78:53922]     return self.view_post(*args, **kwargs)
+[Thu Aug 03 01:27:37.441609 2023] [wsgi:error] [pid 47484:tid 140532348503808] [remote 162.158.178.78:53922]   File "/www/project_analysis/views/cms_views/cms_base.py", line 402, in view_post
+[Thu Aug 03 01:27:37.441620 2023] [wsgi:error] [pid 47484:tid 140532348503808] [remote 162.158.178.78:53922]     res = self.post_other_way()
+[Thu Aug 03 01:27:37.441630 2023] [wsgi:error] [pid 47484:tid 140532348503808] [remote 162.158.178.78:53922]   File "/www/project_analysis/views/cms_views/data_form.py", line 2959, in post_other_way
+[Thu Aug 03 01:27:37.441637 2023] [wsgi:error] [pid 47484:tid 140532348503808] [remote 162.158.178.78:53922]     return self.export_ls_func()
+[Thu Aug 03 01:27:37.441646 2023] [wsgi:error] [pid 47484:tid 140532348503808] [remote 162.158.178.78:53922]   File "/www/project_analysis/views/cms_views/data_form.py", line 2439, in export_ls_func
+[Thu Aug 03 01:27:37.441652 2023] [wsgi:error] [pid 47484:tid 140532348503808] [remote 162.158.178.78:53922]     return self.xtjson.json
+[Thu Aug 03 01:27:37.441677 2023] [wsgi:error] [pid 47484:tid 140532348503808] [remote 162.158.178.78:53922] AttributeError: module 'common_utils.xtjson' has no attribute 'json'

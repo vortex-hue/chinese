@@ -1,0 +1,83 @@
+{% extends 'data_form/formList_base.html' %}
+
+{% block other_head %}
+    <script>
+
+    </script>
+{% endblock %}
+
+{% block content_main %}
+
+    <div class="col-12">
+        <div class="list-group-item pb-0">
+            <form class="form-inline">
+                <label for=""><strong>筛选：</strong></label>
+                <input type="text" class="form-control mb-2 mr-sm-2" name="account" value="{{ search_res.account }}" placeholder="账户" aria-label="">
+                <input type="text" class="form-control mb-2 mr-sm-2" name="name" value="{{ search_res.name }}" placeholder="姓名" aria-label="">
+                <input type="text" class="form-control mb-2 mr-sm-2" name="parent_agent" value="{{ search_res.parent_agent }}" placeholder="上级代理" aria-label="">
+                <input type="text" class="form-control mb-2 mr-sm-2 pickerdate" name="form_date" value="{{ search_res.form_date }}" placeholder="时间" aria-label="" readonly>
+                <button class="btn btn-primary mb-2">筛选</button>
+                <span class="btn btn-default ml-1 mb-2" onclick="exitsearch()">重置</span>
+                <span class="btn btn-success ml-1 mb-2" onclick="post_form_html({'action': 'upload_form_html'}, '', '上传报表', 600)">上传报表</span>
+                <span class="btn btn-danger ml-1 mb-2" onclick="post_update_statu('del_search_data', '666', '确定删除搜索数据？')">删除搜索数据</span>
+                <span class="btn btn-danger ml-1 mb-2" onclick="post_update_statu('del_all', '666', '确定删除全部数据？')">删除全部</span>
+            </form>
+        </div>
+
+        <table class="table table-bordered table-hover text-center" style="background-color: #ffffff;">
+            <thead>
+                <tr>
+                    <th>订单日期[{{ total }}]</th>
+                    <th>处理日期</th>
+                    <th>会员</th>
+                    <th>上级代理</th>
+                    <th>真实姓名</th>
+                    <th>余额</th>
+                    <th>订单号</th>
+                    <th>付款方式</th>
+                    <th>交易金额</th>
+                    <th>操作人</th>
+                    <th>收款信息</th>
+                    <th>入款信息</th>
+                    <th>状态</th>
+                    <th>充值层级</th>
+                    <th>备注</th>
+                    <th>首充订单</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for data in all_datas %}
+                    <tr>
+                        <td>{{ format_money(data.bill_time or '', '%Y-%m-%d %H:%M:%S') }}</td>
+                        <td>{{ format_money(data.cl_time or '', '%Y-%m-%d %H:%M:%S') }}</td>
+                        <td>{{ data.account or '' }}</td>
+                        <td>{{ data.parent_agent or 0 }}</td>
+                        <td>{{ data.username or 0 }}</td>
+                        <td>{{ data.over_money or 0 }}</td>
+                        <td>{{ data.order_number or 0 }}</td>
+                        <td>{{ data.pay_way or 0 }}</td>
+                        <td>{{ data.jy_money or 0 }}</td>
+                        <td>{{ data.operator_user or 0 }}</td>
+                        <td>{{ data.collect_money_info or 0 }}</td>
+                        <td>{{ data.deposit_money_info or 0 }}</td>
+                        <td>{{ data.state or 0 }}</td>
+                        <td>{{ data.cz_level or 0 }}</td>
+                        <td>{{ data.note or 0 }}</td>
+                        <td>{{ data.scdd or 0 }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% if not all_datas %}
+        <div class="no_data">
+            <img src="/static/common/images/no_data.png" alt="暂无数据">
+            <p>暂无数据</p>
+        </div>
+        {% endif %}
+        {% if pagination and pagination.links %}
+        <div class="text-center">{{ pagination.links }}</div>
+        {% endif %}
+
+    </div>
+
+{% endblock %}

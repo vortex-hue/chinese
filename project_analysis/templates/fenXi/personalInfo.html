@@ -1,0 +1,147 @@
+{% extends 'fenXi/base.html' %}
+
+{% block head %}
+    <link rel="stylesheet" href="/static/common/font-awesome/css/font-awesome.min.css">
+    <style>
+        .user_card{background: #FFFFFF; border: 1px solid #dcdee1; position: relative; overflow: hidden; border-radius: 8px; box-sizing: border-box; border-top: 4px solid #0e82ff; padding: 30px 10px 10px 10px;}
+        .user_card .user-portrait{width: 100%; text-align: center; position: relative; overflow: hidden; box-sizing: border-box}
+        .user-portrait .uimg{border: 2px solid #D9D9D9; padding: 1px; width: 100px; height: 100px; display: block; margin: auto; border-radius: 50%;}
+        .user-portrait .uimg img{width: 100%; height: 100%; border-radius: 50%;}
+        .user-portrait h2{margin: 12px auto; font-size: 22px; font-weight: bolder;}
+        .user-portrait ul.info_box{position: relative; overflow: hidden; padding: 0 30px; display: block;}
+        .user-portrait ul.info_box li{border-bottom: 1px solid #e5e5e5; padding: 15px 0; font-weight: bolder; font-size: 17px; text-align: left;}
+        .user-portrait ul.info_box li:last-child{border-bottom: none;}
+    </style>
+    <script>
+        function post_edit_data() {
+            var _data = {'action': '_edit_user_data', 'data_uuid': '{{ user_data.uuid }}'};
+            {% for k in ['username', 'telephone', 'email', 'note'] %}
+                var v = $.trim($("#{{ k }}").val());
+                if (!v && ('{{ k }}' == 'username' || '{{ k }}' == 'telephone')){
+                    $("#{{ k }}").addClass('is-invalid'); return false
+                }
+                _data['{{ k }}'] = v
+            {% endfor %}
+            post_data_way({'data': _data});
+        }
+        function post_edit_pwd() {
+            var _data = {'action': '_edit_user_pwd', 'data_uuid': '{{ user_data.uuid }}'};
+            {% for db_field in ['original_password', 'new_password', 'new_password2'] %}
+                var v = $.trim($("#{{ db_field }}").val());
+                if (!v){$("#{{ db_field }}").addClass('is-invalid'); return false}
+                _data['{{ db_field }}'] = v;
+            {% endfor %}
+            if (_data['new_password'] != _data['new_password2']) {return xtalert.alertError('两次密码不一致!')}
+            post_data_way({'data': _data})
+        }
+    </script>
+{% endblock %}
+
+{% block content_main %}
+    <div class="col-xl-3 col-12 mb-3">
+        <div class="box-shadow user_card">
+            <div class="user-portrait">
+                <div class="uimg">
+                    <img src="/static/common/images/def_user.png" alt="">
+                </div>
+                <h2>管理员</h2>
+                <span style="color: #6c757d; font-size: 18px">{{ current_admin_user.username or '' }}</span>
+                <ul class="info_box">
+                    <li>
+                        <i class="fa fa-mobile fa-lg"></i>&ensp;
+                        <span>登录账户:</span>
+                        <span style="font-size: 14px; color: #6c757d; display: block">{{ user_data.login_account }}</span>
+                    </li>
+                    <li>
+                        <i class="fa fa-at"></i>&ensp;
+                        <span>邮箱:</span>
+                        <span style="font-size: 14px; color: #6c757d; display: block">{{ user_data.email or '暂无' }}</span>
+                    </li>
+                    <li>
+                        <i class="fa fa-history"></i>&ensp;
+                        <span>创建日期:</span>
+                        <span style="font-size: 14px; color: #6c757d; display: block">{{ format_datetime(user_data._create_time) or '' }}</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-9 col-12">
+        <div class="card text-left">
+            <div class="card-header">
+                <ul class="nav nav-pills card-header-pills">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-toggle="pill" href="#user_data" role="tab" aria-controls="user_data" aria-selected="true">基本信息</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="pill" href="#user_pwd" role="tab" aria-controls="user_pwd" aria-selected="false">修改密码</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-body">
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="user_data" role="tabpanel" aria-labelledby="pills-data-tab">
+                        <form>
+                            <div class="row mb-3">
+                                <label for="username" class="col-lg-2 col-12 col-form-label"><b>用户名：</b></label>
+                                <div class="col-lg-9 col-12">
+                                    <input type="text" class="form-control" id="username" placeholder="用户名" value="{{ user_data.username or '' }}">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label for="telephone" class="col-lg-2 col-12 col-form-label"><b>登录账户:</b></label>
+                                <div class="col-lg-9 col-12">
+                                    <input type="text" class="form-control" id="login_account" placeholder="登录账户" value="{{ user_data.login_account or '' }}">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label for="email" class="col-lg-2 col-12 col-form-label"><b>邮箱:</b></label>
+                                <div class="col-lg-9 col-12">
+                                    <input type="email" class="form-control" id="email" placeholder="邮箱" value="{{ user_data.email or '' }}">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label for="intro" class="col-lg-2 col-12 col-form-label"><b>备注:</b></label>
+                                <div class="col-lg-9 col-12">
+                                    <textarea class="form-control" id="note" rows="3" placeholder="备注">{{ user_data.note or '' }}</textarea>
+                                </div>
+                            </div>
+                            <div class="justify-content-end row">
+                                <div class="col-lg-10 col-12">
+                                    <button type="button" class="btn btn-info" onclick="post_edit_data()">提交数据</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="tab-pane fade" id="user_pwd" role="tabpanel" aria-labelledby="pills-pwd-tab">
+                        <form >
+                            <div class="row mb-3">
+                                <label for="original_password" class="col-2 col-form-label text-right"><b>原密码：</b></label>
+                                <div class="col-9">
+                                    <input type="password" class="form-control" id="original_password" placeholder="原密码">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label for="new_password" class="col-2 col-form-label text-right"><b>新密码:</b></label>
+                                <div class="col-9">
+                                    <input type="text" class="form-control" id="new_password" placeholder="新密码">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label for="new_password2" class="col-2 col-form-label text-right"><b>重复密码:</b></label>
+                                <div class="col-9">
+                                    <input type="text" class="form-control" id="new_password2" placeholder="重复密码">
+                                </div>
+                            </div>
+                            <div class="justify-content-end row">
+                                <div class="col-10">
+                                    <button type="button" class="btn btn-info" onclick="post_edit_pwd()">提交数据</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

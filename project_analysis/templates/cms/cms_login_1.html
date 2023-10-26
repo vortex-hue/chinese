@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='common/bootstrap/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='common/bootstrap/font/bootstrap-icons.css') }}">
+    <script type="text/javascript" src="{{ url_for('static', filename='common/jquery.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='common/bootstrap/js/bootstrap.min.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='common/sweetalert2/sweetalert2.min.css') }}">
+    <script src="{{ url_for('static', filename='common/sweetalert2/sweetalert2.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='common/sweetalert2/promise.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='common/sweetalert2/xtalert.js') }}"></script>
+    <script src="{{ url_for('static', filename='common/xtajax.js') }}"></script>
+    <script src="{{ url_for('static', filename='common/js/common.js') }}"></script>
+    <style>
+        html, body{
+            color: #333333;
+            font-size: 100%;
+            font-family: "Microsoft YaHei",Helvetica,Arial,Lucida Grande,Tahoma,sans-serif;
+        }
+        .backgd{
+            position: absolute; top: 0; left: 0;right: 0; bottom: 0;
+            background: #edf1f4 url('/static/common/images/login1.jpg') repeat;
+        }
+        .login{
+            background: #FFFFFF;
+            padding: 20px 50px 50px;
+            margin: 10% auto 0;
+            width: 550px;
+            box-sizing: border-box;
+            position: relative;
+            overflow: hidden;
+            border-radius: 5px;
+            box-shadow: -2px 2px 4px 0 rgba(0, 0, 0, 0.04);
+        }
+    </style>
+    <script>
+        function load_imgcap() {
+            xtajax.get({
+                'url':'{{ url_for('common.img_cap') }}',
+                'success': function (data) {
+                    $('.img_cap_btn').attr('src', data);
+                }
+            })
+        }
+        function login() {
+            var _data = {'action': 'tele_login'};
+            var telephone = $.trim($("#telephone").val());
+            var password = $.trim($("#password").val());
+            if (!telephone){return xtalert.alertError('请输入手机号!')}
+            if (!password){return xtalert.alertError('请输入密码!')}
+            _data['telephone'] = telephone
+            _data['password'] = password
+            {% if cms_captcha %}
+            var graph_captcha = $.trim($("#graph_captcha").val());
+            if (!graph_captcha){return xtalert.alertError('请输入验证码!')}
+            _data['graph_captcha'] = graph_captcha
+            {% endif %} 
+            post_data_way({'data': _data});
+        }
+    </script>
+</head>
+<body>
+
+    <div class="backgd"></div>
+    <div class="login">
+        <h2 style="margin: 0 auto 30px; text-align: center;">
+            <img src="/static/common/images/cms_log.png" alt="" style="height: 100px;">
+        </h2>
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text" style="border-radius: 0;">
+                    <svg style="width: 16px; height: 16px; margin: 0 10px;" class="icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg"><path d="M1021.404 877.446c-4.502-21.628-25.69-35.504-47.314-31.008-21.628 4.502-35.51 25.686-31.006 47.312 2.594 12.458-0.496 25.226-8.472 35.038-4.62 5.682-14.922 15.212-31.998 15.212H550v-194c0-22.092-17.908-40-40-40s-40 17.908-40 40v194H121.386c-17.076 0-27.378-9.532-31.998-15.212-7.978-9.81-11.066-22.58-8.472-35.038 21.768-104.56 80.486-194.34 160.7-256.798l5.216 17.768a99.924 99.924 0 0 0 65.172 66.976 99.922 99.922 0 0 0 92.052-16.114l106.068-82.232 106.794 81.98a99.862 99.862 0 0 0 92.708 15.478 99.852 99.852 0 0 0 64.598-68.272l5.08-18.462a441.84 441.84 0 0 1 98.714 105.04c12.3 18.35 37.148 23.252 55.5 10.948 18.348-12.302 23.25-37.15 10.946-55.498-42.062-62.734-96.318-114.488-158.46-152.992a39.784 39.784 0 0 0-19.39-12.138c-0.684-0.188-1.37-0.304-2.054-0.456a519.2 519.2 0 0 0-89.72-39.24C741.07 440.082 784 360.96 784 272 784 122.018 661.982 0 512 0S240 122.018 240 272c0 89.018 42.984 168.184 109.286 217.836-60.742 19.996-117.742 51.092-167.626 92.124-91.464 75.234-155.058 180.172-179.064 295.486-7.524 36.132 1.49 73.244 24.726 101.816C50.444 1007.694 84.73 1024 121.386 1024h781.226c36.658 0 70.944-16.306 94.064-44.738 23.24-28.572 32.252-65.684 24.728-101.816zM708.492 589.878l-11.402 41.43c-2.458 8.934-9.15 12.388-12.92 13.654-3.772 1.264-11.194 2.546-18.542-3.094l-126.858-97.382a439.664 439.664 0 0 1 169.722 45.392zM320 272c0-105.87 86.13-192 192-192s192 86.13 192 192c0 102.674-81.01 186.778-182.47 191.762a521.144 521.144 0 0 0-9.53-0.096c-3.122 0-6.24 0.046-9.358 0.102C401.102 458.872 320 374.732 320 272z m160.88 272.794l-125.842 97.564c-7.27 5.632-14.656 4.436-18.41 3.222-3.756-1.214-10.444-4.57-13.034-13.394l-11.754-40.042c51.696-26.526 108.996-43.07 169.04-47.35z" fill="#8a8a8a"></path></svg>
+                </span>
+            </div>
+            <input style="border-radius: 0;" type="text" class="form-control" id="telephone" placeholder="账户" aria-label="telephone" aria-describedby="telephone">
+        </div>
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text" style="border-radius: 0;">
+                    <svg style="width: 18px; height: 18px; margin: 0 9px;" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg"><path d="M188 400c-16.569 0-30 13.431-30 30v440c0 16.569 13.431 30 30 30h648c16.569 0 30-13.431 30-30V430c0-16.569-13.431-30-30-30H188z m0-60h648c49.706 0 90 40.294 90 90v440c0 49.706-40.294 90-90 90H188c-49.706 0-90-40.294-90-90V430c0-49.706 40.294-90 90-90z" p-id="5127" fill="#707070"></path><path d="M799 351h-60c0-125.369-101.631-227-227-227S285 225.631 285 351h-60c0-158.506 128.494-287 287-287s287 128.494 287 287z" p-id="5128" fill="#707070"></path><path d="M512 605m-80 0a80 80 0 1 0 160 0 80 80 0 1 0-160 0Z" p-id="5129" fill="#707070"></path><path d="M482 576.5c0-16.569 13.431-30 30-30 16.569 0 30 13.431 30 30v218.83c0 16.568-13.431 30-30 30-16.569 0-30-13.432-30-30V576.5z" fill="#8a8a8a"></path></svg>
+                </span>
+            </div>
+            <input style="border-radius: 0;" type="password" class="form-control" id="password" placeholder="密码" aria-label="telephone" aria-describedby="telephone">
+        </div>
+        {% if cms_captcha %}
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text" style="border-radius: 0;">
+                    <svg style="width: 18px; height: 18px; margin: 0 9px;" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg"><path d="M874.2656 160.30208c-129.44896 0-214.09792-28.06784-312.064-103.80288l-39.6288-30.26944-39.51616 30.38208C385.19296 132.1216 300.544 160.30208 170.5472 160.30208H105.70752v369.19808c0 59.21792 23.66976 132.85888 66.70848 207.38048l4.18304-2.42176-4.18304 2.42176c0.22016 0.3328 1.32096 2.31424 2.9696 5.17632 4.18304 7.15264 11.008 19.26656 13.2096 22.89664l3.63008 5.8368c6.38464 9.91232 13.2096 19.15392 23.55712 31.9232l5.1712 6.38464 38.74304-47.88736-5.28384-6.38464a282.9056 282.9056 0 0 1-18.60096-25.09824l-2.64192-4.17792c-2.5344-4.4032-5.06368-8.8064-7.59296-13.10208a843.4688 843.4688 0 0 1-7.81312-13.64992c-35.88608-61.85984-56.46848-123.61728-56.46848-169.2928V215.8848c71.33184-0.88064 150.8096-10.12736 205.52192-28.72832 52.94592-18.05312 102.58944-45.24032 155.86816-85.5296 53.38624 40.28928 103.02976 67.58912 155.76064 85.5296 54.59456 18.60096 128.7424 27.73504 199.73632 28.6208v313.50272c0 72.86784-43.91936 169.84576-114.69824 252.9536-72.98048 85.8624-172.76416 152.51456-241.01376 152.51456-52.8384 0-121.856-27.19232-179.97824-78.48448l-6.16448-5.504-40.3968 41.66144 6.16448 5.504c72.09984 63.95392 148.16256 97.74592 220.15488 97.74592 47.00672 0 96.86528-15.51872 148.16256-46.22848 46.44864-27.84768 92.57472-67.584 133.41184-115.03104 39.84896-46.34112 73.52832-98.41152 97.09056-150.58432 24.76544-54.59968 37.86752-108.09344 37.86752-154.43456V160.30208h-64.51712z" p-id="6112" fill="#707070"></path><path d="M786.64704 360.52992l-44.19072-37.0944-254.56128 311.6288-184.82176-168.91392-41.82528 40.22784 235.01312 220.2624 290.38592-366.11072z" fill="#8a8a8a"></path></svg>
+                </span>
+            </div>
+            <input style="border-radius: 0;" type="text" class="form-control" id="graph_captcha" placeholder="验证码" aria-label="telephone" aria-describedby="telephone">
+            <div class="input-group-append" style="border-radius: 0;">
+                <img class="input-group-text img_cap_btn p-0" src="{{ img_cap }}" alt="" onclick="load_imgcap()">
+            </div>
+        </div>
+        {% endif %}
+        <button class="btn btn-primary btn-block" onclick="login()">登录</button>
+    </div>
+
+</body>
+</html>

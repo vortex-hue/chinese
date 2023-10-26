@@ -1,0 +1,193 @@
+{% extends 'fenXi/base.html' %}
+
+{% block head %}
+    <script>
+        // upobj:触发对象; toobj:目标对象; types:类型方法; posturl:目标url; thumb_img:修改目标img的对象;
+        function upload_file_func(upobj,toobj,action,posturl,thumb_img,data_uuid,progress,callbackfunc) {
+            if (typeof(upobj)=='undefined' || upobj=='undefined') {xtalert.alertErrorToast('upobj不能为空!');return false}
+            if (action=='' || typeof(action)=='undefined' || action=='undefined') {var action='upimg'}
+            if (typeof(toobj)=='undefined' || toobj=='undefined') {var toobj=''}
+            if (typeof(posturl)=='undefined' || posturl=='undefined') {var posturl=''}
+            if (typeof(thumb_img)=='undefined' || thumb_img=='undefined') {var thumb_img=''}
+            if (typeof(data_uuid)=='undefined' || data_uuid=='undefined') {var data_uuid=''}
+            if (typeof(progress)=='undefined' || progress=='undefined') {var progress=''}
+            var imgpath = upobj.get(0).files[0];
+            if(imgpath==''){
+                xtalert.alertErrorToast('请选择文件！')
+            }else{
+                Swal({
+                    title: false,
+                    text: '数据提交中...',
+                    showCloseButton: false,
+                    showCancelButton: false,
+                    showconfirmButton: false,
+                    allowOutsideClick: false,
+                    onBeforeOpen: () => {
+                        Swal.showLoading()
+                    }
+                });
+                // 控制进度条
+                if(progress=='progress'){$('#showbar').show(500);}
+                var formdata = new FormData();
+                formdata.append("upload",imgpath);
+                formdata.append("action",action);
+                formdata.append("data_uuid",data_uuid);
+                params = {
+                    'url':posturl,
+                    'data':formdata,
+                    'contentType':false,
+                    'processData': false,
+                    'success':function (data) {
+                        if(data.code==200){
+                            upobj.val('');
+                            if(toobj){toobj.val(data.message);}
+                            if(thumb_img){thumb_img.attr('src',data.message)}
+                            if(callbackfunc){
+                                callbackfunc()
+                            }else{
+                                if (data.message){
+                                    xtalert.alertSuccessToast(data.message);
+                                }else {
+                                    xtalert.alertSuccessToast('上传成功！');
+                                }
+                                reloadpage();
+                            }
+                        }else{
+                            xtalert.alertError(data.message)
+                        }
+                         if(progress=='progress'){
+                            hideprogressbar();
+                        }
+                    }
+                };
+                xtajax.post(params);
+            }
+        }
+
+        function add_form_data(action, data_uuid, title, width) {
+            if (!action || action == ''){ var action = '_add_form_html'}
+            if (!data_uuid || data_uuid == ''){ var data_uuid = '';}
+            let per = {'action': action};
+            if (data_uuid){
+                per['data_uuid'] = data_uuid
+            }
+            Swal({
+                title: false,
+                text: '数据请求中...',
+                showCloseButton: false,
+                showCancelButton: false,
+                showconfirmButton: false,
+                allowOutsideClick: false,
+                onBeforeOpen: () => {
+                    Swal.showLoading()
+                }
+            });
+            xtajax.post({
+                'data': per,
+                'success':function (data) {
+                    if(data.code==200){
+                        Swal({
+                            title: title ? title : '操作',
+                            width: width ? width : '',
+                            html: data.message,
+                            showCloseButton: true,
+                            showCancelButton: false,
+                            showConfirmButton: false,
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                        })
+                    }else{
+                        return xtalert.alertError(data.message);
+                    }
+                }
+            })
+        }
+
+        function post_data_edit(data_uuid) {
+            let end_time = $.trim($("#end_time").val())
+            let note = $.trim($("#note").val())
+            if (!end_time){
+                return xtalert.showValidationError('请选择域名到期日期！')
+            }
+            xtajax.post({
+                'data': {'action': 'edit_data', 'end_time': end_time, 'data_uuid': data_uuid, 'note': note},
+                'success': function (data){
+                    if (data.code == 200){
+                        xtalert.alertSuccessToast('数据修改成功！')
+                        reloadpage()
+                    }else {
+                        return xtalert.alertError(data.message)
+                    }
+                }
+            })
+        }
+
+    </script>
+{% endblock %}
+
+{% block content_main %}
+    <div class="col-12">
+        <div class="list-group-item pb-0">
+            <form class="form-inline">
+                <label for=""><strong>筛选：</strong></label>
+                <select class="form-control mr-sm-2 mb-2" name="statu" aria-label="">
+                    <option value="">域名状态</option>
+                    <option value="1" {% if search_res.statu == '1' %}selected{% endif %}>正常</option>
+                    <option value="2" {% if search_res.statu == '2' %}selected{% endif %}>即将过期</option>
+                    <option value="3" {% if search_res.statu == '3' %}selected{% endif %}>已过期</option>
+                </select>
+                <input type="text" class="form-control mb-2 mr-sm-2" name="domain" value="{{ search_res.domain }}" placeholder="域名" aria-label="">
+                <input type="text" class="form-control mb-2 mr-sm-2" name="account" value="{{ search_res.account }}" placeholder="账户" aria-label="">
+                <input type="text" class="form-control mb-2 mr-sm-2 pickerdate" name="end_time" value="{{ search_res.end_time }}" placeholder="到期时间" readonly>
+                <button class="btn btn-primary mb-2">筛选</button>
+                <span class="btn btn-default ml-1 mb-2" onclick="exitsearch()">重置</span>
+                <span class="btn btn-success ml-1 mb-2 file-button">
+                    <span>导入域名</span>
+                    <input type="file" id="upload1" onchange="upload_file_func($('#upload1'),'','importDomain')">
+                </span>
+                <span class="btn btn-danger ml-1 mb-2" onclick="post_update_statu('del_all', '666', '确定删除全部数据？')">删除全部</span>
+            </form>
+        </div>
+
+        <table class="table table-bordered table-hover text-center" style="background-color: #ffffff;">
+            <thead>
+                <tr>
+                    <th>域名 [{{ total }}]</th>
+                    <th>账户</th>
+                    <th>到期时间</th>
+                    <th>备注</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for data in all_datas %}
+                    <tr>
+                        <td>{{ data.domain or '' }}</td>
+                        <td>{{ data.account or '' }}</td>
+                        <td>{{ format_datetime(data.end_time, '%Y-%m-%d') }}</td>
+                        <td>{{ data.note or '' }}</td>
+                        <td width="230">
+                            {% if data.is_top %}
+                                <span class="btn btn-warning btn-xs" onclick="post_update_statu('update_top', '{{ data.uuid }}', '确定取消置顶该域名？')">取消置顶</span>
+                            {% else %}
+                                <span class="btn btn-primary btn-xs" onclick="post_update_statu('update_top', '{{ data.uuid }}', '确定置顶该域名？')">点击置顶</span>
+                            {% endif %}
+                            <span class="btn btn-primary btn-xs" onclick="add_form_data('edit_from_html', '{{ data.uuid }}', '')">编辑</span>
+                            <span class="btn btn-danger btn-xs" onclick="post_update_statu('del', '{{ data.uuid }}', '确定删除该域名？')">删除</span>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% if not all_datas %}
+        <div class="no_data">
+            <img src="/static/common/images/no_data.png" alt="暂无数据">
+            <p>暂无数据</p>
+        </div>
+        {% endif %}
+        {% if pagination and pagination.links %}
+        <div class="text-center">{{ pagination.links }}</div>
+        {% endif %}
+
+    </div>
+{% endblock %}

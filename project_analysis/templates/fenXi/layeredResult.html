@@ -1,0 +1,50 @@
+{% extends 'fenXi/base.html' %}
+
+{% block ol %}
+    <li class="breadcrumb-item active"><a href="{{ url_for('admin.bettingSy') }}">输赢分层</a></li>
+    <li class="breadcrumb-item active">{{ title }}</li>
+{% endblock %}
+
+{% block content_main %}
+    <div class="col-lg-12">
+
+        <div class="list-group-item pb-0">
+            <form class="form-inline">
+                <label for=""><strong>筛选：</strong></label>
+                <input type="text" class="form-control mb-2 mr-sm-2" name="account" value="{{ search_res.account }}" placeholder="账户" aria-label="">
+                <button class="btn btn-primary mb-2">筛选</button>
+                <span class="btn btn-default ml-1 mb-2" onclick="exitsearch()">重置</span>
+                <span class="btn btn-success ml-1 mb-2" onclick="post_update_statu('exportData', '666', '确定导出数据？')">导出数据</span>
+            </form>
+        </div>
+        <table class="table table-bordered table-hover text-center" style="background-color: #ffffff;">
+            <thead>
+                <tr>
+                    <th>账号 [{{ total or 0 }}]</th>
+                    <th>原来层级</th>
+                    <th>更换层级</th>
+                    <th>实际输赢（含退水）</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for data in all_datas %}
+                    <tr>
+                        <td>{{ data.account or '' }}</td>
+                        <td>{{ format_money(data.low_quota or 0) }}</td>
+                        <td>{{ format_money(data.new_quota or 0) }}</td>
+                        <td>{{ format_money(data.actual_winlose_money or 0) }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% if not all_datas %}
+        <div class="no_data">
+            <img src="/static/common/images/no_data.png" alt="暂无数据">
+            <p>暂无数据</p>
+        </div>
+        {% endif %}
+        {% if pagination and pagination.links %}
+        <div class="text-center">{{ pagination.links }}</div>
+        {% endif %}
+    </div>
+{% endblock %}

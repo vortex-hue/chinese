@@ -1,0 +1,161 @@
+[Mon Jul 31 00:28:47.135678 2023] [wsgi:error] [pid 2330:tid 140339885086464] [client 172.71.210.14:11958] Timeout when reading response headers from daemon process 'project_analysisTest': /www/project_analysisTest/project_analysis/project_analysis.wsgi, referer: https://fx.sodo41.com/site_admin/customer/CpForm
+[Mon Jul 31 00:30:10.389151 2023] [wsgi:error] [pid 2324:tid 140340114310912] [remote 172.71.210.52:22056] mod_wsgi (pid=2324): Exception occurred processing WSGI script '/www/project_analysisTest/project_analysis/project_analysis.wsgi'.
+[Mon Jul 31 00:30:10.392043 2023] [wsgi:error] [pid 2324:tid 140340114310912] [remote 172.71.210.52:22056] Traceback (most recent call last):
+[Mon Jul 31 00:30:10.392141 2023] [wsgi:error] [pid 2324:tid 140340114310912] [remote 172.71.210.52:22056]   File "/usr/local/lib/python3.8/dist-packages/flask/app.py", line 2548, in __call__
+[Mon Jul 31 00:30:10.392153 2023] [wsgi:error] [pid 2324:tid 140340114310912] [remote 172.71.210.52:22056]     return self.wsgi_app(environ, start_response)
+[Mon Jul 31 00:30:10.392164 2023] [wsgi:error] [pid 2324:tid 140340114310912] [remote 172.71.210.52:22056]   File "/usr/local/lib/python3.8/dist-packages/flask/app.py", line 2528, in wsgi_app
+[Mon Jul 31 00:30:10.392172 2023] [wsgi:error] [pid 2324:tid 140340114310912] [remote 172.71.210.52:22056]     response = self.handle_exception(e)
+[Mon Jul 31 00:30:10.392182 2023] [wsgi:error] [pid 2324:tid 140340114310912] [remote 172.71.210.52:22056]   File "/usr/local/lib/python3.8/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+[Mon Jul 31 00:30:10.392190 2023] [wsgi:error] [pid 2324:tid 140340114310912] [remote 172.71.210.52:22056]     return cors_after_request(app.make_response(f(*args, **kwargs)))
+[Mon Jul 31 00:30:10.392200 2023] [wsgi:error] [pid 2324:tid 140340114310912] [remote 172.71.210.52:22056]   File "/usr/local/lib/python3.8/dist-packages/flask/app.py", line 2525, in wsgi_app
+[Mon Jul 31 00:30:10.392207 2023] [wsgi:error] [pid 2324:tid 140340114310912] [remote 172.71.210.52:22056]     response = self.full_dispatch_request()
+[Mon Jul 31 00:30:10.392217 2023] [wsgi:error] [pid 2324:tid 140340114310912] [remote 172.71.210.52:22056]   File "/usr/local/lib/python3.8/dist-packages/flask/app.py", line 1822, in full_dispatch_request
+[Mon Jul 31 00:30:10.392224 2023] [wsgi:error] [pid 2324:tid 140340114310912] [remote 172.71.210.52:22056]     rv = self.handle_user_exception(e)
+[Mon Jul 31 00:30:10.392234 2023] [wsgi:error] [pid 2324:tid 140340114310912] [remote 172.71.210.52:22056]   File "/usr/local/lib/python3.8/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+[Mon Jul 31 00:30:10.392241 2023] [wsgi:error] [pid 2324:tid 140340114310912] [remote 172.71.210.52:22056]     return cors_after_request(app.make_response(f(*args, **kwargs)))
+[Mon Jul 31 00:30:10.392251 2023] [wsgi:error] [pid 2324:tid 140340114310912] [remote 172.71.210.52:22056]   File "/usr/local/lib/python3.8/dist-packages/flask/app.py", line 1820, in full_dispatch_request
+[Mon Jul 31 00:30:10.392258 2023] [wsgi:error] [pid 2324:tid 140340114310912] [remote 172.71.210.52:22056]     rv = self.dispatch_request()
+[Mon Jul 31 00:30:10.392268 2023] [wsgi:error] [pid 2324:tid 140340114310912] [remote 172.71.210.52:22056]   File "/usr/local/lib/python3.8/dist-packages/flask/app.py", line 1796, in dispatch_request
+[Mon Jul 31 00:30:10.392275 2023] [wsgi:error] [pid 2324:tid 140340114310912] [remote 172.71.210.52:22056]     return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+[Mon Jul 31 00:30:10.392285 2023] [wsgi:error] [pid 2324:tid 140340114310912] [remote 172.71.210.52:22056]   File "/usr/local/lib/python3.8/dist-packages/flask/views.py", line 107, in view
+[Mon Jul 31 00:30:10.392292 2023] [wsgi:error] [pid 2324:tid 140340114310912] [remote 172.71.210.52:22056]     return current_app.ensure_sync(self.dispatch_request)(**kwargs)
+[Mon Jul 31 00:30:10.392302 2023] [wsgi:error] [pid 2324:tid 140340114310912] [remote 172.71.210.52:22056]   File "/usr/local/lib/python3.8/dist-packages/flask/views.py", line 188, in dispatch_request
+[Mon Jul 31 00:30:10.392341 2023] [wsgi:error] [pid 2324:tid 140340114310912] [remote 172.71.210.52:22056]     return current_app.ensure_sync(meth)(**kwargs)
+[Mon Jul 31 00:30:10.392355 2023] [wsgi:error] [pid 2324:tid 140340114310912] [remote 172.71.210.52:22056]   File "/www/project_analysisTest/views/cms_views/cms_base.py", line 328, in post
+[Mon Jul 31 00:30:10.392362 2023] [wsgi:error] [pid 2324:tid 140340114310912] [remote 172.71.210.52:22056]     return self.view_post(*args, **kwargs)
+[Mon Jul 31 00:30:10.392372 2023] [wsgi:error] [pid 2324:tid 140340114310912] [remote 172.71.210.52:22056]   File "/www/project_analysisTest/views/cms_views/cms_base.py", line 355, in view_post
+[Mon Jul 31 00:30:10.392379 2023] [wsgi:error] [pid 2324:tid 140340114310912] [remote 172.71.210.52:22056]     res = self.post_other_way()
+[Mon Jul 31 00:30:10.392389 2023] [wsgi:error] [pid 2324:tid 140340114310912] [remote 172.71.210.52:22056]   File "/www/project_analysisTest/views/cms_views/data_form.py", line 2200, in post_other_way
+[Mon Jul 31 00:30:10.392395 2023] [wsgi:error] [pid 2324:tid 140340114310912] [remote 172.71.210.52:22056]     db_date = self.request_data.get('db_date')
+[Mon Jul 31 00:30:10.392407 2023] [wsgi:error] [pid 2324:tid 140340114310912] [remote 172.71.210.52:22056]   File "/www/project_analysisTest/views/cms_views/data_form.py", line 2077, in hy_dbfx_func
+[Mon Jul 31 00:30:10.392414 2023] [wsgi:error] [pid 2324:tid 140340114310912] [remote 172.71.210.52:22056]     name = '\xe6\x89\x8b\xe7\xbb\xad\xe8\xb4\xb9'
+[Mon Jul 31 00:30:10.392441 2023] [wsgi:error] [pid 2324:tid 140340114310912] [remote 172.71.210.52:22056] AttributeError: 'NoneType' object has no attribute 'get'
+[Mon Jul 31 00:30:12.397072 2023] [wsgi:error] [pid 2324:tid 140340173059840] [remote 172.71.210.52:22072] mod_wsgi (pid=2324): Exception occurred processing WSGI script '/www/project_analysisTest/project_analysis/project_analysis.wsgi'.
+[Mon Jul 31 00:30:12.397372 2023] [wsgi:error] [pid 2324:tid 140340173059840] [remote 172.71.210.52:22072] Traceback (most recent call last):
+[Mon Jul 31 00:30:12.397473 2023] [wsgi:error] [pid 2324:tid 140340173059840] [remote 172.71.210.52:22072]   File "/usr/local/lib/python3.8/dist-packages/flask/app.py", line 2548, in __call__
+[Mon Jul 31 00:30:12.397486 2023] [wsgi:error] [pid 2324:tid 140340173059840] [remote 172.71.210.52:22072]     return self.wsgi_app(environ, start_response)
+[Mon Jul 31 00:30:12.397498 2023] [wsgi:error] [pid 2324:tid 140340173059840] [remote 172.71.210.52:22072]   File "/usr/local/lib/python3.8/dist-packages/flask/app.py", line 2528, in wsgi_app
+[Mon Jul 31 00:30:12.397505 2023] [wsgi:error] [pid 2324:tid 140340173059840] [remote 172.71.210.52:22072]     response = self.handle_exception(e)
+[Mon Jul 31 00:30:12.397516 2023] [wsgi:error] [pid 2324:tid 140340173059840] [remote 172.71.210.52:22072]   File "/usr/local/lib/python3.8/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+[Mon Jul 31 00:30:12.397524 2023] [wsgi:error] [pid 2324:tid 140340173059840] [remote 172.71.210.52:22072]     return cors_after_request(app.make_response(f(*args, **kwargs)))
+[Mon Jul 31 00:30:12.397534 2023] [wsgi:error] [pid 2324:tid 140340173059840] [remote 172.71.210.52:22072]   File "/usr/local/lib/python3.8/dist-packages/flask/app.py", line 2525, in wsgi_app
+[Mon Jul 31 00:30:12.397541 2023] [wsgi:error] [pid 2324:tid 140340173059840] [remote 172.71.210.52:22072]     response = self.full_dispatch_request()
+[Mon Jul 31 00:30:12.397551 2023] [wsgi:error] [pid 2324:tid 140340173059840] [remote 172.71.210.52:22072]   File "/usr/local/lib/python3.8/dist-packages/flask/app.py", line 1822, in full_dispatch_request
+[Mon Jul 31 00:30:12.397558 2023] [wsgi:error] [pid 2324:tid 140340173059840] [remote 172.71.210.52:22072]     rv = self.handle_user_exception(e)
+[Mon Jul 31 00:30:12.397569 2023] [wsgi:error] [pid 2324:tid 140340173059840] [remote 172.71.210.52:22072]   File "/usr/local/lib/python3.8/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+[Mon Jul 31 00:30:12.397595 2023] [wsgi:error] [pid 2324:tid 140340173059840] [remote 172.71.210.52:22072]     return cors_after_request(app.make_response(f(*args, **kwargs)))
+[Mon Jul 31 00:30:12.397607 2023] [wsgi:error] [pid 2324:tid 140340173059840] [remote 172.71.210.52:22072]   File "/usr/local/lib/python3.8/dist-packages/flask/app.py", line 1820, in full_dispatch_request
+[Mon Jul 31 00:30:12.397614 2023] [wsgi:error] [pid 2324:tid 140340173059840] [remote 172.71.210.52:22072]     rv = self.dispatch_request()
+[Mon Jul 31 00:30:12.397624 2023] [wsgi:error] [pid 2324:tid 140340173059840] [remote 172.71.210.52:22072]   File "/usr/local/lib/python3.8/dist-packages/flask/app.py", line 1796, in dispatch_request
+[Mon Jul 31 00:30:12.397631 2023] [wsgi:error] [pid 2324:tid 140340173059840] [remote 172.71.210.52:22072]     return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+[Mon Jul 31 00:30:12.397642 2023] [wsgi:error] [pid 2324:tid 140340173059840] [remote 172.71.210.52:22072]   File "/usr/local/lib/python3.8/dist-packages/flask/views.py", line 107, in view
+[Mon Jul 31 00:30:12.397649 2023] [wsgi:error] [pid 2324:tid 140340173059840] [remote 172.71.210.52:22072]     return current_app.ensure_sync(self.dispatch_request)(**kwargs)
+[Mon Jul 31 00:30:12.397659 2023] [wsgi:error] [pid 2324:tid 140340173059840] [remote 172.71.210.52:22072]   File "/usr/local/lib/python3.8/dist-packages/flask/views.py", line 188, in dispatch_request
+[Mon Jul 31 00:30:12.397666 2023] [wsgi:error] [pid 2324:tid 140340173059840] [remote 172.71.210.52:22072]     return current_app.ensure_sync(meth)(**kwargs)
+[Mon Jul 31 00:30:12.397675 2023] [wsgi:error] [pid 2324:tid 140340173059840] [remote 172.71.210.52:22072]   File "/www/project_analysisTest/views/cms_views/cms_base.py", line 328, in post
+[Mon Jul 31 00:30:12.397682 2023] [wsgi:error] [pid 2324:tid 140340173059840] [remote 172.71.210.52:22072]     return self.view_post(*args, **kwargs)
+[Mon Jul 31 00:30:12.397691 2023] [wsgi:error] [pid 2324:tid 140340173059840] [remote 172.71.210.52:22072]   File "/www/project_analysisTest/views/cms_views/cms_base.py", line 355, in view_post
+[Mon Jul 31 00:30:12.397698 2023] [wsgi:error] [pid 2324:tid 140340173059840] [remote 172.71.210.52:22072]     res = self.post_other_way()
+[Mon Jul 31 00:30:12.397708 2023] [wsgi:error] [pid 2324:tid 140340173059840] [remote 172.71.210.52:22072]   File "/www/project_analysisTest/views/cms_views/data_form.py", line 2200, in post_other_way
+[Mon Jul 31 00:30:12.397715 2023] [wsgi:error] [pid 2324:tid 140340173059840] [remote 172.71.210.52:22072]     db_date = self.request_data.get('db_date')
+[Mon Jul 31 00:30:12.397726 2023] [wsgi:error] [pid 2324:tid 140340173059840] [remote 172.71.210.52:22072]   File "/www/project_analysisTest/views/cms_views/data_form.py", line 2077, in hy_dbfx_func
+[Mon Jul 31 00:30:12.397733 2023] [wsgi:error] [pid 2324:tid 140340173059840] [remote 172.71.210.52:22072]     name = '\xe6\x89\x8b\xe7\xbb\xad\xe8\xb4\xb9'
+[Mon Jul 31 00:30:12.397760 2023] [wsgi:error] [pid 2324:tid 140340173059840] [remote 172.71.210.52:22072] AttributeError: 'NoneType' object has no attribute 'get'
+[Mon Jul 31 00:30:17.218220 2023] [wsgi:error] [pid 2324:tid 140340114310912] [remote 172.71.210.52:22074] mod_wsgi (pid=2324): Exception occurred processing WSGI script '/www/project_analysisTest/project_analysis/project_analysis.wsgi'.
+[Mon Jul 31 00:30:17.218518 2023] [wsgi:error] [pid 2324:tid 140340114310912] [remote 172.71.210.52:22074] Traceback (most recent call last):
+[Mon Jul 31 00:30:17.218616 2023] [wsgi:error] [pid 2324:tid 140340114310912] [remote 172.71.210.52:22074]   File "/usr/local/lib/python3.8/dist-packages/flask/app.py", line 2548, in __call__
+[Mon Jul 31 00:30:17.218629 2023] [wsgi:error] [pid 2324:tid 140340114310912] [remote 172.71.210.52:22074]     return self.wsgi_app(environ, start_response)
+[Mon Jul 31 00:30:17.218640 2023] [wsgi:error] [pid 2324:tid 140340114310912] [remote 172.71.210.52:22074]   File "/usr/local/lib/python3.8/dist-packages/flask/app.py", line 2528, in wsgi_app
+[Mon Jul 31 00:30:17.218666 2023] [wsgi:error] [pid 2324:tid 140340114310912] [remote 172.71.210.52:22074]     response = self.handle_exception(e)
+[Mon Jul 31 00:30:17.218679 2023] [wsgi:error] [pid 2324:tid 140340114310912] [remote 172.71.210.52:22074]   File "/usr/local/lib/python3.8/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+[Mon Jul 31 00:30:17.218687 2023] [wsgi:error] [pid 2324:tid 140340114310912] [remote 172.71.210.52:22074]     return cors_after_request(app.make_response(f(*args, **kwargs)))
+[Mon Jul 31 00:30:17.218697 2023] [wsgi:error] [pid 2324:tid 140340114310912] [remote 172.71.210.52:22074]   File "/usr/local/lib/python3.8/dist-packages/flask/app.py", line 2525, in wsgi_app
+[Mon Jul 31 00:30:17.218703 2023] [wsgi:error] [pid 2324:tid 140340114310912] [remote 172.71.210.52:22074]     response = self.full_dispatch_request()
+[Mon Jul 31 00:30:17.218713 2023] [wsgi:error] [pid 2324:tid 140340114310912] [remote 172.71.210.52:22074]   File "/usr/local/lib/python3.8/dist-packages/flask/app.py", line 1822, in full_dispatch_request
+[Mon Jul 31 00:30:17.218720 2023] [wsgi:error] [pid 2324:tid 140340114310912] [remote 172.71.210.52:22074]     rv = self.handle_user_exception(e)
+[Mon Jul 31 00:30:17.218730 2023] [wsgi:error] [pid 2324:tid 140340114310912] [remote 172.71.210.52:22074]   File "/usr/local/lib/python3.8/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+[Mon Jul 31 00:30:17.218737 2023] [wsgi:error] [pid 2324:tid 140340114310912] [remote 172.71.210.52:22074]     return cors_after_request(app.make_response(f(*args, **kwargs)))
+[Mon Jul 31 00:30:17.218747 2023] [wsgi:error] [pid 2324:tid 140340114310912] [remote 172.71.210.52:22074]   File "/usr/local/lib/python3.8/dist-packages/flask/app.py", line 1820, in full_dispatch_request
+[Mon Jul 31 00:30:17.218754 2023] [wsgi:error] [pid 2324:tid 140340114310912] [remote 172.71.210.52:22074]     rv = self.dispatch_request()
+[Mon Jul 31 00:30:17.218764 2023] [wsgi:error] [pid 2324:tid 140340114310912] [remote 172.71.210.52:22074]   File "/usr/local/lib/python3.8/dist-packages/flask/app.py", line 1796, in dispatch_request
+[Mon Jul 31 00:30:17.218771 2023] [wsgi:error] [pid 2324:tid 140340114310912] [remote 172.71.210.52:22074]     return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+[Mon Jul 31 00:30:17.218781 2023] [wsgi:error] [pid 2324:tid 140340114310912] [remote 172.71.210.52:22074]   File "/usr/local/lib/python3.8/dist-packages/flask/views.py", line 107, in view
+[Mon Jul 31 00:30:17.218788 2023] [wsgi:error] [pid 2324:tid 140340114310912] [remote 172.71.210.52:22074]     return current_app.ensure_sync(self.dispatch_request)(**kwargs)
+[Mon Jul 31 00:30:17.218798 2023] [wsgi:error] [pid 2324:tid 140340114310912] [remote 172.71.210.52:22074]   File "/usr/local/lib/python3.8/dist-packages/flask/views.py", line 188, in dispatch_request
+[Mon Jul 31 00:30:17.218805 2023] [wsgi:error] [pid 2324:tid 140340114310912] [remote 172.71.210.52:22074]     return current_app.ensure_sync(meth)(**kwargs)
+[Mon Jul 31 00:30:17.218814 2023] [wsgi:error] [pid 2324:tid 140340114310912] [remote 172.71.210.52:22074]   File "/www/project_analysisTest/views/cms_views/cms_base.py", line 328, in post
+[Mon Jul 31 00:30:17.218821 2023] [wsgi:error] [pid 2324:tid 140340114310912] [remote 172.71.210.52:22074]     return self.view_post(*args, **kwargs)
+[Mon Jul 31 00:30:17.218831 2023] [wsgi:error] [pid 2324:tid 140340114310912] [remote 172.71.210.52:22074]   File "/www/project_analysisTest/views/cms_views/cms_base.py", line 355, in view_post
+[Mon Jul 31 00:30:17.218838 2023] [wsgi:error] [pid 2324:tid 140340114310912] [remote 172.71.210.52:22074]     res = self.post_other_way()
+[Mon Jul 31 00:30:17.218847 2023] [wsgi:error] [pid 2324:tid 140340114310912] [remote 172.71.210.52:22074]   File "/www/project_analysisTest/views/cms_views/data_form.py", line 2200, in post_other_way
+[Mon Jul 31 00:30:17.218854 2023] [wsgi:error] [pid 2324:tid 140340114310912] [remote 172.71.210.52:22074]     db_date = self.request_data.get('db_date')
+[Mon Jul 31 00:30:17.218871 2023] [wsgi:error] [pid 2324:tid 140340114310912] [remote 172.71.210.52:22074]   File "/www/project_analysisTest/views/cms_views/data_form.py", line 2077, in hy_dbfx_func
+[Mon Jul 31 00:30:17.218879 2023] [wsgi:error] [pid 2324:tid 140340114310912] [remote 172.71.210.52:22074]     name = '\xe6\x89\x8b\xe7\xbb\xad\xe8\xb4\xb9'
+[Mon Jul 31 00:30:17.218906 2023] [wsgi:error] [pid 2324:tid 140340114310912] [remote 172.71.210.52:22074] AttributeError: 'NoneType' object has no attribute 'get'
+[Mon Jul 31 03:26:49.229515 2023] [wsgi:error] [pid 3757:tid 140612587833088] [remote 172.71.218.212:30702] mod_wsgi (pid=3757): Exception occurred processing WSGI script '/www/project_analysisTest/project_analysis/project_analysis.wsgi'.
+[Mon Jul 31 03:26:49.236713 2023] [wsgi:error] [pid 3757:tid 140612587833088] [remote 172.71.218.212:30702] Traceback (most recent call last):
+[Mon Jul 31 03:26:49.236822 2023] [wsgi:error] [pid 3757:tid 140612587833088] [remote 172.71.218.212:30702]   File "/usr/local/lib/python3.8/dist-packages/flask/app.py", line 2548, in __call__
+[Mon Jul 31 03:26:49.236835 2023] [wsgi:error] [pid 3757:tid 140612587833088] [remote 172.71.218.212:30702]     return self.wsgi_app(environ, start_response)
+[Mon Jul 31 03:26:49.236848 2023] [wsgi:error] [pid 3757:tid 140612587833088] [remote 172.71.218.212:30702]   File "/usr/local/lib/python3.8/dist-packages/flask/app.py", line 2528, in wsgi_app
+[Mon Jul 31 03:26:49.236855 2023] [wsgi:error] [pid 3757:tid 140612587833088] [remote 172.71.218.212:30702]     response = self.handle_exception(e)
+[Mon Jul 31 03:26:49.236865 2023] [wsgi:error] [pid 3757:tid 140612587833088] [remote 172.71.218.212:30702]   File "/usr/local/lib/python3.8/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+[Mon Jul 31 03:26:49.236873 2023] [wsgi:error] [pid 3757:tid 140612587833088] [remote 172.71.218.212:30702]     return cors_after_request(app.make_response(f(*args, **kwargs)))
+[Mon Jul 31 03:26:49.236883 2023] [wsgi:error] [pid 3757:tid 140612587833088] [remote 172.71.218.212:30702]   File "/usr/local/lib/python3.8/dist-packages/flask/app.py", line 2525, in wsgi_app
+[Mon Jul 31 03:26:49.236890 2023] [wsgi:error] [pid 3757:tid 140612587833088] [remote 172.71.218.212:30702]     response = self.full_dispatch_request()
+[Mon Jul 31 03:26:49.236900 2023] [wsgi:error] [pid 3757:tid 140612587833088] [remote 172.71.218.212:30702]   File "/usr/local/lib/python3.8/dist-packages/flask/app.py", line 1822, in full_dispatch_request
+[Mon Jul 31 03:26:49.236907 2023] [wsgi:error] [pid 3757:tid 140612587833088] [remote 172.71.218.212:30702]     rv = self.handle_user_exception(e)
+[Mon Jul 31 03:26:49.236917 2023] [wsgi:error] [pid 3757:tid 140612587833088] [remote 172.71.218.212:30702]   File "/usr/local/lib/python3.8/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+[Mon Jul 31 03:26:49.236924 2023] [wsgi:error] [pid 3757:tid 140612587833088] [remote 172.71.218.212:30702]     return cors_after_request(app.make_response(f(*args, **kwargs)))
+[Mon Jul 31 03:26:49.236934 2023] [wsgi:error] [pid 3757:tid 140612587833088] [remote 172.71.218.212:30702]   File "/usr/local/lib/python3.8/dist-packages/flask/app.py", line 1820, in full_dispatch_request
+[Mon Jul 31 03:26:49.236941 2023] [wsgi:error] [pid 3757:tid 140612587833088] [remote 172.71.218.212:30702]     rv = self.dispatch_request()
+[Mon Jul 31 03:26:49.236951 2023] [wsgi:error] [pid 3757:tid 140612587833088] [remote 172.71.218.212:30702]   File "/usr/local/lib/python3.8/dist-packages/flask/app.py", line 1796, in dispatch_request
+[Mon Jul 31 03:26:49.236958 2023] [wsgi:error] [pid 3757:tid 140612587833088] [remote 172.71.218.212:30702]     return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+[Mon Jul 31 03:26:49.236969 2023] [wsgi:error] [pid 3757:tid 140612587833088] [remote 172.71.218.212:30702]   File "/usr/local/lib/python3.8/dist-packages/flask/views.py", line 107, in view
+[Mon Jul 31 03:26:49.236976 2023] [wsgi:error] [pid 3757:tid 140612587833088] [remote 172.71.218.212:30702]     return current_app.ensure_sync(self.dispatch_request)(**kwargs)
+[Mon Jul 31 03:26:49.236997 2023] [wsgi:error] [pid 3757:tid 140612587833088] [remote 172.71.218.212:30702]   File "/usr/local/lib/python3.8/dist-packages/flask/views.py", line 188, in dispatch_request
+[Mon Jul 31 03:26:49.237004 2023] [wsgi:error] [pid 3757:tid 140612587833088] [remote 172.71.218.212:30702]     return current_app.ensure_sync(meth)(**kwargs)
+[Mon Jul 31 03:26:49.237015 2023] [wsgi:error] [pid 3757:tid 140612587833088] [remote 172.71.218.212:30702]   File "/www/project_analysisTest/views/cms_views/cms_base.py", line 328, in post
+[Mon Jul 31 03:26:49.237022 2023] [wsgi:error] [pid 3757:tid 140612587833088] [remote 172.71.218.212:30702]     return self.view_post(*args, **kwargs)
+[Mon Jul 31 03:26:49.237032 2023] [wsgi:error] [pid 3757:tid 140612587833088] [remote 172.71.218.212:30702]   File "/www/project_analysisTest/views/cms_views/cms_base.py", line 355, in view_post
+[Mon Jul 31 03:26:49.237039 2023] [wsgi:error] [pid 3757:tid 140612587833088] [remote 172.71.218.212:30702]     res = self.post_other_way()
+[Mon Jul 31 03:26:49.237048 2023] [wsgi:error] [pid 3757:tid 140612587833088] [remote 172.71.218.212:30702]   File "/www/project_analysisTest/views/cms_views/data_form.py", line 2354, in post_other_way
+[Mon Jul 31 03:26:49.237055 2023] [wsgi:error] [pid 3757:tid 140612587833088] [remote 172.71.218.212:30702]     return self.pt_fx_func(start_date, end_date)
+[Mon Jul 31 03:26:49.237065 2023] [wsgi:error] [pid 3757:tid 140612587833088] [remote 172.71.218.212:30702]   File "/www/project_analysisTest/views/cms_views/data_form.py", line 2153, in pt_fx_func
+[Mon Jul 31 03:26:49.237072 2023] [wsgi:error] [pid 3757:tid 140612587833088] [remote 172.71.218.212:30702]     _data1 = self.pt_dbfx_sum_func(start_date, end_date)
+[Mon Jul 31 03:26:49.237081 2023] [wsgi:error] [pid 3757:tid 140612587833088] [remote 172.71.218.212:30702]   File "/www/project_analysisTest/views/cms_views/data_form.py", line 2147, in pt_dbfx_sum_func
+[Mon Jul 31 03:26:49.237088 2023] [wsgi:error] [pid 3757:tid 140612587833088] [remote 172.71.218.212:30702]     _v += _d.get(fe) or 0
+[Mon Jul 31 03:26:49.237113 2023] [wsgi:error] [pid 3757:tid 140612587833088] [remote 172.71.218.212:30702] TypeError: unsupported operand type(s) for +=: 'int' and 'str'
+[Mon Jul 31 03:30:22.786595 2023] [wsgi:error] [pid 3944:tid 140608057722624] [remote 172.71.210.246:56580] mod_wsgi (pid=3944): Exception occurred processing WSGI script '/www/project_analysisTest/project_analysis/project_analysis.wsgi'.
+[Mon Jul 31 03:30:22.794049 2023] [wsgi:error] [pid 3944:tid 140608057722624] [remote 172.71.210.246:56580] Traceback (most recent call last):
+[Mon Jul 31 03:30:22.794172 2023] [wsgi:error] [pid 3944:tid 140608057722624] [remote 172.71.210.246:56580]   File "/usr/local/lib/python3.8/dist-packages/flask/app.py", line 2548, in __call__
+[Mon Jul 31 03:30:22.794186 2023] [wsgi:error] [pid 3944:tid 140608057722624] [remote 172.71.210.246:56580]     return self.wsgi_app(environ, start_response)
+[Mon Jul 31 03:30:22.794199 2023] [wsgi:error] [pid 3944:tid 140608057722624] [remote 172.71.210.246:56580]   File "/usr/local/lib/python3.8/dist-packages/flask/app.py", line 2528, in wsgi_app
+[Mon Jul 31 03:30:22.794206 2023] [wsgi:error] [pid 3944:tid 140608057722624] [remote 172.71.210.246:56580]     response = self.handle_exception(e)
+[Mon Jul 31 03:30:22.794217 2023] [wsgi:error] [pid 3944:tid 140608057722624] [remote 172.71.210.246:56580]   File "/usr/local/lib/python3.8/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+[Mon Jul 31 03:30:22.794224 2023] [wsgi:error] [pid 3944:tid 140608057722624] [remote 172.71.210.246:56580]     return cors_after_request(app.make_response(f(*args, **kwargs)))
+[Mon Jul 31 03:30:22.794234 2023] [wsgi:error] [pid 3944:tid 140608057722624] [remote 172.71.210.246:56580]   File "/usr/local/lib/python3.8/dist-packages/flask/app.py", line 2525, in wsgi_app
+[Mon Jul 31 03:30:22.794242 2023] [wsgi:error] [pid 3944:tid 140608057722624] [remote 172.71.210.246:56580]     response = self.full_dispatch_request()
+[Mon Jul 31 03:30:22.794262 2023] [wsgi:error] [pid 3944:tid 140608057722624] [remote 172.71.210.246:56580]   File "/usr/local/lib/python3.8/dist-packages/flask/app.py", line 1822, in full_dispatch_request
+[Mon Jul 31 03:30:22.794270 2023] [wsgi:error] [pid 3944:tid 140608057722624] [remote 172.71.210.246:56580]     rv = self.handle_user_exception(e)
+[Mon Jul 31 03:30:22.794280 2023] [wsgi:error] [pid 3944:tid 140608057722624] [remote 172.71.210.246:56580]   File "/usr/local/lib/python3.8/dist-packages/flask_cors/extension.py", line 165, in wrapped_function
+[Mon Jul 31 03:30:22.794288 2023] [wsgi:error] [pid 3944:tid 140608057722624] [remote 172.71.210.246:56580]     return cors_after_request(app.make_response(f(*args, **kwargs)))
+[Mon Jul 31 03:30:22.794298 2023] [wsgi:error] [pid 3944:tid 140608057722624] [remote 172.71.210.246:56580]   File "/usr/local/lib/python3.8/dist-packages/flask/app.py", line 1820, in full_dispatch_request
+[Mon Jul 31 03:30:22.794305 2023] [wsgi:error] [pid 3944:tid 140608057722624] [remote 172.71.210.246:56580]     rv = self.dispatch_request()
+[Mon Jul 31 03:30:22.794315 2023] [wsgi:error] [pid 3944:tid 140608057722624] [remote 172.71.210.246:56580]   File "/usr/local/lib/python3.8/dist-packages/flask/app.py", line 1796, in dispatch_request
+[Mon Jul 31 03:30:22.794322 2023] [wsgi:error] [pid 3944:tid 140608057722624] [remote 172.71.210.246:56580]     return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+[Mon Jul 31 03:30:22.794333 2023] [wsgi:error] [pid 3944:tid 140608057722624] [remote 172.71.210.246:56580]   File "/usr/local/lib/python3.8/dist-packages/flask/views.py", line 107, in view
+[Mon Jul 31 03:30:22.794340 2023] [wsgi:error] [pid 3944:tid 140608057722624] [remote 172.71.210.246:56580]     return current_app.ensure_sync(self.dispatch_request)(**kwargs)
+[Mon Jul 31 03:30:22.794350 2023] [wsgi:error] [pid 3944:tid 140608057722624] [remote 172.71.210.246:56580]   File "/usr/local/lib/python3.8/dist-packages/flask/views.py", line 188, in dispatch_request
+[Mon Jul 31 03:30:22.794358 2023] [wsgi:error] [pid 3944:tid 140608057722624] [remote 172.71.210.246:56580]     return current_app.ensure_sync(meth)(**kwargs)
+[Mon Jul 31 03:30:22.794368 2023] [wsgi:error] [pid 3944:tid 140608057722624] [remote 172.71.210.246:56580]   File "/www/project_analysisTest/views/cms_views/cms_base.py", line 328, in post
+[Mon Jul 31 03:30:22.794375 2023] [wsgi:error] [pid 3944:tid 140608057722624] [remote 172.71.210.246:56580]     return self.view_post(*args, **kwargs)
+[Mon Jul 31 03:30:22.794384 2023] [wsgi:error] [pid 3944:tid 140608057722624] [remote 172.71.210.246:56580]   File "/www/project_analysisTest/views/cms_views/cms_base.py", line 355, in view_post
+[Mon Jul 31 03:30:22.794392 2023] [wsgi:error] [pid 3944:tid 140608057722624] [remote 172.71.210.246:56580]     res = self.post_other_way()
+[Mon Jul 31 03:30:22.794401 2023] [wsgi:error] [pid 3944:tid 140608057722624] [remote 172.71.210.246:56580]   File "/www/project_analysisTest/views/cms_views/data_form.py", line 2354, in post_other_way
+[Mon Jul 31 03:30:22.794409 2023] [wsgi:error] [pid 3944:tid 140608057722624] [remote 172.71.210.246:56580]     return self.pt_fx_func(start_date, end_date)
+[Mon Jul 31 03:30:22.794419 2023] [wsgi:error] [pid 3944:tid 140608057722624] [remote 172.71.210.246:56580]   File "/www/project_analysisTest/views/cms_views/data_form.py", line 2153, in pt_fx_func
+[Mon Jul 31 03:30:22.794426 2023] [wsgi:error] [pid 3944:tid 140608057722624] [remote 172.71.210.246:56580]     _data1 = self.pt_dbfx_sum_func(start_date, end_date)
+[Mon Jul 31 03:30:22.794436 2023] [wsgi:error] [pid 3944:tid 140608057722624] [remote 172.71.210.246:56580]   File "/www/project_analysisTest/views/cms_views/data_form.py", line 2146, in pt_dbfx_sum_func
+[Mon Jul 31 03:30:22.794443 2023] [wsgi:error] [pid 3944:tid 140608057722624] [remote 172.71.210.246:56580]     _v = float(_result_dict.get(fe)) or 0
+[Mon Jul 31 03:30:22.794471 2023] [wsgi:error] [pid 3944:tid 140608057722624] [remote 172.71.210.246:56580] TypeError: float() argument must be a string or a number, not 'NoneType'
+[Tue Aug 01 16:55:20.754376 2023] [wsgi:error] [pid 20931:tid 140335604872960] [remote 172.71.214.121:12546] ip: 45.204.3.49 \xe7\x99\xbb\xe5\xbd\x95\xe6\x88\x90\xe5\x8a\x9f\xef\xbc\x81

@@ -1,0 +1,270 @@
+{% extends 'cms/cms_base.html' %}
+
+{% block ol %}
+    <li class="breadcrumb-item active">{{ title }}</li>
+{% endblock %}
+
+{% block head %}
+    <style>
+        .table td{
+            vertical-align: middle;
+        }
+    </style>
+    <script>
+        // 列表全选处理
+        function checkOrCancelAll() {
+            //1.获取checkbo的元素对象
+            var chElt = document.getElementById("all_select");
+            //2.获取选中状态
+            var checkedElt = chElt.checked;
+            //3.若checked=true,将所有的复选框选中,checked=false,将所有的复选框取消
+            var allCheck = document.getElementsByName("alone_select");
+            //4.循环遍历取出每一个复选框中的元素
+            //var mySpan=document.getElementById("mySpan");
+            if (checkedElt) {
+                for (var i = 0; i < allCheck.length; i++) {
+                    allCheck[i].checked = true;
+                }
+            } else {
+                for (var i = 0; i < allCheck.length; i++) {
+                    allCheck[i].checked = false;
+                }
+            }
+        }
+        // 加载表单日期选择器
+        function reload_picker_time(obj) {
+            obj.daterangepicker({
+                opens:'left',
+                timePicker: true,
+                timePicker24Hour: true,
+                singleDatePicker:true,
+                showDropdowns:true,
+                minYear:1901,
+                maxYear:parseInt(moment().format('YYYY'),10),
+                locale: {
+                    firstDay: 1,
+                    applyLabel: '确定',
+                    cancelLabel: '取消',
+                    format:'YYYY-MM-DD HH:mm:ss',
+                    daysOfWeek: ['日', '一', '二', '三', '四', '五', '六'],
+                    monthNames: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
+                 }
+            }, function (start, end, label) {})
+        }
+        // post添加数据
+        function _add_form_data() {
+            var _data = {'action': '_add_form_data'}
+            {% for db_field in add_field_sort %}
+                _data['{{ db_field }}'] = $.trim($("#{{ db_field }}").val());
+            {% endfor %}
+            post_data_way({'data': _data});
+        }
+        function add_form_data(action, data_uuid, title, width) {
+            if (!action || action == ''){ var action = '_add_form_html'}
+            if (!data_uuid || data_uuid == ''){ var data_uuid = '';}
+            post_form_html({'action': action, 'data_uuid': data_uuid}, title, width, _add_form_data)
+        }
+        // post编辑数据
+        function _edit_form_data(data_uuid) {
+            var _data = {'action': '_edit_form_data', 'data_uuid': data_uuid}
+            {% for db_field in edit_field_sort %}
+                _data['{{ db_field }}'] = $.trim($("#{{ db_field }}").val());
+            {% endfor %}
+            post_data_way({'data': _data});
+        }
+        function edit_form_data(action, data_uuid, title, width) {
+            if (!action || action == ''){return xtalert.alertError('action不能为空!');}
+            if (!data_uuid || data_uuid == ''){ var data_uuid = '';}
+            post_form_html({'action': action, 'data_uuid': data_uuid}, title, width, _edit_form_data, data_uuid)
+        }
+        // 导出数据函数
+        function _out_data_func(action) {
+            var _data = {'action': action};
+            var field_ls = [];
+            $(".search_out_checkbox:checked").each(function (index, data) {
+                field_ls.push($(this).attr('data-type'));
+            })
+            _data['select_field_ls'] = field_ls;
+            var filenaem = $.trim($("#out_filename").val());
+            _data['filename'] = filenaem
+            var out_count = $.trim($("#out_count").val());
+            _data['out_count'] = out_count
+            if (field_ls.length == 0){xtalert.alertError('请选择导出字段名!'); return false}
+            if (!filenaem){xtalert.alertError('请输入文件名!'); return false}
+            post_data_way({'data': _data})
+        }
+        function out_data_execl() {
+            post_form_html({'action': '_out_execl_html'}, '导出Execl', '', _out_data_func, '_out_data_execl')
+        }
+        function out_data_csv() {
+            post_form_html({'action': '_out_csv_html'}, '导出CSV', '', _out_data_func, '_out_data_csv')
+        }
+
+        // 删除选中
+        function del_multi_select() {
+            var select_uuid = [];
+            $('.alone_select:checked').each(function(index, data) {
+            　　 var id = $(this).val();
+                select_uuid.push(id);
+            });
+            if (!select_uuid || select_uuid.length == 0){xtalert.alertError('请先选择数据!'); return false}
+            post_data_way_confirm('确认删除选择？', {'data': {'action': '_del_multi_select', 'select_uuids': select_uuid}}, post_data_way)
+        }
+
+        // 搜索后数据操作控制
+        $(function () {
+            var _page_url = window.location.href;
+            if (_page_url.split("?").length > 1){
+                var _search_btn_statu = true;
+            }else {
+                var _search_btn_statu = false;
+            }
+            $(".search_dispose_btn").each(function (index, data) {
+                if (_search_btn_statu){$(this).show(0)}else {$(this).hide(0)}
+            })
+        })
+        // 删除搜索数据
+        function del_search_tata() {
+            post_update_statu('_del_search_data', '666', '确认删除搜索数据？');
+        }
+    </script>
+{% endblock %}
+
+{% block content_main %}
+    <div class="col-md-12">
+        {% if field_search %}
+        <div class="list-group-item pb-0">
+            <form class="form-inline">
+                <label for=""><strong>搜索：</strong></label>
+                {% for db_field in field_search %}
+                    {% set search_res = context_res.get(db_field) or '' %}
+                    {% set field_cls = FIELDS.get(db_field) %}
+                    {% if field_cls.field_type == 'BooleanField' %}
+                        <select class="form-control custom-select mr-sm-2 mb-2" name="{{ db_field }}">
+                            <option value="">{{ field_cls.field_name }}</option>
+                            <option value="1" {% if search_res == '1' %}selected{% endif %}>{{ field_cls.true_text }}</option>
+                            <option value="0" {% if search_res == '0' %}selected{% endif %}>{{ field_cls.false_text }}</option>
+                        </select>
+                    {% elif field_cls.field_type == 'DateTimeField' %}
+                        <input type="text" class="form-control mb-2 mr-sm-2 pickerdate" name="{{ db_field }}" value="{{ search_res }}" placeholder="{{ field_cls.field_name }}" readonly>
+                    {% elif field_cls.field_type == 'DictField' %}
+                        <select class="form-control custom-select mr-sm-2 mb-2" name="{{ db_field }}">
+                            <option value="">{{ field_cls.field_name }}</option>
+                            {% set dict_cls=field_cls.dict_cls %}
+                            {% for name_v in dict_cls.name_arr %}
+                                <option value="{{ name_v }}" {% if search_res == name_v %} selected{% endif %}>{{ dict_cls.name_dict.get(name_v) }}</option>
+                            {% endfor %}
+                        </select>
+                    {% elif field_cls.field_type == 'RelationField' %}
+                        {% set relation_data_ls = field_cls.relation_datas() %}
+                        <select name="{{ db_field }}" class="form-control custom-select mr-sm-2 mb-2">
+                            <option value="">{{ field_cls.field_name }}</option>
+                            {% for relation_data_l in relation_data_ls %}
+                                <option value="{{ relation_data_l.get('uuid') }}" {% if search_res == relation_data_l.get('uuid') %} selected{% endif %}>{{ relation_data_l.get(field_cls.relation_show_field) }}</option>
+                            {% endfor %}
+                        </select>
+                    {% else %}
+                        <input type="text" class="form-control mb-2 mr-sm-2" name="{{ db_field }}" value="{{ search_res }}" placeholder="{{ field_cls.field_name }}">
+                    {% endif %}
+                {% endfor %}
+                <button class="btn btn-primary mb-2">搜索</button>
+                <span class="btn btn-default ml-1 mb-2" onclick="exitsearch()">重置</span>
+            </form>
+        </div>
+        {% endif %}
+        {% block operate_box %}{% endblock %}
+        {% block table_box %}
+        <table class="table table-bordered table-hover text-center" style="background-color: #ffffff;">
+            <thead>
+                <tr>
+                    {% if multi_select %}
+                        <th scope="col">
+                            <input type="checkbox" id="all_select" onclick="checkOrCancelAll()" style="vertical-align: -.2em">
+                        </th>
+                    {% endif %}
+                    {% for db_field in field_sort %}
+                        {% set field_cls = FIELDS.get(db_field) %}
+                        <th scope="col">
+                            {{ field_cls.field_name }}
+                            {% if field_cls.show_total %}
+                                [{{ total }}]
+                            {% endif %}
+                        </th>
+                    {% endfor %}
+                    {% block add_column_th %}{% endblock %}
+                    {% if operation %}<th>操作</th>{% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for data in all_datas %}
+                    <tr>
+                        {% if multi_select %}
+                            <td width="70"><input type="checkbox" name="alone_select" class="alone_select" value="{{ data.uuid }}" style="vertical-align: -.2em"></td>
+                        {% endif %}
+                        {% for db_field in field_sort %}
+                            {% set field_cls = FIELDS.get(db_field) %}
+                            {% set db_data = field_cls.transform(data.get(db_field)) %}
+                            <td class="{{ field_cls.text_align or '' }}">
+                                {% if field_cls.field_type == 'BooleanField' %}
+                                    {% for choice in field_cls.choices %}
+                                        {% if db_data == choice[0] %}
+                                            <button class="btn {{ choice[2] }} btn-xs">{{ choice[1] }}</button>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% elif field_cls.field_type == 'DictField' %}
+                                    {% for itme_d in field_cls.dict_cls.name_arr %}
+                                        {% if itme_d == db_data %}
+                                            {% if field_cls.btn_show %}
+                                                {% if field_cls.dict_cls.class_dict %}
+                                                    <button class="btn {{ field_cls.dict_cls.class_dict.get(itme_d) }} btn-xs">{{ field_cls.dict_cls.name_dict.get(itme_d) }}</button>
+                                                {% else %}
+                                                    <button class="btn btn-default btn-xs">{{ field_cls.dict_cls.name_dict.get(itme_d) }}</button>
+                                                {% endif %}
+                                            {% else %}
+                                                {{ field_cls.dict_cls.name_dict.get(itme_d) or '' }}
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endfor %}
+                                {% elif field_cls.field_type == 'ImagesField' %}
+                                    <img src="{{ db_data }}" alt="" width="{{ field_cls.width }}" height="{{ field_cls.height }}" onclick="xtalert.alertImg('', '{{ db_data }}')">
+                                {% elif field_cls.onclick == OnClick.SHOW_CONTENT %}
+                                    {% if db_data %}
+                                        <button class="btn btn-info btn-xs" onclick="xtalert.alertContent('{{ db_data }}')">查看</button>
+                                    {% endif %}
+                                {% elif field_cls.onclick == OnClick.JUMP_HREF %}
+                                    <a href="{{ field_cls.href % db_data }}" target="_blank" title="{{ db_data }}">{{ db_data }}</a>
+                                {% elif field_cls.btn_show and db_data %}
+                                    <button class="btn btn-info btn-xs" onclick="xtalert.alertContent('{{ db_data }}')">查看</button>
+                                {% elif field_cls.progress %}
+                                    {% if db_data != 100 %}
+                                    <div class="progress" style="height: 1.3rem;">
+                                        <div class="progress-bar progress-bar-striped bg-info" role="progressbar" style="width: {{ db_data }}%" aria-valuenow="{{ db_data }}" aria-valuemin="0" aria-valuemax="100">{{ db_data }}</div>
+                                    </div>
+                                    {% else %}
+                                    <div class="progress" style="height: 1.3rem;">
+                                        <div class="progress-bar progress-bar-striped bg-success" role="progressbar" style="width: 100%;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">已完成</div>
+                                    </div>
+                                    {% endif %}
+                                {% else %}
+                                    {{ db_data }}
+                                {% endif %}
+                            </td>
+                        {% endfor %}
+                        {% if add_column_td %}{{ add_column_td(data) }}{% endif %}
+                        {% if operation %}{{ operation(data) }}{% endif %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endblock %}
+        {% if not all_datas %}
+        <div class="no_data">
+            <img src="/static/common/images/no_data.png" alt="暂无数据">
+            <p>暂无数据</p>
+        </div>
+        {% endif %}
+        {% if pagination and pagination.links %}
+        <div class="text-center">{{ pagination.links }}</div>
+        {% endif %}
+    </div>
+{% endblock %}

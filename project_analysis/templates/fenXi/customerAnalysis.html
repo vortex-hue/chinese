@@ -1,0 +1,211 @@
+{% extends 'fenXi/base.html' %}
+
+{% block head %}
+    <style>
+        .panel{
+            position: relative;
+            overflow: hidden;
+            box-sizing: border-box;
+            box-shadow: 0 2px 4px rgba(41,48,66,.1);
+            padding: 20px;
+            background: #FFFFFF;
+            margin-bottom: 15px;
+        }
+        .panel h3{
+            font-size: 20px;
+            color: #1E9FFF;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .panel .panel-body{
+            position: relative;
+            overflow: hidden;
+            box-sizing: border-box;
+            padding-top: 10px;
+        }
+        .panel-body .list-group-item{
+            border: none;
+            color: #545b62;
+        }
+        .numberList{
+            position: relative;
+            box-sizing: border-box;
+            padding-left: 100px;
+            padding-bottom: 20px;
+            overflow: hidden;
+        }
+        .numberList span.number:not(:last-child){
+            width: 35px;
+            height: 35px;
+            position: relative;
+            box-sizing: border-box;
+            box-shadow:0 5px 8px 0 rgba(0,0,0,0.2),0 8px 10px 0 rgba(0,0,0,0.19);
+            border-radius: 50%;
+            margin-right: 15px;
+            float: left;
+            line-height: 36px;
+            text-align: center;
+            font-weight: bold;
+        }
+        #htmlBox{
+            display: none;
+        }
+    </style>
+    <script>
+        function fenxiData_func() {
+            let filedata1 = '';
+            {% if is_superdamin %}
+            filedata1 = $.trim($('#filedata1').val());
+            {% else %}
+            filedata1 = $.trim($('#filepath2').val());
+            {% endif %} 
+            let CustomerName = $.trim($('#CustomerName').val());
+            if (!filedata1){return xtalert.alertError('请上传分析文件！')}
+            if (!CustomerName){return xtalert.alertError('请输入会员账户！')}
+            Swal({
+                title: '数据分析中,请勿刷新页面...',
+                showCloseButton: false,
+                showCancelButton: false,
+                showconfirmButton: false,
+                allowOutsideClick: false,
+                onBeforeOpen: () => {
+                    Swal.showLoading()
+                }
+            });
+
+            xtajax.post({
+                'data': {'action': 'fenxiData', 'filepath1': filedata1, 'CustomerName': CustomerName},
+                'success': function (data) {
+                    if (data.code == 200){
+                        $("#htmlBox").empty();
+                        $("#htmlBox").append(data.data.html);
+                        $("#htmlBox").show();
+                        return xtalert.alertSuccessToast('数据分析成功！');
+                    }else {
+                        return xtalert.alertError(data.message);
+                    }
+                }
+            })
+
+        }
+        
+        function upload_cl_func(data) {
+            let html = '';
+            html += '<tr><td>' + data.data.filename + '</td>'
+                + '<td><span class="btn btn-danger btn-xs" onclick="del_import_file($(this), \'' + data.data.file_path + '\')">删除</span></td>'
+                + '</tr>'
+            $("#filelist").append(html);
+            return xtalert.alertSuccessToast('文件上传成功！');
+        }
+        
+        function del_import_file(obj, filepath) {
+            xtajax.post({
+                'data': {'filepath': filepath, 'action': 'delfile'},
+                'success': function (data) {
+                    if (data.code == 200){
+                        obj.parent().parent().remove();
+                        return xtalert.alertSuccessToast('文件删除成功！');
+                    }else{
+                        return xtalert.alertError(data.message);
+                    }
+                }
+            })
+        }
+        
+    </script>
+{% endblock %}
+
+{% block content_main %}
+    <div class="col-lg-12">
+        <div class="panel" id="onePanel">
+            <h3>
+                <svg viewBox="64 64 896 896" focusable="false" data-icon="transaction" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M668.6 320c0-4.4-3.6-8-8-8h-54.5c-3 0-5.8 1.7-7.1 4.4l-84.7 168.8H511l-84.7-168.8a8 8 0 00-7.1-4.4h-55.7c-1.3 0-2.6.3-3.8 1-3.9 2.1-5.3 7-3.2 10.8l103.9 191.6h-57c-4.4 0-8 3.6-8 8v27.1c0 4.4 3.6 8 8 8h76v39h-76c-4.4 0-8 3.6-8 8v27.1c0 4.4 3.6 8 8 8h76V704c0 4.4 3.6 8 8 8h49.9c4.4 0 8-3.6 8-8v-63.5h76.3c4.4 0 8-3.6 8-8v-27.1c0-4.4-3.6-8-8-8h-76.3v-39h76.3c4.4 0 8-3.6 8-8v-27.1c0-4.4-3.6-8-8-8H564l103.7-191.6c.5-1.1.9-2.4.9-3.7zM157.9 504.2a352.7 352.7 0 01103.5-242.4c32.5-32.5 70.3-58.1 112.4-75.9 43.6-18.4 89.9-27.8 137.6-27.8 47.8 0 94.1 9.3 137.6 27.8 42.1 17.8 79.9 43.4 112.4 75.9 10 10 19.3 20.5 27.9 31.4l-50 39.1a8 8 0 003 14.1l156.8 38.3c5 1.2 9.9-2.6 9.9-7.7l.8-161.5c0-6.7-7.7-10.5-12.9-6.3l-47.8 37.4C770.7 146.3 648.6 82 511.5 82 277 82 86.3 270.1 82 503.8a8 8 0 008 8.2h60c4.3 0 7.8-3.5 7.9-7.8zM934 512h-60c-4.3 0-7.9 3.5-8 7.8a352.7 352.7 0 01-103.5 242.4 352.57 352.57 0 01-112.4 75.9c-43.6 18.4-89.9 27.8-137.6 27.8s-94.1-9.3-137.6-27.8a352.57 352.57 0 01-112.4-75.9c-10-10-19.3-20.5-27.9-31.4l49.9-39.1a8 8 0 00-3-14.1l-156.8-38.3c-5-1.2-9.9 2.6-9.9 7.7l-.8 161.7c0 6.7 7.7 10.5 12.9 6.3l47.8-37.4C253.3 877.7 375.4 942 512.5 942 747 942 937.7 753.9 942 520.2a8 8 0 00-8-8.2z"></path></svg>
+                客户注单数据分析
+            </h3>
+            <div class="panel-body">
+                <ul class="list-group">
+                    {% if is_superdamin %}
+                    <li class="list-group-item">
+                        <span style="width: 100px; text-align: right; display: inline-block; position: relative;"><span class="text-danger">*</span>分析文件：</span>
+                        <input type="text" class="form-control" id="filedata1" placeholder="分析文件" aria-label="" style="width: 300px; display: inline-block;">
+                        <div class="file-button" style="top: 5px; position: relative;">
+                            <svg viewBox="64 64 896 896" focusable="false" data-icon="cloud-upload" width="22" height="22" fill="currentColor" aria-hidden="true" style="cursor: pointer; margin-left: 5px;"><path d="M518.3 459a8 8 0 00-12.6 0l-112 141.7a7.98 7.98 0 006.3 12.9h73.9V856c0 4.4 3.6 8 8 8h60c4.4 0 8-3.6 8-8V613.7H624c6.7 0 10.4-7.7 6.3-12.9L518.3 459z"></path><path d="M811.4 366.7C765.6 245.9 648.9 160 512.2 160S258.8 245.8 213 366.6C127.3 389.1 64 467.2 64 560c0 110.5 89.5 200 199.9 200H304c4.4 0 8-3.6 8-8v-60c0-4.4-3.6-8-8-8h-40.1c-33.7 0-65.4-13.4-89-37.7-23.5-24.2-36-56.8-34.9-90.6.9-26.4 9.9-51.2 26.2-72.1 16.7-21.3 40.1-36.8 66.1-43.7l37.9-9.9 13.9-36.6c8.6-22.8 20.6-44.1 35.7-63.4a245.6 245.6 0 0152.4-49.9c41.1-28.9 89.5-44.2 140-44.2s98.9 15.3 140 44.2c19.9 14 37.5 30.8 52.4 49.9 15.1 19.3 27.1 40.7 35.7 63.4l13.8 36.5 37.8 10C846.1 454.5 884 503.8 884 560c0 33.1-12.9 64.3-36.3 87.7a123.07 123.07 0 01-87.6 36.3H720c-4.4 0-8 3.6-8 8v60c0 4.4 3.6 8 8 8h40.1C870.5 760 960 670.5 960 560c0-92.7-63.1-170.7-148.6-193.3z"></path></svg>
+                            <input type="file" id="upload1" onchange="upload_file_func($('#upload1'),$('#filedata1'),'importData1', '', '', '', 'progress', upload_cl_func)">
+                        </div>
+                    </li>
+                    {% else %}
+                    <li class="list-group-item">
+                        <span style="width: 100px; text-align: right; display: inline-block; position: relative;"><span class="text-danger">*</span>分析文件：</span>
+                        <select class="custom-select" id="filepath2" aria-label="" style="width: 300px; display: inline-block;">
+                            <option value="">选择文件</option>
+                            {% for path_l in path_ls %}
+                                <option value="{{ path_l.path }}">{{ path_l.file_name or '' }}</option>
+                            {% endfor %}                         
+                        </select>
+                    </li>
+                    {% endif %}
+
+                    <li class="list-group-item">
+                        <span style="width: 100px; text-align: right; display: inline-block; position: relative;"><span class="text-danger">*</span>会员账户：</span>
+                        <input type="text" class="form-control" id="CustomerName" placeholder="会员账户" aria-label="" style="width: 300px; display: inline-block;">
+                    </li>
+                    <li class="list-group-item">
+                        <span style="width: 100%; background: #e3e3e3; height: 1px; margin: 5px 0 20px; display: block;"></span>
+                        <button id="fenxiBtn" class="btn btn-primary" style="margin-left: 100px;" onclick="fenxiData_func()">开始分析</button>
+                        {% if is_superdamin %}
+                            <button type="button" class="btn btn-primary ml-2" data-toggle="modal" data-target="#staticBackdrop">导入列表</button>
+                        {% endif %}
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+
+        <div id="htmlBox" style="background: #FFFFFF; position: relative;">
+
+        </div>
+
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">今日导入文件日志列表</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+
+                    <table class="table table-bordered table-hover text-center">
+                        <tbody id="filelist">
+                            <tr>
+                                <td>文件名</td>
+                                <td>操作</td>
+                            </tr>
+                            {% for pathl in path_ls %}
+                            <tr>
+                                <td>{{ pathl.file_name }}</td>
+                                <td><span class="btn btn-danger btn-xs" onclick="del_import_file($(this), '{{ pathl.path }}')">删除</span></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+{#                    <button type="button" class="btn btn-primary">Understood</button>#}
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+

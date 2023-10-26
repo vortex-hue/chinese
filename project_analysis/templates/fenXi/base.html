@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>{{ title }}</title>
+    <link rel="icon" href="/static/common/images/logo.png">
+    <link rel="stylesheet" href="{{ url_for('static', filename='common/bootstrap/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='common/bootstrap/font/bootstrap-icons.css') }}">
+    <script type="text/javascript" src="{{ url_for('static', filename='common/jquery.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='common/bootstrap/js/popper.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='common/bootstrap/js/bootstrap.min.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='common/sweetalert2/sweetalert2.min.css') }}">
+    <script type="text/javascript" src="{{ url_for('static', filename='common/sweetalert2/sweetalert2.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='common/sweetalert2/promise.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='common/sweetalert2/xtalert.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='common/daterangepicker/daterangepicker.css') }}">
+    <script type="text/javascript" src="{{ url_for('static', filename='common/daterangepicker/moment.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='common/daterangepicker/daterangepicker.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='common/daterangepicker/pickerDate.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='common/xtajax.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='common/js/upload.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='common/js/common.js') }}"></script>
+    <link rel="stylesheet" href="/static/iconfont/iconfont.css">
+    <style>
+        html, body{ font-family: "Arial","Microsoft YaHei","黑体","宋体",sans-serif,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji"; font-size: 100%; color: #333;
+            {#background: #f0f2f5;#}
+            background: #f6f6f6;
+        }
+        html, body{ font-size: 14px;}
+        img, a:link, a:visited, a:hover ,a:active{text-decoration: none; outline: none;}
+        .btn:focus, .btn:active:focus, .btn.active:focus, .btn.focus, .btn:active.focus, .btn.active.focus {outline: none; border-color: transparent;}
+        /* 禁止换行 */
+        .ban-newline{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+        /* 强制换行 */
+        .require-newline{word-break: break-all;word-wrap: break-word;white-space: pre-wrap;}
+        /* 禁止选中 */
+        .no-touch {-webkit-touch-callout: none;-webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;-o-user-select: none;user-select: none;}
+        /* 文件上传按钮美化 */
+        .file-button {position: relative;display: inline-block;overflow: hidden;}
+        .file-button input{position:absolute;right: 0;top: 0;bottom: 0;opacity: 0;-ms-filter: 'alpha(opacity=0)';cursor: pointer;}
+        ul, li, a{margin: 0; padding: 0; text-decoration: none}
+        ul, li, ul >li{list-style: none}
+        a:hover{ text-decoration: none }
+        .form-control {border-color: #CCD1D9; box-shadow: none; border-radius: 4px; color: #434A54;}
+        .to_cursor{cursor: pointer;}
+        .noradius{ border-radius: 0;}
+        .btn-default{
+            background-color: #fff;
+            border-color: #dbdbdb;
+            color: #303030;
+            white-space: nowrap;
+        }
+        .btn-default:hover{
+            background-color: #f0f0f0;
+            border-color: #e3e3e3;
+            color: #303030;
+        }
+        .background-white{background: #ffffff}
+        .table td{ padding: .68rem; }
+        .btn-xs{ padding: .08rem .4rem; font-size: .78rem; line-height: 1.5; border-radius: .2rem;}
+        .box-shadow{box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08)}
+        .card{ /*box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);*/ box-shadow: 0 0 2px 0 rgba(82, 63, 105, 0.05);}
+        .card-header{ padding: 13px 20px;}
+        .card-subtitle{display: block; width: 100%; padding: 10px 20px; border-top: 1px solid rgba(0,0,0,.125); border-bottom: 1px solid rgba(0,0,0,.125); background: #f0f1f2; font-size: 16px; font-weight: bolder;}
+        .red {color: red}
+        ::placeholder {color: #747f8a !important;font-size: 13px;opacity: .5 !important;}
+        .card-border-bottom{ border-bottom: 1px solid rgba(0,0,0,.125)}
+
+        /* 选项卡 */
+        .options_tab { border: none;}
+        .options_tab .card-header a{ color: rgba(0,0,0,.85);}
+        .options_tab .card-header{ border: none; padding: 0 20px; background: #FFFFFF; position: relative; overflow: hidden; box-sizing: border-box;}
+        .options_tab .card-header .nav-pills{ border-bottom: 1px solid rgba(0,0,0,.125); margin: 0;}
+        .options_tab .card-header .nav-pills .nav-item{ padding: 10px 0 7px; position: relative; overflow: hidden;}
+        .options_tab .card-header .nav-item .nav-link.active{ color: #007bff; background: none;}
+        .options_tab .card-header .nav-item .nav-link.active::after{ content: ""; position: absolute; width:calc(100% - 30px); height: 2px; background: #007bff; bottom: 0; left: 15px; -moz-transition: all .5s ease; -webkit-transition: all .5s ease; transition: all .5s ease;}
+
+        /* 头部 */
+        #header{ width: auto; height: 62px; box-shadow: 0 2px 4px rgba(41,48,66,.1); background-color: #ffffff; position: fixed; top: 0; left: 210px; right: 0; padding: 0 18px; box-sizing: border-box; z-index: 999; font-size: 15px;}
+        #header .dropdown-menu { box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08) !important; top: 60px; margin-top: 0; padding: .3rem 0; right: -10px; min-width: 100px; width: auto; font-size: 14px; border: none;}
+        #header .dropdown-menu a{ padding: 12px;}
+        #header .dropdown-menu svg{ display: inline-block; margin-right: 5px; vertical-align: -.1em;}
+        .navbar-brand i{ font-size: 1.5rem;}
+        .navbar-nav li.nav-item{ margin: 0 10px; }
+        .navbar-nav li.nav-item a.nav-link{ color: #333333;}
+        .navbar-nav li.nav-item a.nav-link svg{ display: inline-block; margin-right: 5px; vertical-align: -.1em;}
+        .dropdown-box a.nav-link{ line-height: 36px}
+        .dropdown-box a.nav-link .avatar{ margin-top: -15px; margin-bottom: -15px; width: 40px; height: 40px; margin-right: .25rem !important; border-radius: 50% !important;}
+
+        #swal2-title{ margin-bottom: 25px}
+        #sidebar{ width: 210px; position: fixed; top: 0; left: 0; bottom: 0;  background-color: #1D86F3; z-index: 999; font-size: 15px; overflow: hidden; box-sizing: border-box; background: #1d86f3 url('/static/keFu/images/xiaZai.png') no-repeat 100% 100%}
+        #sidebar .brand-logo{width: 100%; height: 62px; line-height: 65px; text-align: center; border-bottom: 1px solid rgba(255, 255, 255, 0.15); position: relative; overflow: hidden;}
+        #sidebar .brand-logo img{width: 35px; margin-right: 5px;}
+        #sidebar .brand-logo .logo-text {margin: 0; padding: 0; color: #fff; font-size: 16px; font-weight: 600; display: inline-block; position: relative; top: 3px; letter-spacing: 2px; text-align: center; line-height: 50px;}
+        #sidebar .nav-box{ position: relative; overflow: hidden auto; width: 100%; height: 100%; padding-top: 10px;}
+        #sidebar .list-group-item{ background-color: #1D86F3; color: #FFFFFF; border-color: #1D86F3}
+        #sidebar .list-group-item:hover{ color: #FFFFFF; background-color: #007bff;}
+        #sidebar a.active{z-index: 2;color: #fff;background-color: #007bff;border-color: #007bff;}
+
+        /* 内容 */
+        #content_box{width: auto;padding: 15px;margin-left: 210px;margin-top: 62px;margin-bottom: 70px; box-sizing: border-box; position: relative; overflow: hidden;}
+        #content_box .ol_box{box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08); padding: 12px; margin-bottom: 15px; background-color: #fff}
+        .no_data{width: 100%; height: 390px; padding-top: 100px; text-align: center; background: white; position: relative; top: -14px;}
+
+    </style>
+    <script>
+        $(function () {
+            // 日期选择器
+            $.picker_YY_HH_DD_HH_MM_SS('.pickerdate');
+
+            // 年月日选择器
+            $.single_YY_MM_DD('.selectDateYMD')
+
+            // 当前菜单定位
+            var a_tags = $("#sidebar").find("a");
+            a_tags.each(function(index, data){
+                if (window.location.pathname === $(this).attr('href')){
+                    $(this).addClass('active');
+                    $(this).siblings().removeClass("active");
+                    if ($(this).parent().prev().attr('datatype') === 'menu-group'){
+                        $(this).parent().slideDown(0);
+                        $(this).parent().prev().find(".icon-fangxiangxia").removeClass("icon-fangxiangxia").addClass("icon-fangxiangshang");
+                    }
+                }
+            });
+
+            $("#sidebar a").on('click', function () {
+                if ($(this).attr('datatype') === 'menu-group'){
+                    if ($(this).next().css('display') === 'none'){
+                        $(this).find(".icon-fangxiangxia").removeClass("icon-fangxiangxia").addClass("icon-fangxiangshang");
+                        $(this).next().slideDown();
+                    }else{
+                        $(this).find(".icon-fangxiangshang").removeClass("icon-fangxiangshang").addClass("icon-fangxiangxia");
+                        $(this).next().slideUp();
+                    }
+                }
+            })
+        })
+
+        // upobj:触发对象; toobj:目标对象; types:类型方法; posturl:目标url; thumb_img:修改目标img的对象;
+        function upload_file_func(upobj,toobj,action,posturl,thumb_img,data_uuid,progress,callbackfunc) {
+            if (typeof(upobj)=='undefined' || upobj=='undefined') {xtalert.alertErrorToast('upobj不能为空!');return false}
+            if (action=='' || typeof(action)=='undefined' || action=='undefined') {var action='upimg'}
+            if (typeof(toobj)=='undefined' || toobj=='undefined') {var toobj=''}
+            if (typeof(posturl)=='undefined' || posturl=='undefined') {var posturl=''}
+            if (typeof(thumb_img)=='undefined' || thumb_img=='undefined') {var thumb_img=''}
+            if (typeof(data_uuid)=='undefined' || data_uuid=='undefined') {var data_uuid=''}
+            if (typeof(progress)=='undefined' || progress=='undefined') {var progress=''}
+            var imgpath = upobj.get(0).files[0];
+            if(imgpath==''){
+                xtalert.alertErrorToast('请选择文件！')
+            }else{
+                let html = '<div class="boxHtml" style="position: relative; overflow: hidden;">';
+                html += '<div id="showbar">' +
+                    '<div class="progress">' +
+                    '<div id="progressbar" class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em;width: 0%">' +
+                    '0%</div></div>'
+                    '</div>'
+                html += '</div>';
+                Swal({
+                    title: '数据提交中,请勿刷新页面',
+                    text: '数据提交中...',
+                    html: html,
+                    showCloseButton: false,
+                    showCancelButton: false,
+                    showconfirmButton: false,
+                    allowOutsideClick: false,
+                    onBeforeOpen: () => {
+                        Swal.showLoading()
+                    }
+                });
+                // 控制进度条
+                $('#showbar').show(500);
+                var formdata = new FormData();
+                formdata.append("upload",imgpath);
+                formdata.append("action",action);
+                formdata.append("data_uuid",data_uuid);
+                params = {
+                    'url':posturl,
+                    'data':formdata,
+                    'contentType':false,
+                    'processData': false,
+                    'success':function (data) {
+                        if(data.code==200){
+                            toobj.val(data.message)
+                            if (callbackfunc){
+                                return callbackfunc(data)
+                            }else {
+                                return xtalert.alertSuccessToast('文件上传成功！')
+                            }
+                        }else{
+                            xtalert.alertError(data.message)
+                        }
+                         if(progress=='progress'){
+                             console.log('666999')
+                            hideprogressbar();
+                        }
+                    }
+                };
+                if(progress === 'progress'){
+                    params['progress'] = showprogress;
+                }
+                xtajax.post(params);
+            }
+        }
+    </script>
+    {% block head %}{% endblock %}
+    {% block other_head %}{% endblock %}
+</head>
+<body>
+
+    <header id="header" class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#" >
+            <svg viewBox="64 64 896 896" focusable="false" fill="currentColor" aria-hidden="true" style="width: 1.1em; height: 1.1em; vertical-align: -3px;"><path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 000 13.8z"></path></svg>
+        </a>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link d-none d-sm-inline-block" href="#">
+                        <svg viewBox="64 64 896 896" focusable="false" data-icon="mail" width="1em" height="1em" fill="currentColor" aria-hidden="true"><path d="M928 160H96c-17.7 0-32 14.3-32 32v640c0 17.7 14.3 32 32 32h832c17.7 0 32-14.3 32-32V192c0-17.7-14.3-32-32-32zm-40 110.8V792H136V270.8l-27.6-21.5 39.3-50.5 42.8 33.3h643.1l42.8-33.3 39.3 50.5-27.7 21.5zM833.6 232L512 482 190.4 232l-42.8-33.3-39.3 50.5 27.6 21.5 341.6 265.6a55.99 55.99 0 0068.7 0L888 270.8l27.6-21.5-39.3-50.5-42.7 33.2z"></path></svg>
+                        <span>信息</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link d-none d-sm-inline-block" href="#">
+                        <svg viewBox="64 64 896 896" focusable="false" data-icon="bell" width="1em" height="1em" fill="currentColor" aria-hidden="true"><path d="M816 768h-24V428c0-141.1-104.3-257.7-240-277.1V112c0-22.1-17.9-40-40-40s-40 17.9-40 40v38.9c-135.7 19.4-240 136-240 277.1v340h-24c-17.7 0-32 14.3-32 32v32c0 4.4 3.6 8 8 8h216c0 61.8 50.2 112 112 112s112-50.2 112-112h216c4.4 0 8-3.6 8-8v-32c0-17.7-14.3-32-32-32zM512 888c-26.5 0-48-21.5-48-48h96c0 26.5-21.5 48-48 48zM304 768V428c0-55.6 21.6-107.8 60.9-147.1S456.4 220 512 220c55.6 0 107.8 21.6 147.1 60.9S720 372.4 720 428v340H304z"></path></svg>
+                        <span>提示</span>
+                    </a>
+                </li>
+            </ul>
+            <div class="my-2 my-lg-0">
+                <ul class="navbar-nav navbar-align dropdown-box">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link" href="#" data-toggle="dropdown">
+                            <img src="/static/common/images/user.png" class="avatar img-fluid rounded-circle mr-1" alt="Chris Wood">
+                            <span style="color: #8e8f95; font-size: 14px;">欢迎，{{ current_admin_user.username }}</span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="{{ url_for('admin.cms_login_out') }}">
+                                <span style="color: red;">
+                                    <svg viewBox="64 64 896 896" focusable="false" data-icon="logout" width="1em" height="1em" fill="currentColor" aria-hidden="true"><path d="M868 732h-70.3c-4.8 0-9.3 2.1-12.3 5.8-7 8.5-14.5 16.7-22.4 24.5a353.84 353.84 0 01-112.7 75.9A352.8 352.8 0 01512.4 866c-47.9 0-94.3-9.4-137.9-27.8a353.84 353.84 0 01-112.7-75.9 353.28 353.28 0 01-76-112.5C167.3 606.2 158 559.9 158 512s9.4-94.2 27.8-137.8c17.8-42.1 43.4-80 76-112.5s70.5-58.1 112.7-75.9c43.6-18.4 90-27.8 137.9-27.8 47.9 0 94.3 9.3 137.9 27.8 42.2 17.8 80.1 43.4 112.7 75.9 7.9 7.9 15.3 16.1 22.4 24.5 3 3.7 7.6 5.8 12.3 5.8H868c6.3 0 10.2-7 6.7-12.3C798 160.5 663.8 81.6 511.3 82 271.7 82.6 79.6 277.1 82 516.4 84.4 751.9 276.2 942 512.4 942c152.1 0 285.7-78.8 362.3-197.7 3.4-5.3-.4-12.3-6.7-12.3zm88.9-226.3L815 393.7c-5.3-4.2-13-.4-13 6.3v76H488c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h314v76c0 6.7 7.8 10.5 13 6.3l141.9-112a8 8 0 000-12.6z"></path></svg>
+                                    退出登录
+                                </span>
+                            </a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <div id="sidebar">
+        <div class="brand-logo">
+            <img src="/static/common/images/CMS_LOG_W.png" alt="login-icon">
+            <h2 class="logo-text">工具集系统</h2>
+        </div>
+        <div class="nav-box">
+            <div class="list-group">
+                {% if 'zhudanFenxi' in current_admin_user.permissions or current_admin_user.is_superadmin %}
+                <a class="list-group-item noradius" href="{{ url_for('admin.analysis') }}" datatype="second-menu">
+                    <svg viewBox="64 64 896 896" focusable="false" data-icon="hourglass" fill="currentColor" aria-hidden="true" style="width: 16px; height: 16px; margin-right: 7px; vertical-align: -.15em;"><path d="M742 318V184h86c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H196c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h86v134c0 81.5 42.4 153.2 106.4 194-64 40.8-106.4 112.5-106.4 194v134h-86c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h632c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8h-86V706c0-81.5-42.4-153.2-106.4-194 64-40.8 106.4-112.5 106.4-194zm-72 388v134H354V706c0-42.2 16.4-81.9 46.3-111.7C430.1 564.4 469.8 548 512 548s81.9 16.4 111.7 46.3C653.6 624.1 670 663.8 670 706zm0-388c0 42.2-16.4 81.9-46.3 111.7C593.9 459.6 554.2 476 512 476s-81.9-16.4-111.7-46.3A156.63 156.63 0 01354 318V184h316v134z"></path></svg>
+                    <span>注单分析</span>
+                </a>
+                {% endif %}
+                {% if 'zhudanData' in current_admin_user.permissions or current_admin_user.is_superadmin %}
+                <a class="list-group-item noradius" href="{{ url_for('admin.zhuDanManage') }}" datatype="second-menu">
+                    <svg viewBox="64 64 896 896" focusable="false" data-icon="database" fill="currentColor" aria-hidden="true" style="width: 16px; height: 16px; margin-right: 7px; vertical-align: -.15em;"><path d="M832 64H192c-17.7 0-32 14.3-32 32v832c0 17.7 14.3 32 32 32h640c17.7 0 32-14.3 32-32V96c0-17.7-14.3-32-32-32zm-600 72h560v208H232V136zm560 480H232V408h560v208zm0 272H232V680h560v208zM304 240a40 40 0 1080 0 40 40 0 10-80 0zm0 272a40 40 0 1080 0 40 40 0 10-80 0zm0 272a40 40 0 1080 0 40 40 0 10-80 0z"></path></svg>
+                    <span>注单数据</span>
+                </a>
+                {% endif %}
+                {% if 'customerAnalysis' in current_admin_user.permissions or current_admin_user.is_superadmin %}
+                <a class="list-group-item noradius" href="{{ url_for('admin.customerAnalysis') }}" datatype="second-menu">
+                    <svg viewBox="64 64 896 896" focusable="false" data-icon="search" fill="currentColor" aria-hidden="true" style="width: 16px; height: 16px; margin-right: 7px; vertical-align: -.15em;"><path d="M909.6 854.5L649.9 594.8C690.2 542.7 712 479 712 412c0-80.2-31.3-155.4-87.9-212.1-56.6-56.7-132-87.9-212.1-87.9s-155.5 31.3-212.1 87.9C143.2 256.5 112 331.8 112 412c0 80.1 31.3 155.5 87.9 212.1C256.5 680.8 331.8 712 412 712c67 0 130.6-21.8 182.7-62l259.7 259.6a8.2 8.2 0 0011.6 0l43.6-43.5a8.2 8.2 0 000-11.6zM570.4 570.4C528 612.7 471.8 636 412 636s-116-23.3-158.4-65.6C211.3 528 188 471.8 188 412s23.3-116.1 65.6-158.4C296 211.3 352.2 188 412 188s116.1 23.2 158.4 65.6S636 352.2 636 412s-23.3 116.1-65.6 158.4z"></path></svg>
+                    <span>客户分析</span>
+                </a>
+                {% endif %}
+                {% if 'exportLog' in current_admin_user.permissions or current_admin_user.is_superadmin %}
+                <a class="list-group-item noradius" href="{{ url_for('admin.importLog') }}" datatype="second-menu">
+                    <svg viewBox="64 64 896 896" focusable="false" data-icon="carry-out" fill="currentColor" aria-hidden="true" style="width: 16px; height: 16px; margin-right: 7px; vertical-align: -.15em;"><path d="M880 184H712v-64c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v64H384v-64c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v64H144c-17.7 0-32 14.3-32 32v664c0 17.7 14.3 32 32 32h736c17.7 0 32-14.3 32-32V216c0-17.7-14.3-32-32-32zm-40 656H184V256h128v48c0 4.4 3.6 8 8 8h56c4.4 0 8-3.6 8-8v-48h256v48c0 4.4 3.6 8 8 8h56c4.4 0 8-3.6 8-8v-48h128v584zM688 420h-55.2c-5.1 0-10 2.5-13 6.6L468.9 634.4l-64.7-89c-3-4.1-7.8-6.6-13-6.6H336c-6.5 0-10.3 7.4-6.5 12.7l126.4 174a16.1 16.1 0 0026 0l212.6-292.7c3.8-5.4 0-12.8-6.5-12.8z"></path></svg>
+                    <span>导入日志</span>
+                </a>
+                {% endif %}
+                {% if 'customerManager' in current_admin_user.permissions or current_admin_user.is_superadmin %}
+                <a class="list-group-item noradius" href="{{ url_for('admin.customer') }}" datatype="second-menu">
+                    <svg viewBox="64 64 896 896" focusable="false" data-icon="team" fill="currentColor" aria-hidden="true" style="width: 16px; height: 16px; margin-right: 7px; vertical-align: -.15em;"><path d="M824.2 699.9a301.55 301.55 0 00-86.4-60.4C783.1 602.8 812 546.8 812 484c0-110.8-92.4-201.7-203.2-200-109.1 1.7-197 90.6-197 200 0 62.8 29 118.8 74.2 155.5a300.95 300.95 0 00-86.4 60.4C345 754.6 314 826.8 312 903.8a8 8 0 008 8.2h56c4.3 0 7.9-3.4 8-7.7 1.9-58 25.4-112.3 66.7-153.5A226.62 226.62 0 01612 684c60.9 0 118.2 23.7 161.3 66.8C814.5 792 838 846.3 840 904.3c.1 4.3 3.7 7.7 8 7.7h56a8 8 0 008-8.2c-2-77-33-149.2-87.8-203.9zM612 612c-34.2 0-66.4-13.3-90.5-37.5a126.86 126.86 0 01-37.5-91.8c.3-32.8 13.4-64.5 36.3-88 24-24.6 56.1-38.3 90.4-38.7 33.9-.3 66.8 12.9 91 36.6 24.8 24.3 38.4 56.8 38.4 91.4 0 34.2-13.3 66.3-37.5 90.5A127.3 127.3 0 01612 612zM361.5 510.4c-.9-8.7-1.4-17.5-1.4-26.4 0-15.9 1.5-31.4 4.3-46.5.7-3.6-1.2-7.3-4.5-8.8-13.6-6.1-26.1-14.5-36.9-25.1a127.54 127.54 0 01-38.7-95.4c.9-32.1 13.8-62.6 36.3-85.6 24.7-25.3 57.9-39.1 93.2-38.7 31.9.3 62.7 12.6 86 34.4 7.9 7.4 14.7 15.6 20.4 24.4 2 3.1 5.9 4.4 9.3 3.2 17.6-6.1 36.2-10.4 55.3-12.4 5.6-.6 8.8-6.6 6.3-11.6-32.5-64.3-98.9-108.7-175.7-109.9-110.9-1.7-203.3 89.2-203.3 199.9 0 62.8 28.9 118.8 74.2 155.5-31.8 14.7-61.1 35-86.5 60.4-54.8 54.7-85.8 126.9-87.8 204a8 8 0 008 8.2h56.1c4.3 0 7.9-3.4 8-7.7 1.9-58 25.4-112.3 66.7-153.5 29.4-29.4 65.4-49.8 104.7-59.7 3.9-1 6.5-4.7 6-8.7z"></path></svg>
+                    <span>客户管理</span>
+                </a>
+                {% endif %}
+                {% if 'domainAnalysis' in current_admin_user.permissions or current_admin_user.is_superadmin %}
+                <a class="list-group-item noradius" href="{{ url_for('admin.domainAnalysis') }}" datatype="second-menu">
+                    <svg viewBox="64 64 896 896" focusable="false" data-icon="send" fill="currentColor" aria-hidden="true" style="width: 16px; height: 16px; margin-right: 7px; vertical-align: -.15em;"><defs><style></style></defs><path d="M931.4 498.9L94.9 79.5c-3.4-1.7-7.3-2.1-11-1.2a15.99 15.99 0 00-11.7 19.3l86.2 352.2c1.3 5.3 5.2 9.6 10.4 11.3l147.7 50.7-147.6 50.7c-5.2 1.8-9.1 6-10.3 11.3L72.2 926.5c-.9 3.7-.5 7.6 1.2 10.9 3.9 7.9 13.5 11.1 21.5 7.2l836.5-417c3.1-1.5 5.6-4.1 7.2-7.1 3.9-8 .7-17.6-7.2-21.6zM170.8 826.3l50.3-205.6 295.2-101.3c2.3-.8 4.2-2.6 5-5 1.4-4.2-.8-8.7-5-10.2L221.1 403 171 198.2l628 314.9-628.2 313.2z"></path></svg>
+                    <span>域名分析</span>
+                </a>
+                {% endif %}
+                {% if 'domainManager' in current_admin_user.permissions or current_admin_user.is_superadmin %}
+                <a class="list-group-item noradius" href="{{ url_for('admin.domainManager') }}" datatype="second-menu">
+                    <svg viewBox="64 64 896 896" focusable="false" data-icon="global" fill="currentColor" aria-hidden="true" style="width: 16px; height: 16px; margin-right: 7px; vertical-align: -.15em;"><path d="M854.4 800.9c.2-.3.5-.6.7-.9C920.6 722.1 960 621.7 960 512s-39.4-210.1-104.8-288c-.2-.3-.5-.5-.7-.8-1.1-1.3-2.1-2.5-3.2-3.7-.4-.5-.8-.9-1.2-1.4l-4.1-4.7-.1-.1c-1.5-1.7-3.1-3.4-4.6-5.1l-.1-.1c-3.2-3.4-6.4-6.8-9.7-10.1l-.1-.1-4.8-4.8-.3-.3c-1.5-1.5-3-2.9-4.5-4.3-.5-.5-1-1-1.6-1.5-1-1-2-1.9-3-2.8-.3-.3-.7-.6-1-1C736.4 109.2 629.5 64 512 64s-224.4 45.2-304.3 119.2c-.3.3-.7.6-1 1-1 .9-2 1.9-3 2.9-.5.5-1 1-1.6 1.5-1.5 1.4-3 2.9-4.5 4.3l-.3.3-4.8 4.8-.1.1c-3.3 3.3-6.5 6.7-9.7 10.1l-.1.1c-1.6 1.7-3.1 3.4-4.6 5.1l-.1.1c-1.4 1.5-2.8 3.1-4.1 4.7-.4.5-.8.9-1.2 1.4-1.1 1.2-2.1 2.5-3.2 3.7-.2.3-.5.5-.7.8C103.4 301.9 64 402.3 64 512s39.4 210.1 104.8 288c.2.3.5.6.7.9l3.1 3.7c.4.5.8.9 1.2 1.4l4.1 4.7c0 .1.1.1.1.2 1.5 1.7 3 3.4 4.6 5l.1.1c3.2 3.4 6.4 6.8 9.6 10.1l.1.1c1.6 1.6 3.1 3.2 4.7 4.7l.3.3c3.3 3.3 6.7 6.5 10.1 9.6 80.1 74 187 119.2 304.5 119.2s224.4-45.2 304.3-119.2a300 300 0 0010-9.6l.3-.3c1.6-1.6 3.2-3.1 4.7-4.7l.1-.1c3.3-3.3 6.5-6.7 9.6-10.1l.1-.1c1.5-1.7 3.1-3.3 4.6-5 0-.1.1-.1.1-.2 1.4-1.5 2.8-3.1 4.1-4.7.4-.5.8-.9 1.2-1.4a99 99 0 003.3-3.7zm4.1-142.6c-13.8 32.6-32 62.8-54.2 90.2a444.07 444.07 0 00-81.5-55.9c11.6-46.9 18.8-98.4 20.7-152.6H887c-3 40.9-12.6 80.6-28.5 118.3zM887 484H743.5c-1.9-54.2-9.1-105.7-20.7-152.6 29.3-15.6 56.6-34.4 81.5-55.9A373.86 373.86 0 01887 484zM658.3 165.5c39.7 16.8 75.8 40 107.6 69.2a394.72 394.72 0 01-59.4 41.8c-15.7-45-35.8-84.1-59.2-115.4 3.7 1.4 7.4 2.9 11 4.4zm-90.6 700.6c-9.2 7.2-18.4 12.7-27.7 16.4V697a389.1 389.1 0 01115.7 26.2c-8.3 24.6-17.9 47.3-29 67.8-17.4 32.4-37.8 58.3-59 75.1zm59-633.1c11 20.6 20.7 43.3 29 67.8A389.1 389.1 0 01540 327V141.6c9.2 3.7 18.5 9.1 27.7 16.4 21.2 16.7 41.6 42.6 59 75zM540 640.9V540h147.5c-1.6 44.2-7.1 87.1-16.3 127.8l-.3 1.2A445.02 445.02 0 00540 640.9zm0-156.9V383.1c45.8-2.8 89.8-12.5 130.9-28.1l.3 1.2c9.2 40.7 14.7 83.5 16.3 127.8H540zm-56 56v100.9c-45.8 2.8-89.8 12.5-130.9 28.1l-.3-1.2c-9.2-40.7-14.7-83.5-16.3-127.8H484zm-147.5-56c1.6-44.2 7.1-87.1 16.3-127.8l.3-1.2c41.1 15.6 85 25.3 130.9 28.1V484H336.5zM484 697v185.4c-9.2-3.7-18.5-9.1-27.7-16.4-21.2-16.7-41.7-42.7-59.1-75.1-11-20.6-20.7-43.3-29-67.8 37.2-14.6 75.9-23.3 115.8-26.1zm0-370a389.1 389.1 0 01-115.7-26.2c8.3-24.6 17.9-47.3 29-67.8 17.4-32.4 37.8-58.4 59.1-75.1 9.2-7.2 18.4-12.7 27.7-16.4V327zM365.7 165.5c3.7-1.5 7.3-3 11-4.4-23.4 31.3-43.5 70.4-59.2 115.4-21-12-40.9-26-59.4-41.8 31.8-29.2 67.9-52.4 107.6-69.2zM165.5 365.7c13.8-32.6 32-62.8 54.2-90.2 24.9 21.5 52.2 40.3 81.5 55.9-11.6 46.9-18.8 98.4-20.7 152.6H137c3-40.9 12.6-80.6 28.5-118.3zM137 540h143.5c1.9 54.2 9.1 105.7 20.7 152.6a444.07 444.07 0 00-81.5 55.9A373.86 373.86 0 01137 540zm228.7 318.5c-39.7-16.8-75.8-40-107.6-69.2 18.5-15.8 38.4-29.7 59.4-41.8 15.7 45 35.8 84.1 59.2 115.4-3.7-1.4-7.4-2.9-11-4.4zm292.6 0c-3.7 1.5-7.3 3-11 4.4 23.4-31.3 43.5-70.4 59.2-115.4 21 12 40.9 26 59.4 41.8a373.81 373.81 0 01-107.6 69.2z"></path></svg>
+                    <span>域名管理</span>
+                </a>
+                {% endif %}
+
+                {% if 'CardMerchantManage' in current_admin_user.permissions or current_admin_user.is_superadmin %}
+                <a class="list-group-item noradius" href="{{ url_for('admin.CardMerchant') }}" datatype="second-menu">
+                    <svg viewBox="64 64 896 896" focusable="false" data-icon="dingtalk" fill="currentColor" aria-hidden="true" style="width: 16px; height: 16px; margin-right: 7px; vertical-align: -.15em;"><path d="M573.7 252.5C422.5 197.4 201.3 96.7 201.3 96.7c-15.7-4.1-17.9 11.1-17.9 11.1-5 61.1 33.6 160.5 53.6 182.8 19.9 22.3 319.1 113.7 319.1 113.7S326 357.9 270.5 341.9c-55.6-16-37.9 17.8-37.9 17.8 11.4 61.7 64.9 131.8 107.2 138.4 42.2 6.6 220.1 4 220.1 4s-35.5 4.1-93.2 11.9c-42.7 5.8-97 12.5-111.1 17.8-33.1 12.5 24 62.6 24 62.6 84.7 76.8 129.7 50.5 129.7 50.5 33.3-10.7 61.4-18.5 85.2-24.2L565 743.1h84.6L603 928l205.3-271.9H700.8l22.3-38.7c.3.5.4.8.4.8S799.8 496.1 829 433.8l.6-1h-.1c5-10.8 8.6-19.7 10-25.8 17-71.3-114.5-99.4-265.8-154.5z"></path></svg>
+                    <span>卡商管理</span>
+                </a>
+                {% endif %}
+
+                {% if 'fromdataAnalysis' in current_admin_user.permissions or current_admin_user.is_superadmin %}
+                <a class="list-group-item noradius" href="{{ url_for('admin.dataForm_analysis') }}" datatype="second-menu">
+                    <svg viewBox="64 64 896 896" focusable="false" data-icon="area-chart" style="width: 16px; height: 16px; margin-right: 7px; vertical-align: -.15em;" fill="currentColor" aria-hidden="true"><path d="M888 792H200V168c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v688c0 4.4 3.6 8 8 8h752c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm-616-64h536c4.4 0 8-3.6 8-8V284c0-7.2-8.7-10.7-13.7-5.7L592 488.6l-125.4-124a8.03 8.03 0 00-11.3 0l-189 189.6a7.87 7.87 0 00-2.3 5.6V720c0 4.4 3.6 8 8 8z"></path></svg>
+                    <span>报表分析</span>
+                </a>
+                {% endif %}
+
+                <a class="list-group-item noradius" href="{{ url_for('admin.recharge_log') }}" datatype="second-menu">
+                    <svg viewBox="64 64 896 896" focusable="false" data-icon="euro-circle" style="width: 16px; height: 16px; margin-right: 7px; vertical-align: -.15em;" fill="currentColor" aria-hidden="true"><path d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm0 820c-205.4 0-372-166.6-372-372s166.6-372 372-372 372 166.6 372 372-166.6 372-372 372zm117.7-588.6c-15.9-3.5-34.4-5.4-55.3-5.4-106.7 0-178.9 55.7-198.6 149.9H344c-4.4 0-8 3.6-8 8v27.2c0 4.4 3.6 8 8 8h26.4c-.3 4.1-.3 8.4-.3 12.8v36.9H344c-4.4 0-8 3.6-8 8V568c0 4.4 3.6 8 8 8h30.2c17.2 99.2 90.4 158 200.2 158 20.9 0 39.4-1.7 55.3-5.1 3.7-.8 6.4-4 6.4-7.8v-42.8c0-5-4.6-8.8-9.5-7.8-14.7 2.8-31.9 4.1-51.8 4.1-68.5 0-114.5-36.6-129.8-98.6h130.6c4.4 0 8-3.6 8-8v-27.2c0-4.4-3.6-8-8-8H439.2v-36c0-4.7 0-9.4.3-13.8h135.9c4.4 0 8-3.6 8-8v-27.2c0-4.4-3.6-8-8-8H447.1c17.2-56.9 62.3-90.4 127.6-90.4 19.9 0 37.1 1.5 51.7 4.4a8 8 0 009.6-7.8v-42.8c0-3.8-2.6-7-6.3-7.8z"></path></svg>
+                    <span>首充报表</span>
+                </a>
+
+                <a class="list-group-item noradius" href="{{ url_for('admin.platformForm') }}" datatype="second-menu">
+                    <svg viewBox="64 64 896 896" focusable="false" data-icon="console-sql" style="width: 16px; height: 16px; margin-right: 7px; vertical-align: -.15em;" fill="currentColor" aria-hidden="true"><defs><style></style></defs><path d="M301.3 496.7c-23.8 0-40.2-10.5-41.6-26.9H205c.9 43.4 36.9 70.3 93.9 70.3 59.1 0 95-28.4 95-75.5 0-35.8-20-55.9-64.5-64.5l-29.1-5.6c-23.8-4.7-33.8-11.9-33.8-24.2 0-15 13.3-24.5 33.4-24.5 20.1 0 35.3 11.1 36.6 27h53c-.9-41.7-37.5-70.3-90.3-70.3-54.4 0-89.7 28.9-89.7 73 0 35.5 21.2 58 62.5 65.8l29.7 5.9c25.8 5.2 35.6 11.9 35.6 24.4.1 14.7-14.5 25.1-36 25.1z"></path><path d="M928 140H96c-17.7 0-32 14.3-32 32v496c0 17.7 14.3 32 32 32h380v112H304c-8.8 0-16 7.2-16 16v48c0 4.4 3.6 8 8 8h432c4.4 0 8-3.6 8-8v-48c0-8.8-7.2-16-16-16H548V700h380c17.7 0 32-14.3 32-32V172c0-17.7-14.3-32-32-32zm-40 488H136V212h752v416z"></path><path d="M828.5 486.7h-95.8V308.5h-57.4V534h153.2zm-298.6 53.4c14.1 0 27.2-2 39.1-5.8l13.3 20.3h53.3L607.9 511c21.1-20 33-51.1 33-89.8 0-73.3-43.3-118.8-110.9-118.8s-111.2 45.3-111.2 118.8c-.1 73.7 43 118.9 111.1 118.9zm0-190c31.6 0 52.7 27.7 52.7 71.1 0 16.7-3.6 30.6-10 40.5l-5.2-6.9h-48.8L542 491c-3.9.9-8 1.4-12.2 1.4-31.7 0-52.8-27.5-52.8-71.2.1-43.6 21.2-71.1 52.9-71.1z"></path></svg>
+                    <span>平台报表</span>
+                </a>
+
+                <a class="list-group-item noradius" href="{{ url_for('admin.agencyConfig') }}" datatype="second-menu">
+                    <svg viewBox="64 64 896 896" focusable="false" data-icon="safety-certificate" style="width: 16px; height: 16px; margin-right: 7px; vertical-align: -.15em;" fill="currentColor" aria-hidden="true"><path d="M866.9 169.9L527.1 54.1C523 52.7 517.5 52 512 52s-11 .7-15.1 2.1L157.1 169.9c-8.3 2.8-15.1 12.4-15.1 21.2v482.4c0 8.8 5.7 20.4 12.6 25.9L499.3 968c3.5 2.7 8 4.1 12.6 4.1s9.2-1.4 12.6-4.1l344.7-268.6c6.9-5.4 12.6-17 12.6-25.9V191.1c.2-8.8-6.6-18.3-14.9-21.2zM810 654.3L512 886.5 214 654.3V226.7l298-101.6 298 101.6v427.6zm-405.8-201c-3-4.1-7.8-6.6-13-6.6H336c-6.5 0-10.3 7.4-6.5 12.7l126.4 174a16.1 16.1 0 0026 0l212.6-292.7c3.8-5.3 0-12.7-6.5-12.7h-55.2c-5.1 0-10 2.5-13 6.6L468.9 542.4l-64.7-89.1z"></path></svg>
+                    <span>总代理配置</span>
+                </a>
+
+                <a class="list-group-item noradius" datatype="menu-group" style="cursor: pointer;">
+                    <svg viewBox="64 64 896 896" focusable="false" data-icon="gitlab" style="width: 16px; height: 16px; margin-right: 7px; vertical-align: -.15em;" fill="currentColor" aria-hidden="true"><path d="M913.9 552.2L805 181.4v-.1c-7.6-22.9-25.7-36.5-48.3-36.5-23.4 0-42.5 13.5-49.7 35.2l-71.4 213H388.8l-71.4-213c-7.2-21.7-26.3-35.2-49.7-35.2-23.1 0-42.5 14.8-48.4 36.6L110.5 552.2c-4.4 14.7 1.2 31.4 13.5 40.7l368.5 276.4c2.6 3.6 6.2 6.3 10.4 7.8l8.6 6.4 8.5-6.4c4.9-1.7 9-4.7 11.9-8.9l368.4-275.4c12.4-9.2 18-25.9 13.6-40.6zM751.7 193.4c1-1.8 2.9-1.9 3.5-1.9 1.1 0 2.5.3 3.4 3L818 394.3H684.5l67.2-200.9zm-487.4 1c.9-2.6 2.3-2.9 3.4-2.9 2.7 0 2.9.1 3.4 1.7l67.3 201.2H206.5l57.8-200zM158.8 558.7l28.2-97.3 202.4 270.2-230.6-172.9zm73.9-116.4h122.1l90.8 284.3-212.9-284.3zM512.9 776L405.7 442.3H620L512.9 776zm157.9-333.7h119.5L580 723.1l90.8-280.8zm-40.7 293.9l207.3-276.7 29.5 99.2-236.8 177.5z"></path></svg>
+                    <span>游戏统计</span>
+                    <span class="iconfont icon-fangxiangxia" style="font-size: 18px;margin-right: 7px;float: right;position: relative;line-height: 18px;top: 3px;"></span>
+                </a>
+                <div class="secondGroup" style="display: none">
+                    <a class="list-group-item noradius" href="{{ url_for('admin.game_yxtj') }}" datatype="second-menu">
+                        <span style="margin-left: 43px">游戏统计</span>
+                    </a>
+                    <a class="list-group-item noradius" href="{{ url_for('admin.game_sfyx') }}" datatype="second-menu">
+                        <span style="margin-left: 43px">三方游戏</span>
+                    </a>
+                </div>
+
+                <a class="list-group-item noradius" datatype="menu-group" style="cursor: pointer;">
+                    <svg viewBox="64 64 896 896" focusable="false" data-icon="solution" fill="currentColor" aria-hidden="true" style="width: 16px; height: 16px; margin-right: 7px; vertical-align: -.15em;"><path d="M688 264c0-4.4-3.6-8-8-8H296c-4.4 0-8 3.6-8 8v48c0 4.4 3.6 8 8 8h384c4.4 0 8-3.6 8-8v-48zm-8 136H296c-4.4 0-8 3.6-8 8v48c0 4.4 3.6 8 8 8h384c4.4 0 8-3.6 8-8v-48c0-4.4-3.6-8-8-8zM480 544H296c-4.4 0-8 3.6-8 8v48c0 4.4 3.6 8 8 8h184c4.4 0 8-3.6 8-8v-48c0-4.4-3.6-8-8-8zm-48 308H208V148h560v344c0 4.4 3.6 8 8 8h56c4.4 0 8-3.6 8-8V108c0-17.7-14.3-32-32-32H168c-17.7 0-32 14.3-32 32v784c0 17.7 14.3 32 32 32h264c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm356.8-74.4c29-26.3 47.2-64.3 47.2-106.6 0-79.5-64.5-144-144-144s-144 64.5-144 144c0 42.3 18.2 80.3 47.2 106.6-57 32.5-96.2 92.7-99.2 162.1-.2 4.5 3.5 8.3 8 8.3h48.1c4.2 0 7.7-3.3 8-7.6C564 871.2 621.7 816 692 816s128 55.2 131.9 124.4c.2 4.2 3.7 7.6 8 7.6H880c4.6 0 8.2-3.8 8-8.3-2.9-69.5-42.2-129.6-99.2-162.1zM692 591c44.2 0 80 35.8 80 80s-35.8 80-80 80-80-35.8-80-80 35.8-80 80-80z"></path></svg>
+                    <span>会员报表</span>
+                    <span class="iconfont icon-fangxiangxia" style="font-size: 18px;margin-right: 7px;float: right;position: relative;line-height: 18px;top: 3px;"></span>
+                </a>
+                <div class="secondGroup" style="display: none">
+                    {% if 'customCpForms' in current_admin_user.permissions or current_admin_user.is_superadmin %}
+                    <a class="list-group-item noradius" href="{{ url_for('admin.customer_CpForm') }}" datatype="second-menu">
+                        <span style="margin-left: 43px">彩票报表</span>
+                    </a>
+                    {% endif %}
+                    {% if 'customDsfForms' in current_admin_user.permissions or current_admin_user.is_superadmin %}
+                    <a class="list-group-item noradius" href="{{ url_for('admin.customer_SfyxForm') }}" datatype="second-menu">
+                        <span style="margin-left: 43px">三方游戏</span>
+                    </a>
+                    {% endif %}
+                    {% if 'customZjForms' in current_admin_user.permissions or current_admin_user.is_superadmin %}
+                    <a class="list-group-item noradius" href="{{ url_for('admin.customer_ZjForm') }}" datatype="second-menu">
+                        <span style="margin-left: 43px">资金报表</span>
+                    </a>
+                    {% endif %}
+                </div>
+
+                <a class="list-group-item noradius" datatype="menu-group" style="cursor: pointer;">
+                    <svg viewBox="64 64 896 896" focusable="false" data-icon="property-safety" style="width: 16px; height: 16px; margin-right: 7px; vertical-align: -.15em;" fill="currentColor" aria-hidden="true"><path d="M866.9 169.9L527.1 54.1C523 52.7 517.5 52 512 52s-11 .7-15.1 2.1L157.1 169.9c-8.3 2.8-15.1 12.4-15.1 21.2v482.4c0 8.8 5.7 20.4 12.6 25.9L499.3 968c3.5 2.7 8 4.1 12.6 4.1s9.2-1.4 12.6-4.1l344.7-268.6c6.9-5.4 12.6-17 12.6-25.9V191.1c.2-8.8-6.6-18.3-14.9-21.2zM810 654.3L512 886.5 214 654.3V226.7l298-101.6 298 101.6v427.6zM430.5 318h-46c-1.7 0-3.3.4-4.8 1.2a10.1 10.1 0 00-4 13.6l88 161.1h-45.2c-5.5 0-10 4.5-10 10v21.3c0 5.5 4.5 10 10 10h63.1v29.7h-63.1c-5.5 0-10 4.5-10 10v21.3c0 5.5 4.5 10 10 10h63.1V658c0 5.5 4.5 10 10 10h41.3c5.5 0 10-4.5 10-10v-51.8h63.4c5.5 0 10-4.5 10-10v-21.3c0-5.5-4.5-10-10-10h-63.4v-29.7h63.4c5.5 0 10-4.5 10-10v-21.3c0-5.5-4.5-10-10-10h-45.7l87.7-161.1a10.05 10.05 0 00-8.8-14.8h-45c-3.8 0-7.2 2.1-8.9 5.5l-73.2 144.3-72.9-144.3c-1.7-3.4-5.2-5.5-9-5.5z"></path></svg>
+                    <span>代理报表</span>
+                    <span class="iconfont icon-fangxiangxia" style="font-size: 18px;margin-right: 7px;float: right;position: relative;line-height: 18px;top: 3px;"></span>
+                </a>
+                <div class="secondGroup" style="display: none">
+                    <a class="list-group-item noradius" href="{{ url_for('admin.agency_CpForm') }}" datatype="second-menu">
+                        <span style="margin-left: 43px">彩票报表</span>
+                    </a>
+                    <a class="list-group-item noradius" href="{{ url_for('admin.agency_SfyxForm') }}" datatype="second-menu">
+                        <span style="margin-left: 43px">三方游戏</span>
+                    </a>
+                    <a class="list-group-item noradius" href="{{ url_for('admin.agency_TzForm') }}" datatype="second-menu">
+                        <span style="margin-left: 43px">投注报表</span>
+                    </a>
+                    <a class="list-group-item noradius" href="{{ url_for('admin.agency_ZjForm') }}" datatype="second-menu">
+                        <span style="margin-left: 43px">资金报表</span>
+                    </a>
+                </div>
+
+                {% if 'exportDataManager' in current_admin_user.permissions or current_admin_user.is_superadmin %}
+                <a class="list-group-item noradius" href="{{ url_for('admin.exportManager') }}" datatype="second-menu">
+                    <svg viewBox="64 64 896 896" focusable="false" data-icon="cloud-upload" fill="currentColor" aria-hidden="true" style="width: 16px; height: 16px; margin-right: 7px; vertical-align: -.15em;"><path d="M518.3 459a8 8 0 00-12.6 0l-112 141.7a7.98 7.98 0 006.3 12.9h73.9V856c0 4.4 3.6 8 8 8h60c4.4 0 8-3.6 8-8V613.7H624c6.7 0 10.4-7.7 6.3-12.9L518.3 459z"></path><path d="M811.4 366.7C765.6 245.9 648.9 160 512.2 160S258.8 245.8 213 366.6C127.3 389.1 64 467.2 64 560c0 110.5 89.5 200 199.9 200H304c4.4 0 8-3.6 8-8v-60c0-4.4-3.6-8-8-8h-40.1c-33.7 0-65.4-13.4-89-37.7-23.5-24.2-36-56.8-34.9-90.6.9-26.4 9.9-51.2 26.2-72.1 16.7-21.3 40.1-36.8 66.1-43.7l37.9-9.9 13.9-36.6c8.6-22.8 20.6-44.1 35.7-63.4a245.6 245.6 0 0152.4-49.9c41.1-28.9 89.5-44.2 140-44.2s98.9 15.3 140 44.2c19.9 14 37.5 30.8 52.4 49.9 15.1 19.3 27.1 40.7 35.7 63.4l13.8 36.5 37.8 10C846.1 454.5 884 503.8 884 560c0 33.1-12.9 64.3-36.3 87.7a123.07 123.07 0 01-87.6 36.3H720c-4.4 0-8 3.6-8 8v60c0 4.4 3.6 8 8 8h40.1C870.5 760 960 670.5 960 560c0-92.7-63.1-170.7-148.6-193.3z"></path></svg>
+                    <span>文件下载</span>
+                </a>
+                {% endif %}
+
+                {% if 'backupDataManager' in current_admin_user.permissions or current_admin_user.is_superadmin %}
+                    <a class="list-group-item noradius" href="{{ url_for('admin.backupData') }}" datatype="second-menu">
+                        <svg viewBox="64 64 896 896" focusable="false" data-icon="cloud-sync" fill="currentColor" aria-hidden="true" style="width: 16px; height: 16px; margin-right: 7px; vertical-align: -.15em;"><path d="M811.4 368.9C765.6 248 648.9 162 512.2 162S258.8 247.9 213 368.8C126.9 391.5 63.5 470.2 64 563.6 64.6 668 145.6 752.9 247.6 762c4.7.4 8.7-3.3 8.7-8v-60.4c0-4-3-7.4-7-7.9-27-3.4-52.5-15.2-72.1-34.5-24-23.5-37.2-55.1-37.2-88.6 0-28 9.1-54.4 26.2-76.4 16.7-21.4 40.2-36.9 66.1-43.7l37.9-10 13.9-36.7c8.6-22.8 20.6-44.2 35.7-63.5 14.9-19.2 32.6-36 52.4-50 41.1-28.9 89.5-44.2 140-44.2s98.9 15.3 140 44.3c19.9 14 37.5 30.8 52.4 50 15.1 19.3 27.1 40.7 35.7 63.5l13.8 36.6 37.8 10c54.2 14.4 92.1 63.7 92.1 120 0 33.6-13.2 65.1-37.2 88.6-19.5 19.2-44.9 31.1-71.9 34.5-4 .5-6.9 3.9-6.9 7.9V754c0 4.7 4.1 8.4 8.8 8 101.7-9.2 182.5-94 183.2-198.2.6-93.4-62.7-172.1-148.6-194.9z"></path><path d="M376.9 656.4c1.8-33.5 15.7-64.7 39.5-88.6 25.4-25.5 60-39.8 96-39.8 36.2 0 70.3 14.1 96 39.8 1.4 1.4 2.7 2.8 4.1 4.3l-25 19.6a8 8 0 003 14.1l98.2 24c5 1.2 9.9-2.6 9.9-7.7l.5-101.3c0-6.7-7.6-10.5-12.9-6.3L663 532.7c-36.6-42-90.4-68.6-150.5-68.6-107.4 0-195 85.1-199.4 191.7-.2 4.5 3.4 8.3 8 8.3H369c4.2-.1 7.7-3.4 7.9-7.7zM703 664h-47.9c-4.2 0-7.7 3.3-8 7.6-1.8 33.5-15.7 64.7-39.5 88.6-25.4 25.5-60 39.8-96 39.8-36.2 0-70.3-14.1-96-39.8-1.4-1.4-2.7-2.8-4.1-4.3l25-19.6a8 8 0 00-3-14.1l-98.2-24c-5-1.2-9.9 2.6-9.9 7.7l-.4 101.4c0 6.7 7.6 10.5 12.9 6.3l23.2-18.2c36.6 42 90.4 68.6 150.5 68.6 107.4 0 195-85.1 199.4-191.7.2-4.5-3.4-8.3-8-8.3z"></path></svg>
+                        <span>数据备份</span>
+                    </a>
+                {% endif %}
+
+                {% if 'adminManage' in current_admin_user.permissions or current_admin_user.is_superadmin %}
+                <a class="list-group-item noradius" href="{{ url_for('admin.adminManage') }}" datatype="second-menu">
+                    <svg viewBox="64 64 896 896" focusable="false" data-icon="user-switch" fill="currentColor" aria-hidden="true" style="width: 16px; height: 16px; margin-right: 7px; vertical-align: -.15em;"><defs><style></style></defs><path d="M759 335c0-137-111-248-248-248S263 198 263 335c0 82.8 40.6 156.2 103 201.2-.4.2-.7.3-.9.4-44.7 18.9-84.8 46-119.3 80.6a373.42 373.42 0 00-80.4 119.5A373.6 373.6 0 00136 874.8a8 8 0 008 8.2h59.9c4.3 0 7.9-3.5 8-7.8 2-77.2 32.9-149.5 87.6-204.3C356 614.2 431 583 511 583c137 0 248-111 248-248zM511 507c-95 0-172-77-172-172s77-172 172-172 172 77 172 172-77 172-172 172zm105 221h264c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H703.5l47.2-60.1a8.1 8.1 0 001.7-4.9c0-4.4-3.6-8-8-8h-72.6c-4.9 0-9.5 2.3-12.6 6.1l-68.5 87.1c-4.4 5.6-6.8 12.6-6.8 19.8.1 17.7 14.4 32 32.1 32zm240 64H592c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h176.5l-47.2 60.1a8.1 8.1 0 00-1.7 4.9c0 4.4 3.6 8 8 8h72.6c4.9 0 9.5-2.3 12.6-6.1l68.5-87.1c4.4-5.6 6.8-12.6 6.8-19.8-.1-17.7-14.4-32-32.1-32z"></path></svg>
+                    <span>账户管理</span>
+                </a>
+                {% endif %}
+
+                {% if 'systemManage' in current_admin_user.permissions or current_admin_user.is_superadmin %}
+                <a class="list-group-item noradius" href="{{ url_for('admin.setting') }}" datatype="second-menu">
+                    <svg viewBox="64 64 896 896" focusable="false" data-icon="setting" fill="currentColor" aria-hidden="true" style="width: 16px; height: 16px; margin-right: 7px; vertical-align: -.15em;"><path d="M924.8 625.7l-65.5-56c3.1-19 4.7-38.4 4.7-57.8s-1.6-38.8-4.7-57.8l65.5-56a32.03 32.03 0 009.3-35.2l-.9-2.6a443.74 443.74 0 00-79.7-137.9l-1.8-2.1a32.12 32.12 0 00-35.1-9.5l-81.3 28.9c-30-24.6-63.5-44-99.7-57.6l-15.7-85a32.05 32.05 0 00-25.8-25.7l-2.7-.5c-52.1-9.4-106.9-9.4-159 0l-2.7.5a32.05 32.05 0 00-25.8 25.7l-15.8 85.4a351.86 351.86 0 00-99 57.4l-81.9-29.1a32 32 0 00-35.1 9.5l-1.8 2.1a446.02 446.02 0 00-79.7 137.9l-.9 2.6c-4.5 12.5-.8 26.5 9.3 35.2l66.3 56.6c-3.1 18.8-4.6 38-4.6 57.1 0 19.2 1.5 38.4 4.6 57.1L99 625.5a32.03 32.03 0 00-9.3 35.2l.9 2.6c18.1 50.4 44.9 96.9 79.7 137.9l1.8 2.1a32.12 32.12 0 0035.1 9.5l81.9-29.1c29.8 24.5 63.1 43.9 99 57.4l15.8 85.4a32.05 32.05 0 0025.8 25.7l2.7.5a449.4 449.4 0 00159 0l2.7-.5a32.05 32.05 0 0025.8-25.7l15.7-85a350 350 0 0099.7-57.6l81.3 28.9a32 32 0 0035.1-9.5l1.8-2.1c34.8-41.1 61.6-87.5 79.7-137.9l.9-2.6c4.5-12.3.8-26.3-9.3-35zM788.3 465.9c2.5 15.1 3.8 30.6 3.8 46.1s-1.3 31-3.8 46.1l-6.6 40.1 74.7 63.9a370.03 370.03 0 01-42.6 73.6L721 702.8l-31.4 25.8c-23.9 19.6-50.5 35-79.3 45.8l-38.1 14.3-17.9 97a377.5 377.5 0 01-85 0l-17.9-97.2-37.8-14.5c-28.5-10.8-55-26.2-78.7-45.7l-31.4-25.9-93.4 33.2c-17-22.9-31.2-47.6-42.6-73.6l75.5-64.5-6.5-40c-2.4-14.9-3.7-30.3-3.7-45.5 0-15.3 1.2-30.6 3.7-45.5l6.5-40-75.5-64.5c11.3-26.1 25.6-50.7 42.6-73.6l93.4 33.2 31.4-25.9c23.7-19.5 50.2-34.9 78.7-45.7l37.9-14.3 17.9-97.2c28.1-3.2 56.8-3.2 85 0l17.9 97 38.1 14.3c28.7 10.8 55.4 26.2 79.3 45.8l31.4 25.8 92.8-32.9c17 22.9 31.2 47.6 42.6 73.6L781.8 426l6.5 39.9zM512 326c-97.2 0-176 78.8-176 176s78.8 176 176 176 176-78.8 176-176-78.8-176-176-176zm79.2 255.2A111.6 111.6 0 01512 614c-29.9 0-58-11.7-79.2-32.8A111.6 111.6 0 01400 502c0-29.9 11.7-58 32.8-79.2C454 401.6 482.1 390 512 390c29.9 0 58 11.6 79.2 32.8A111.6 111.6 0 01624 502c0 29.9-11.7 58-32.8 79.2z"></path></svg>
+                    <span>系统设置</span>
+                </a>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+
+    <div id="content_box">
+        <nav aria-label="breadcrumb" style="border-radius: 5px">
+            <ol class="breadcrumb" style="box-shadow: 0 0 13px 0 rgba(82, 63, 105, 0.05); background-color: #ffffff;">
+                <li class="breadcrumb-item">
+                    <a href="{{ url_for('admin.cms_index') }}">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="16" fill="currentColor" class="bi bi-stack" viewBox="0 0 16 16"><path d="m14.12 10.163 1.715.858c.22.11.22.424 0 .534L8.267 15.34a.598.598 0 0 1-.534 0L.165 11.555a.299.299 0 0 1 0-.534l1.716-.858 5.317 2.659c.505.252 1.1.252 1.604 0l5.317-2.66zM7.733.063a.598.598 0 0 1 .534 0l7.568 3.784a.3.3 0 0 1 0 .535L8.267 8.165a.598.598 0 0 1-.534 0L.165 4.382a.299.299 0 0 1 0-.535L7.733.063z"/><path d="m14.12 6.576 1.715.858c.22.11.22.424 0 .534l-7.568 3.784a.598.598 0 0 1-.534 0L.165 7.968a.299.299 0 0 1 0-.534l1.716-.858 5.317 2.659c.505.252 1.1.252 1.604 0l5.317-2.659z" /></svg>&ensp;控制台
+                    </a>
+                </li>
+                {% block ol %}<li class="breadcrumb-item active">{{ title }}</li>{% endblock %}
+            </ol>
+        </nav>
+        <div class="row">
+            {% block content_main %}{% endblock %}
+        </div>
+    </div>
+
+
+</body>
+</html>

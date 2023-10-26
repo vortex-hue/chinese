@@ -1,0 +1,175 @@
+{% extends 'fenXi/base.html' %}
+
+{% block head %}
+    <script>
+
+        function showprogress(evt) {
+            var loaded = evt.loaded;
+            var tot = evt.total;
+            var percent = Math.floor(100*loaded/tot);
+            var progressbar = $('#progressbar');
+            progressbar.html(percent+'%');
+            progressbar.attr('aria-valuenow',percent);
+            progressbar.css('width',percent +'%');
+        }
+        function hideprogressbar() {
+            var progressbar = $('#progressbar');
+            progressbar.html('0%');
+            progressbar.attr('aria-valuenow',0);
+            progressbar.css('width','0%');
+            $('#showbar').hide();
+        }
+
+        // upobj:触发对象; toobj:目标对象; types:类型方法; posturl:目标url; thumb_img:修改目标img的对象;
+        function upload_file_func(upobj,toobj,action,posturl,thumb_img,data_uuid,progress,callbackfunc) {
+            if (typeof(upobj)=='undefined' || upobj=='undefined') {xtalert.alertErrorToast('upobj不能为空!');return false}
+            if (action=='' || typeof(action)=='undefined' || action=='undefined') {var action='upimg'}
+            if (typeof(toobj)=='undefined' || toobj=='undefined') {var toobj=''}
+            if (typeof(posturl)=='undefined' || posturl=='undefined') {var posturl=''}
+            if (typeof(thumb_img)=='undefined' || thumb_img=='undefined') {var thumb_img=''}
+            if (typeof(data_uuid)=='undefined' || data_uuid=='undefined') {var data_uuid=''}
+            if (typeof(progress)=='undefined' || progress=='undefined') {var progress=''}
+            var imgpath = upobj.get(0).files[0];
+            if(imgpath==''){
+                xtalert.alertErrorToast('请选择文件！')
+            }else{
+                let html = '<div class="boxHtml" style="position: relative; overflow: hidden;">';
+                html += '<div id="showbar">' +
+                    '<div class="progress">' +
+                    '<div id="progressbar" class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em;width: 0%">' +
+                    '0%</div></div>'
+                    '</div>'
+                html += '</div>';
+                Swal({
+                    title: '数据提交中,请勿刷新页面',
+                    text: '数据提交中...',
+                    html: html,
+                    showCloseButton: false,
+                    showCancelButton: false,
+                    showconfirmButton: false,
+                    allowOutsideClick: false,
+                    onBeforeOpen: () => {
+                        Swal.showLoading()
+                    }
+                });
+                // 控制进度条
+                var formdata = new FormData();
+                formdata.append("upload",imgpath);
+                formdata.append("action",action);
+                formdata.append("data_uuid",data_uuid);
+                params = {
+                    'url':posturl,
+                    'data':formdata,
+                    'contentType':false,
+                    'processData': false,
+                    'success':function (data) {
+                        if(data.code==200){
+                            upobj.val('');
+                            if(toobj){toobj.val(data.message);}
+                            if(thumb_img){thumb_img.attr('src',data.message)}
+                            if(callbackfunc){
+                                callbackfunc()
+                            }else{
+                                if (data.message){
+                                    xtalert.alertSuccessToast(data.message);
+                                }else {
+                                    xtalert.alertSuccessToast('上传成功！');
+                                }
+                                reloadpage();
+                            }
+                        }else{
+                            xtalert.alertError(data.message)
+                        }
+                         if(progress=='progress'){
+                            hideprogressbar();
+                        }
+                    }
+                };
+                if(progress=='progress'){
+                    params['progress'] = showprogress;
+                }
+                xtajax.post(params);
+            }
+        }
+
+    </script>
+{% endblock %}
+
+{% block content_main %}
+    <div class="col-12">
+        <div class="list-group-item pb-0">
+            <form class="form-inline">
+                <label for=""><strong>筛选：</strong></label>
+                <input type="text" class="form-control mb-2 mr-sm-2" name="user_account" value="{{ search_res.user_account }}" placeholder="用户账户" aria-label="">
+                <input type="text" class="form-control mb-2 mr-sm-2" name="user_name" value="{{ search_res.user_name }}" placeholder="用户姓名" aria-label="">
+                <input type="text" class="form-control mb-2 mr-sm-2" name="user_tele" value="{{ search_res.user_tele }}" placeholder="用户手机" aria-label="">
+                <input type="text" class="form-control mb-2 mr-sm-2" name="agency" value="{{ search_res.agency }}" placeholder="上级代理" aria-label="">
+                <input type="text" class="form-control mb-2 mr-sm-2 pickerdate" name="new_time" value="{{ search_res.new_time }}" placeholder="时间" aria-label="" readonly>
+                <button class="btn btn-primary mb-2">筛选</button>
+                <span class="btn btn-default ml-1 mb-2" onclick="exitsearch()">重置</span>
+                <span class="btn btn-success ml-1 mb-2 file-button">
+                    <span>导入数据</span>
+                    <input type="file" id="upload1" onchange="upload_file_func($('#upload1'),'','importData', '', '', '', 'progress')">
+                </span>
+                <span class="btn btn-success ml-1 mb-2 file-button">
+                    <span>导出数据</span>
+                    <input type="file" id="upload2" onchange="upload_file_func($('#upload2'),'','exportData', '', '', '', 'progress')">
+                </span>
+                <span class="btn btn-danger ml-1 mb-2" onclick="post_update_statu('del_all', '666', '确定删除全部数据？')">删除全部</span>
+            </form>
+        </div>
+
+        <table class="table table-bordered table-hover text-center" style="background-color: #ffffff;">
+            <thead>
+                <tr>
+                    <th>用户账户[{{ total }}]</th>
+                    <th>用户姓名</th>
+                    <th>同名计数</th>
+                    <th>上级代理</th>
+                    <th>邀请码</th>
+                    <th>用户邮箱</th>
+                    <th>用户手机</th>
+                    <th>新增时间</th>
+                    <th>是否存款</th>
+                    <th>存款次数</th>
+                    <th>存款金额</th>
+                    <th>取款次数</th>
+                    <th>提款金额</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for data in all_datas %}
+                    <tr>
+                        <td>{{ data.user_account or '' }}</td>
+                        <td>{{ data.user_name or '' }}</td>
+                        <td>{{ data.tm_count or 1 }}</td>
+                        <td>{{ data.agency or '' }}</td>
+                        <td>{{ data.invite_code or '' }}</td>
+                        <td>{{ data.user_email or '' }}</td>
+                        <td><span class="btn btn-info btn-xs" onclick="xtalert.alertContentInTextarea('{{ data.user_tele or '' }}', '手机号')">查看</span></td>
+                        <td>{{ format_datetime(data.new_time or '') }}</td>
+                        <td>{{ data.is_deposit or '' }}</td>
+                        <td>{{ data.deposit_count or '' }}</td>
+                        <td>{{ data.deposit_money or '' }}</td>
+                        <td>{{ data.withdrawal_count or '' }}</td>
+                        <td>{{ data.withdrawal_money or '' }}</td>
+                        <td>
+                            <span class="btn btn-danger btn-xs" onclick="post_update_statu('del', '{{ data.uuid }}', '确认删除该客户数据？')">删除</span>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% if not all_datas %}
+        <div class="no_data">
+            <img src="/static/common/images/no_data.png" alt="暂无数据">
+            <p>暂无数据</p>
+        </div>
+        {% endif %}
+        {% if pagination and pagination.links %}
+        <div class="text-center">{{ pagination.links }}</div>
+        {% endif %}
+
+    </div>
+{% endblock %}

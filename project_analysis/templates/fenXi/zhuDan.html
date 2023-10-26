@@ -1,0 +1,162 @@
+{% extends 'fenXi/base.html' %}
+
+{% block head %}
+    <script>
+
+        function showprogress(evt) {
+            var loaded = evt.loaded;
+            var tot = evt.total;
+            var percent = Math.floor(100*loaded/tot);
+            var progressbar = $('#progressbar');
+            progressbar.html(percent+'%');
+            progressbar.attr('aria-valuenow',percent);
+            progressbar.css('width',percent +'%');
+        }
+        function hideprogressbar() {
+            var progressbar = $('#progressbar');
+            progressbar.html('0%');
+            progressbar.attr('aria-valuenow',0);
+            progressbar.css('width','0%');
+            $('#showbar').hide();
+        }
+        // upobj:触发对象; toobj:目标对象; types:类型方法; posturl:目标url; thumb_img:修改目标img的对象;
+        function upload_file_func(upobj,toobj,action,posturl,thumb_img,data_uuid,progress,callbackfunc) {
+            if (typeof(upobj)=='undefined' || upobj=='undefined') {xtalert.alertErrorToast('upobj不能为空!');return false}
+            if (action=='' || typeof(action)=='undefined' || action=='undefined') {var action='upimg'}
+            if (typeof(toobj)=='undefined' || toobj=='undefined') {var toobj=''}
+            if (typeof(posturl)=='undefined' || posturl=='undefined') {var posturl=''}
+            if (typeof(thumb_img)=='undefined' || thumb_img=='undefined') {var thumb_img=''}
+            if (typeof(data_uuid)=='undefined' || data_uuid=='undefined') {var data_uuid=''}
+            if (typeof(progress)=='undefined' || progress=='undefined') {var progress=''}
+            var imgpath = upobj.get(0).files[0];
+            if(imgpath==''){
+                xtalert.alertErrorToast('请选择文件！')
+            }else{
+                let html = '<div class="boxHtml" style="position: relative; overflow: hidden;">';
+                html += '<div id="showbar">' +
+                    '<div class="progress">' +
+                    '<div id="progressbar" class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em;width: 0%">' +
+                    '0%</div></div>'
+                    '</div>'
+                html += '</div>';
+                Swal({
+                    title: '数据提交中,请勿刷新页面',
+                    text: '数据提交中...',
+                    html: html,
+                    showCloseButton: false,
+                    showCancelButton: false,
+                    showconfirmButton: false,
+                    allowOutsideClick: false,
+                    onBeforeOpen: () => {
+                        Swal.showLoading()
+                    }
+                });
+                // 控制进度条
+                $('#showbar').show(500);
+                var formdata = new FormData();
+                formdata.append("upload",imgpath);
+                formdata.append("action",action);
+                formdata.append("data_uuid",data_uuid);
+                params = {
+                    'url':posturl,
+                    'data':formdata,
+                    'contentType':false,
+                    'processData': false,
+                    'success':function (data) {
+                        if(data.code==200){
+                            upobj.val('');
+                            if(toobj){toobj.val(data.message);}
+                            if(thumb_img){thumb_img.attr('src',data.message)}
+                            if(callbackfunc){
+                                callbackfunc()
+                            }else{
+                                if (data.message){
+                                    xtalert.alertSuccessToast(data.message);
+                                }else {
+                                    xtalert.alertSuccessToast('上传成功！');
+                                }
+                                reloadpage();
+                            }
+                        }else{
+                            xtalert.alertError(data.message)
+                        }
+                         if(progress=='progress'){
+                            hideprogressbar();
+                        }
+                    }
+                };
+                if(progress=='progress'){
+                    params['progress'] = showprogress;
+                }
+                xtajax.post(params);
+            }
+        }
+
+    </script>
+{% endblock %}
+
+{% block content_main %}
+    <div class="col-lg-12">
+        <div class="list-group-item pb-0">
+            <form class="form-inline">
+                <label for=""><strong>筛选：</strong></label>
+                <input type="text" class="form-control mb-2 mr-sm-2" name="order_number" value="{{ search_res.order_number }}" placeholder="订单号" aria-label="">
+                <input type="text" class="form-control mb-2 mr-sm-2" name="member_account" value="{{ search_res.member_account }}" placeholder="会员账户" aria-label="">
+                <input type="text" class="form-control mb-2 mr-sm-2" name="game_name" value="{{ search_res.game_name }}" placeholder="游戏" aria-label="">
+                <input type="text" class="form-control mb-2 mr-sm-2" name="date_number" value="{{ search_res.date_number }}" placeholder="期号" aria-label="">
+                <input type="text" class="form-control mb-2 mr-sm-2" name="play_type" value="{{ search_res.play_type }}" placeholder="玩法分类" aria-label="">
+                <input type="text" class="form-control mb-2 mr-sm-2" name="play_name" value="{{ search_res.play_name }}" placeholder="玩法名称" aria-label="">
+                <input type="text" class="form-control mb-2 mr-sm-2" name="zhudan_info" value="{{ search_res.zhudan_info }}" placeholder="注单信息" aria-label="">
+                <input type="text" class="form-control mb-2 mr-sm-2 pickerdate" name="create_time" value="{{ search_res.create_time }}" placeholder="下注时间" readonly>
+                <button class="btn btn-primary mb-2">筛选</button>
+                <span class="btn btn-default ml-1 mb-2" onclick="exitsearch()">重置</span>
+                <span class="btn btn-success ml-1 mb-2 file-button">
+                    <span>导入数据</span>
+                    <input type="file" id="upload1" onchange="upload_file_func($('#upload1'),'','importData', '', '', '', 'progress')">
+                </span>
+                <span class="btn btn-danger ml-1 mb-2" onclick="post_update_statu('del_all', '666', '确定删除全部数据？')">删除全部</span>
+            </form>
+        </div>
+        <table class="table table-bordered table-hover text-center" style="background-color: #ffffff;">
+            <thead>
+                <tr>
+                    <th>订单号 [统计：{{ total or 0 }}]</th>
+                    <th>会员账户</th>
+                    <th>游戏</th>
+                    <th>期号</th>
+                    <th>玩法分类</th>
+                    <th>玩法名称</th>
+                    <th>注单信息</th>
+                    <th>下注金额</th>
+                    <th>会员输赢</th>
+                    <th>下注时间</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for data in all_datas %}
+                    <tr>
+                        <td>{{ data.order_number }}</td>
+                        <td>{{ data.member_account or '' }}</td>
+                        <td>{{ data.game_name or '' }}</td>
+                        <td>{{ data.date_number or '' }}</td>
+                        <td>{{ data.play_type or '' }}</td>
+                        <td>{{ data.play_name or '' }}</td>
+                        <td onclick="xtalert.alertContentInTextarea('{{  data.zhudan_info }}', '注单信息', '')">{{ data.zhudan_info | truncate(10) }}</td>
+                        <td>{{ data.money or '' }}</td>
+                        <td>{{ data.win_lose or '' }}</td>
+                        <td>{{ format_datetime(data.create_time) }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% if not all_datas %}
+        <div class="no_data">
+            <img src="/static/common/images/no_data.png" alt="暂无数据">
+            <p>暂无数据</p>
+        </div>
+        {% endif %}
+        {% if pagination and pagination.links %}
+        <div class="text-center">{{ pagination.links }}</div>
+        {% endif %}
+    </div>
+{% endblock %}

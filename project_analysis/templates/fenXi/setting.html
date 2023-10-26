@@ -1,0 +1,111 @@
+{% extends 'fenXi/base.html' %}
+
+{% block head %}
+    <style>
+        .table td{
+            vertical-align: middle;
+        }
+        .table tr, .table tr td{
+            border: none;
+        }
+    </style>
+    <script>
+        function post_site_data() {
+            let blacklistIp = $.trim($("#blacklistIp").val());
+            let restore_data_pwd = $.trim($("#restore_data_pwd").val())
+            let ftp_host = $.trim($("#ftp_host").val())
+            let ftp_username = $.trim($("#ftp_username").val())
+            let ftp_password = $.trim($("#ftp_password").val())
+            let server_path = $.trim($("#server_path").val())
+            let backup_type = $.trim($("#backup_type").val())
+            let _data = {
+                'action': 'post_site_data', 'blacklistIp': blacklistIp, 'restore_data_pwd': restore_data_pwd,
+                'ftp_host': ftp_host, 'ftp_username': ftp_username, 'ftp_password': ftp_password, 'server_path': server_path, 'backup_type': backup_type,
+            }
+            post_data_way({data: _data})
+        }
+        function reset_func(){
+            {% if site_config.blacklistIp %}
+            $("#blacklistIp").val('{{ site_config.blacklistIp.replace('\n', '\\n') | safe or '' }}')
+            {% else %}
+            $("#blacklistIp").val('')
+            {% endif %} 
+            return xtalert.alertSuccessToast('重置成功！')
+        }
+
+        function check_link_func() {
+            let ftp_host = $.trim($("#ftp_host").val())
+            let ftp_username = $.trim($("#ftp_username").val())
+            let ftp_password = $.trim($("#ftp_password").val())
+            let server_path = $.trim($("#server_path").val())
+
+            let backfunc = function () {
+                return xtalert.alertSuccessToast('连接成功！')
+            }
+
+            post_data_way({'data': {'action': 'check_link', 'ftp_host': ftp_host, 'ftp_username': ftp_username, 'ftp_password': ftp_password, 'server_path': server_path}, 'successCallback': backfunc}, true)
+        }
+
+    </script>
+{% endblock %}
+
+{% block content_main %}
+    <div class="col-lg-12 col-12">
+        <div class="card userInfoBox">
+            <div class="card-header" style="display: flex; justify-content: space-between; font-weight: bold; align-items : center;">
+                <span>系统设置</span>
+                <div>
+                    <span class="btn btn-primary" onclick="check_link_func()">FTP 连接测试</span>
+                    <button class="btn btn-primary" onclick="post_site_data()">提交保存</button>
+                    <button class="btn btn-default" onclick="reset_func()">点击重置</button>
+                </div>
+            </div>
+            <div class="card-body">
+
+                <div class="input-group col-lg-5 col-12 text-left" style="margin: 0 30px 20px;">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1" style="width: 150px; text-align: center; position: relative; overflow: hidden; display: inline-block;">输入新恢复数据密码</span>
+                    </div>
+                    <input type="text" class="form-control" id="restore_data_pwd" placeholder="输入新恢复数据密码" aria-label="" aria-describedby="basic-addon1">
+                </div>
+
+                <div class="input-group col-lg-5 col-12 text-left" style="margin: 0 30px 20px;">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" style="width: 150px; text-align: center; position: relative; overflow: hidden; display: inline-block; ">IP白名单</span>
+                    </div>
+                    <textarea class="form-control" id="blacklistIp" placeholder="输入ip,一行一个" aria-label="With textarea" rows="6">{{ site_config.blacklistIp or '' }}</textarea>
+                </div>
+
+                <div style="width: 100%; background: #e3e3e3; height: 1px; margin: 5px 0 20px; display: block;"></div>
+
+                <div class="input-group col-lg-5 col-12 text-left" style="margin: 0 30px 20px;">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1" style="width: 150px; text-align: center; position: relative; overflow: hidden; display: inline-block;">FTP Host</span>
+                    </div>
+                    <input type="text" class="form-control" id="ftp_host" placeholder="FTP Host" value="{{ ftp_data.ftp_host or '' }}" aria-label="" aria-describedby="basic-addon1">
+                </div>
+                <div class="input-group col-lg-5 col-12 text-left" style="margin: 0 30px 20px;">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1" style="width: 150px; text-align: center; position: relative; overflow: hidden; display: inline-block;">FTP 用户名</span>
+                    </div>
+                    <input type="text" class="form-control" id="ftp_username" placeholder="FTP 用户名" value="{{ ftp_data.ftp_username or '' }}" aria-label="" aria-describedby="basic-addon1">
+                </div>
+                <div class="input-group col-lg-5 col-12 text-left" style="margin: 0 30px 20px;">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1" style="width: 150px; text-align: center; position: relative; overflow: hidden; display: inline-block;">FTP 密码</span>
+                    </div>
+                    <input type="text" class="form-control" id="ftp_password" placeholder="FTP 密码" value="{{ ftp_data.ftp_password or '' }}" aria-label="" aria-describedby="basic-addon1">
+                </div>
+                <div class="input-group col-lg-5 col-12 text-left" style="margin: 0 30px 20px;">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1" style="width: 150px; text-align: center; position: relative; overflow: hidden; display: inline-block;">ftp上传位置</span>
+                    </div>
+                    <input type="text" class="form-control" id="server_path" value="{{ ftp_data.server_path or '' }}" placeholder="ftp上传位置" aria-label="" aria-describedby="basic-addon1">
+                </div>
+
+
+            </div>
+        </div>
+
+    </div>
+{% endblock %}

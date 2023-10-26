@@ -1,0 +1,65 @@
+{
+  "id": "4160439",
+  "name": "ZD分析系统",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "17606340",
+      "name": "内容安全",
+      "font_class": "neironganquan",
+      "unicode": "e6aa",
+      "unicode_decimal": 59050
+    },
+    {
+      "icon_id": "17606343",
+      "name": "模型管理",
+      "font_class": "moxingguanli",
+      "unicode": "e6ab",
+      "unicode_decimal": 59051
+    },
+    {
+      "icon_id": "17606365",
+      "name": "统计",
+      "font_class": "tongji",
+      "unicode": "e6ae",
+      "unicode_decimal": 59054
+    },
+    {
+      "icon_id": "17606366",
+      "name": "项目",
+      "font_class": "xiangmu",
+      "unicode": "e6af",
+      "unicode_decimal": 59055
+    },
+    {
+      "icon_id": "17606973",
+      "name": "方向上",
+      "font_class": "fangxiangshang",
+      "unicode": "e6c3",
+      "unicode_decimal": 59075
+    },
+    {
+      "icon_id": "17606975",
+      "name": "方向下",
+      "font_class": "fangxiangxia",
+      "unicode": "e6c4",
+      "unicode_decimal": 59076
+    },
+    {
+      "icon_id": "17606976",
+      "name": "菜单左",
+      "font_class": "caidanzuo",
+      "unicode": "e6c5",
+      "unicode_decimal": 59077
+    },
+    {
+      "icon_id": "17606983",
+      "name": "菜单右",
+      "font_class": "caidanyou",
+      "unicode": "e6c6",
+      "unicode_decimal": 59078
+    }
+  ]
+}

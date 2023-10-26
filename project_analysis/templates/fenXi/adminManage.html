@@ -1,0 +1,225 @@
+{% extends 'fenXi/base.html' %}
+
+{% block head %}
+    <script>
+        // post添加数据
+        function _add_form_data() {
+            var _data = {'action': '_add_form_data'}
+            {% for db_field in add_field_sort %}
+                _data['{{ db_field }}'] = $.trim($("#{{ db_field }}").val());
+            {% endfor %}
+            Swal({
+                title: false,
+                text: '数据提交中...',
+                showCloseButton: false,
+                showCancelButton: false,
+                showconfirmButton: false,
+                allowOutsideClick: false,
+                onBeforeOpen: () => {
+                    Swal.showLoading()
+                }
+            });
+            post_data_way({'data': _data});
+        }
+        function addChuFunc() {
+            let username = $.trim($("#username").val());
+            let login_account = $.trim($("#login_account").val());
+            let password = $.trim($("#password").val());
+            if (!username){
+                return swal.showValidationError('请输入用户名！')
+            }
+            if (!login_account){
+                return swal.showValidationError('请输入登录账户！')
+            }
+            if (!password){
+                return swal.showValidationError('请输入密码！')
+            }
+            return _add_form_data()
+        }
+        function add_form_data(action, data_uuid, title, width) {
+            if (!action || action == ''){ var action = '_add_form_html'}
+            if (!data_uuid || data_uuid == ''){ var data_uuid = '';}
+            let per = {'action': action};
+            if (data_uuid){
+                per['data_uuid'] = data_uuid
+            }
+            Swal({
+                title: false,
+                text: '数据请求中...',
+                showCloseButton: false,
+                showCancelButton: false,
+                showconfirmButton: false,
+                allowOutsideClick: false,
+                onBeforeOpen: () => {
+                    Swal.showLoading()
+                }
+            });
+            xtajax.post({
+                'data': per,
+                'success':function (data) {
+                    if(data.code==200){
+                        Swal({
+                            title: title ? title : '操作',
+                            width: width ? width : '',
+                            html: data.message,
+                            showCloseButton: true,
+                            showCancelButton: false,
+                            showConfirmButton: false,
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                        })
+                    }else{
+                        return xtalert.alertError(data.message);
+                    }
+                }
+            })
+        }
+        function _edit_form_data(data_uuid) {
+            var _data = {'action': '_edit_form_data', 'data_uuid': data_uuid}
+            {% for db_field in edit_field_sort %}
+                _data['{{ db_field }}'] = $.trim($("#{{ db_field }}").val());
+            {% endfor %}
+            Swal({
+                title: false,
+                text: '数据提交中...',
+                showCloseButton: false,
+                showCancelButton: false,
+                showconfirmButton: false,
+                allowOutsideClick: false,
+                onBeforeOpen: () => {
+                    Swal.showLoading()
+                }
+            });
+            post_data_way({'data': _data});
+        }
+        function editChuFunc(data_uuid) {
+            let username = $.trim($("#username").val());
+            let login_account = $.trim($("#login_account").val());
+            if (!username){
+                return swal.showValidationError('请输入用户名！')
+            }
+            if (!login_account){
+                return swal.showValidationError('请输入登录账户！')
+            }
+            return _edit_form_data(data_uuid)
+        }
+        function updateSatau(data_uuid) {
+            post_data_way({'data': {'action': 'updateStatu', 'data_uuid': data_uuid}})
+        }
+
+        function updatePwdFunc(data_uuid) {
+            let new_password = $.trim($("#new_password").val())
+            let confirm_password = $.trim($("#confirm_password").val())
+            if (!new_password){return swal.showValidationError('请输入新密码！')}
+            if (!confirm_password){return swal.showValidationError('请输入确认密码！')}
+            if (new_password !== confirm_password){return swal.showValidationError('两次密码不一致！')}
+            Swal({
+                title: false,
+                text: '数据提交中...',
+                showCloseButton: false,
+                showCancelButton: false,
+                showconfirmButton: false,
+                allowOutsideClick: false,
+                onBeforeOpen: () => {
+                    Swal.showLoading()
+                }
+            });
+            let _data = {'action': 'update_pwd', 'new_password': new_password, 'data_uuid': data_uuid}
+            post_data_way({'data': _data});
+        }
+            
+        function update_permission(data_uuid, p) {
+            if (!data_uuid) {
+                swal.showValidationError('修改出错！');
+                return false
+            }
+            var _data = {'action': '_edit_permission', 'data_uuid': data_uuid, 'p': p}
+            xtajax.post({
+                'utl': '',
+                'data': _data,
+                'success': function (data) {
+                    if (data.code == 200) {
+                        $('#permission_div').html(data.message);
+                    } else {
+                        swal.showValidationError(data.message);
+                    }
+                }
+            });
+        }
+        
+    </script>
+{% endblock %}
+
+{% block content_main %}
+    <div class="col-12">
+        <div class="list-group-item pb-0">
+            <form class="form-inline">
+                <label for=""><strong>筛选：</strong></label>
+                <input type="text" class="form-control mb-2 mr-sm-2" name="username" value="{{ search_res.username }}" placeholder="用户名" aria-label="">
+                <input type="text" class="form-control mb-2 mr-sm-2" name="zalo" value="{{ search_res.zalo }}" placeholder="zalo账户" aria-label="">
+                <input type="text" class="form-control mb-2 mr-sm-2" name="email" value="{{ search_res.email }}" placeholder="邮箱" aria-label="">
+                <select class="form-control mr-sm-2 mb-2" name="statu" aria-label="">
+                    <option value="">状态</option>
+                    <option value="1" {% if search_res.statu == '1' %}selected{% endif %}>正常</option>
+                    <option value="0" {% if search_res.statu == '0' %}selected{% endif %}>禁用</option>
+                </select>
+                <input type="text" class="form-control mb-2 mr-sm-2" name="email" value="{{ search_res.note }}" placeholder="备注" aria-label="">
+                <button class="btn btn-primary mb-2">筛选</button>
+                <span class="btn btn-default ml-1 mb-2" onclick="exitsearch()">重置</span>
+                <span class="btn btn-success ml-1 mb-2" onclick="add_form_data('_add_form_html', '', '添加管理员')">添加用户</span>
+
+            </form>
+        </div>
+
+        <table class="table table-bordered table-hover text-center" style="background-color: #ffffff;">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>用户名</th>
+                    <th>登录账户</th>
+                    <th>邮箱</th>
+                    <th>状态</th>
+                    <th>创建时间</th>
+                    <th>最近登录时间</th>
+                    <th>备注</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for data in all_datas %}
+                    <tr>
+                        <td>{{ data.id or '' }}</td>
+                        <td>{{ data.username or '' }}</td>
+                        <td>{{ data.login_account or '' }}</td>
+                        <td>{{ data.email or '' }}</td>
+                        <td>
+                            {% if data.statu %}
+                                <span class="btn btn-success btn-xs" onclick="updateSatau('{{ data.uuid }}')">正常</span>
+                            {% else %}
+                                <span class="btn btn-danger btn-xs" onclick="updateSatau('{{ data.uuid }}')">禁用</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ format_datetime(data._create_time) }}</td>
+                        <td>{{ format_datetime(data._current_login) }}</td>
+                        <td>{{ data.note or '' }}</td>
+                        <td width="230">
+                            <span class="btn btn-primary btn-xs" onclick="add_form_data('_edit_form_html', '{{ data.uuid }}')">编辑</span>
+                            <span class="btn btn-primary btn-xs" onclick="add_form_data('_edit_pwd_html', '{{ data.uuid }}')">改密码</span>
+                            <span class="btn btn-primary btn-xs" onclick="add_form_data('get_permission_html', '{{ data.uuid }}', '权限修改', 800)">改权限</span>
+                            <span class="btn btn-danger btn-xs" onclick="post_update_statu('del', '{{ data.uuid }}', '确定删除该员工？')">删除</span>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% if not all_datas %}
+        <div class="no_data">
+            <img src="/static/common/images/no_data.png" alt="暂无数据">
+            <p>暂无数据</p>
+        </div>
+        {% endif %}
+        {% if pagination and pagination.links %}
+        <div class="text-center">{{ pagination.links }}</div>
+        {% endif %}
+    </div>
+{% endblock %}

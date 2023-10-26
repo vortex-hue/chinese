@@ -1,0 +1,172 @@
+{% extends 'fenXi/base.html' %}
+
+{% block head %}
+    <script>
+
+        // upobj:触发对象; toobj:目标对象; types:类型方法; posturl:目标url; thumb_img:修改目标img的对象;
+        function upload_file_func(upobj,toobj,action,posturl,thumb_img,data_uuid,progress,show_loading,callbackfunc) {
+            if (typeof(upobj)=='undefined' || upobj=='undefined') {xtalert.alertErrorToast('upobj不能为空!');return false}
+            if (action=='' || typeof(action)=='undefined' || action=='undefined') {var action='upimg'}
+            if (typeof(toobj)=='undefined' || toobj=='undefined') {var toobj=''}
+            if (typeof(posturl)=='undefined' || posturl=='undefined') {var posturl=''}
+            if (typeof(thumb_img)=='undefined' || thumb_img=='undefined') {var thumb_img=''}
+            if (typeof(data_uuid)=='undefined' || data_uuid=='undefined') {var data_uuid=''}
+            if (typeof(progress)=='undefined' || progress=='undefined') {var progress=''}
+            var imgpath = upobj.get(0).files[0];
+            if(imgpath==''){
+                xtalert.alertErrorToast('请选择文件！')
+            }else{
+                if (show_loading){
+                    Swal({
+                        text: '请求中...',
+                        showCloseButton: false,
+                        showCancelButton: false,
+                        showconfirmButton: false,
+                        allowOutsideClick: false,
+                        onBeforeOpen: () => {
+                            Swal.showLoading()
+                        }
+                    });
+                }
+                // 控制进度条
+                $('#showbar').show(0);
+                var formdata = new FormData();
+                formdata.append("upload",imgpath);
+                formdata.append("action",action);
+                formdata.append("data_uuid",data_uuid);
+                params = {
+                    'url':posturl,
+                    'data':formdata,
+                    'contentType':false,
+                    'processData': false,
+                    'success':function (data) {
+                        if(data.code===200){
+                            if (toobj){
+                                toobj.val(data.message)
+                            }else if(data.message){
+                                xtalert.alertSuccess(data.message)
+                            }
+                        }else{
+                            xtalert.alertError(data.message)
+                        }
+                         if(progress==='progress'){
+                            hideprogressbar();
+                        }
+                    }
+                };
+                if(progress==='progress'){
+                    params['progress'] = showprogress;
+                }
+                xtajax.post(params);
+            }
+        }
+
+        function post_form_html(data, title, width) {
+            if (confirmCallback === '' || typeof(confirmCallback)==='undefined' || confirmCallback==='undefined') {var confirmCallback=''}
+            if (funcargs === '' || typeof(funcargs)==='undefined' || funcargs==='undefined') {var funcargs=''}
+            xtajax.post({
+                'data': data,
+                'success':function (data) {
+                    if(data.code === 200){
+                        Swal({
+                            title: title ? title : '操作',
+                            width: width ? width : '',
+                            html: data.message,
+                            showCloseButton: false,
+                            showCancelButton: false,
+                            showConfirmButton: false,
+                            allowOutsideClick: false,
+                            allowEscapeKey: false
+                        }).then(function (results) {
+                            if (results.value){
+                                if (confirmCallback){
+                                    if (funcargs){ return confirmCallback(funcargs)}else { return confirmCallback()}
+                                }
+                            }
+                        })
+                    }else{
+                        return xtalert.alertError(data.message);
+                    }
+                }
+            })
+        }
+
+        function uploadForm_func(formPath, form_date, fugai=false) {
+            if (!formPath){
+                formPath = $.trim($("#formPath").val());
+            }
+            if (!form_date){
+                form_date = $.trim($("#form_date").val());
+            }
+            if (!formPath){return xtalert.showValidationError('请先上传文件！')}
+            if (!form_date){return xtalert.showValidationError('请选择上传日期！')}
+            Swal({
+                text: '请求中...',
+                showCloseButton: false,
+                showCancelButton: false,
+                showconfirmButton: false,
+                allowOutsideClick: false,
+                onBeforeOpen: () => {
+                    Swal.showLoading()
+                }
+            });
+            xtajax.post({
+                'data': {'action': 'uploadForm', 'formPath': formPath, 'form_date': form_date, 'fugai': fugai},
+                'success': function (data) {
+                    console.log('data:', data)
+                    if (data.code === 200){
+                        if (data.data.cfState){
+                            swal({
+                                'title': '提示',
+                                'showCancelButton': true,
+                                'showConfirmButton': true,
+                                'type': 'warning',
+                                'confirmButtonText': '是',
+                                'cancelButtonText': '否',
+                                'text': '已上传过此日期数据, 是否进行替换？',
+                                'reverseButtons': true,
+                                'allowOutsideClick': false
+                            }).then(
+                                function (result) {
+                                    if (result.value){
+                                        uploadForm_func(data.data.formPath, data.data.form_date, true)
+                                    }
+                                }
+                            )
+                        }else{
+                            xtalert.alertSuccessToast('数据上传成功！');
+                            return reloadpage();
+                        }
+                    }else{
+                        return xtalert.alertError(data.message);
+                    }
+                }
+            })
+        }
+
+        function ch_func() {
+            Swal({
+                text: '请求中...',
+                showCloseButton: false,
+                showCancelButton: false,
+                showconfirmButton: false,
+                allowOutsideClick: false,
+                onBeforeOpen: () => {
+                    Swal.showLoading()
+                }
+            });
+            xtajax.post({
+                'data': {'action': 'data_ch'},
+                'success': function (data) {
+                    if (data.code === 200){
+                        xtalert.alertSuccessToast('撤销成功！');
+                        return reloadpage();
+                    }else{
+                        return xtalert.alertError(data.message);
+                    }
+                }
+            })
+        }
+
+    </script>
+{% endblock %}

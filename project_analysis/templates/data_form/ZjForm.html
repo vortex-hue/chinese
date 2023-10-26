@@ -1,0 +1,91 @@
+{% extends 'data_form/formList_base.html' %}
+
+{% block other_head %}
+    <script>
+        function fx_func() {
+            let form_date1 = $.trim($("#form_date1").val());
+            let form_date2 = $.trim($("#form_date2").val());
+            if (!form_date1){ return xtalert.alertError('请选择分析数据日期！')}
+            if (!form_date2){ return xtalert.alertError('请选择对比数据日期！')}
+            xtajax.post({
+                'data': {'action': 'fz_data', 'form_date1': form_date1, 'form_date2': form_date2},
+                'success': function (data) {
+                    if (data.code === 200){
+                        return xtalert.alertSuccessToast('数据导出中，请到导出数据中查看数据！')
+                    }else{
+                        return xtalert.alertError(data.message);
+                    }
+                }
+            })
+        }
+    
+    </script>
+{% endblock %}
+
+{% block content_main %}
+
+    <div class="col-12">
+        <div class="list-group-item pb-0">
+            <form class="form-inline">
+                <label for=""><strong>筛选：</strong></label>
+                <input type="text" class="form-control mb-2 mr-sm-2" name="account" value="{{ search_res.account }}" placeholder="账户" aria-label="">
+                <input type="text" class="form-control mb-2 mr-sm-2" name="parent_agent" value="{{ search_res.parent_agent }}" placeholder="上级代理" aria-label="">
+                <input type="text" class="form-control mb-2 mr-sm-2 pickerdate" name="form_date" value="{{ search_res.form_date }}" placeholder="时间" aria-label="" readonly>
+                <button class="btn btn-primary mb-2">筛选</button>
+                <span class="btn btn-default ml-1 mb-2" onclick="exitsearch()">重置</span>
+                <span class="btn btn-success ml-1 mb-2" onclick="post_form_html({'action': 'upload_form_html'}, '', '上传报表', 600)">上传报表</span>
+                <span class="btn btn-success ml-1 mb-2" onclick="post_form_html({'action': 'get_duibi_fenxi_html'}, '', '资金对比分析', 600)">资金分析</span>
+                <span class="btn btn-danger ml-1 mb-2" onclick="post_update_statu('del_search_data', '666', '确定删除搜索数据？')">删除搜索数据</span>
+                <span class="btn btn-danger ml-1 mb-2" onclick="post_update_statu('del_all', '666', '确定删除全部数据？')">删除全部</span>
+            </form>
+        </div>
+
+        <table class="table table-bordered table-hover text-center" style="background-color: #ffffff;">
+            <thead>
+                <tr>
+                    <th>账号[{{ total }}]</th>
+                    <th>上级代理</th>
+                    <th>充值金额</th>
+                    <th>线上充值</th>
+                    <th>线下充值</th>
+                    <th>后台加钱</th>
+                    <th>提现金额</th>
+                    <th>后台扣钱</th>
+                    <th>活动金额</th>
+                    <th>红包金额</th>
+                    <th>充值优惠/手续费</th>
+                    <th>更新时间</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for data in all_datas %}
+                    <tr>
+                        <td>{{ data.account or '' }}</td>
+                        <td>{{ data.parent_agent or '' }}</td>
+                        <td>{{ data.chongzhi_money or 0 }}</td>
+                        <td>{{ data.xszf_money or 0 }}</td>
+                        <td>{{ data.xxcz_money or 0 }}</td>
+                        <td>{{ data.hdjq_money or 0 }}</td>
+                        <td>{{ data.tixian_money or 0 }}</td>
+                        <td>{{ data.hdkq_money or 0 }}</td>
+                        <td>{{ data.hd_money or 0 }}</td>
+                        <td>{{ data.hb_money or 0 }}</td>
+                        <td>{{ data.czyh_money or 0 }}</td>
+                        <td>{{ format_money(data.form_date or '', '%Y-%m-%d') }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% if not all_datas %}
+        <div class="no_data">
+            <img src="/static/common/images/no_data.png" alt="暂无数据">
+            <p>暂无数据</p>
+        </div>
+        {% endif %}
+        {% if pagination and pagination.links %}
+        <div class="text-center">{{ pagination.links }}</div>
+        {% endif %}
+
+    </div>
+
+{% endblock %}

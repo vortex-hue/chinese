@@ -1,0 +1,68 @@
+{% extends 'fenXi/base.html' %}
+
+{% block content_main %}
+    <div class="col-12">
+        <div class="list-group-item pb-0">
+            <form class="form-inline">
+                <label for=""><strong>筛选：</strong></label>
+                <input type="text" class="form-control mb-2 mr-sm-2" name="filename" value="{{ search_res.filename }}" placeholder="用户名" aria-label="">
+                <input type="text" class="form-control mb-2 mr-sm-2 pickerdate" name="_create_time" value="{{ search_res._create_time }}" placeholder="导出时间" readonly  aria-label="">
+                <button class="btn btn-primary mb-2">筛选</button>
+                <span class="btn btn-default ml-1 mb-2" onclick="exitsearch()">重置</span>
+                <span class="btn btn-danger ml-1 mb-2" onclick="post_update_statu('del_all', '666', '确定删除全部数据？')">删除全部</span>
+            </form>
+        </div>
+
+        <table class="table table-bordered table-hover text-center" style="background-color: #ffffff;">
+            <thead>
+                <tr>
+                    <th>文件名</th>
+                    <th>文件路径</th>
+                    <th>文件大小(KB)</th>
+                    <th>数据量</th>
+                    <th>已导出</th>
+                    <th>导出状态</th>
+                    <th>导出时间</th>
+                    <th>备注</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for data in all_datas %}
+                    <tr>
+                        <td>{{ data.filename or '' }}</td>
+                        <td>{{ data.path or '' }}</td>
+                        <td>{{ data.file_size or '' }}</td>
+                        <td>{{ data.total or '' }}</td>
+                        <td>{{ data.out_count or '' }}</td>
+                        <td>
+                            {% if data.statu == 'successed' %}
+                                <span class="btn btn-success btn-xs">导出成功</span>
+                            {% elif data.statu == 'failed' %}
+                                <span class="btn btn-danger btn-xs">导出失败</span>
+                            {% else %}
+                                <span class="btn btn-warning btn-xs">导出中</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ format_datetime(data._create_time) }}</td>
+                        <td>{{ data.note or '' }}</td>
+                        <td width="100">
+                            <a class="btn btn-primary btn-xs" href="{{ data.path }}">下载</a>
+                            <span class="btn btn-danger btn-xs" onclick="post_update_statu('del', '{{ data.uuid }}', '确定删除该数据？')">删除</span>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% if not all_datas %}
+        <div class="no_data">
+            <img src="/static/common/images/no_data.png" alt="暂无数据">
+            <p>暂无数据</p>
+        </div>
+        {% endif %}
+        {% if pagination and pagination.links %}
+        <div class="text-center">{{ pagination.links }}</div>
+        {% endif %}
+
+    </div>
+{% endblock %}

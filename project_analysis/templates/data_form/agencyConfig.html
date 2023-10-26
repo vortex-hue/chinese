@@ -1,0 +1,69 @@
+{% extends 'data_form/formList_base.html' %}
+
+{% block other_head %}
+    <script>
+        function post_agencyConfig() {
+            let main_agency=$.trim($("#main_agency").val());
+            let child_agency=$.trim($("#child_agency").val());
+            if (!main_agency){return xtalert.alertError('请输入总代理账户！')}
+            if (!child_agency){return xtalert.alertError('请输入子代理账户！')}
+            xtajax.post({
+                'data': {'action': 'add_agencyConfig', 'main_agency': main_agency, 'child_agency': child_agency},
+                'success': function (data) {
+                    if (data.code === 200){
+                        xtalert.alertSuccessToast('添加成功！')
+                        return reloadpage();
+                    }else{
+                        return xtalert.alertError('添加失败！')
+                    }
+                }
+            })
+        }
+    </script>
+{% endblock %}
+
+{% block content_main %}
+    <div class="col-12">
+        <div class="list-group-item pb-0">
+            <form class="form-inline">
+                <label for=""><strong>筛选：</strong></label>
+                <input type="text" class="form-control mb-2 mr-sm-2" name="main_agency" value="{{ search_res.main_agency }}" placeholder="总代理" aria-label="">
+                <input type="text" class="form-control mb-2 mr-sm-2" name="child_agency" value="{{ search_res.child_agency }}" placeholder="子代理" aria-label="">
+                <button class="btn btn-primary mb-2">筛选</button>
+                <span class="btn btn-default ml-1 mb-2" onclick="exitsearch()">重置</span>
+                <span class="btn btn-primary ml-1 mb-2" onclick="post_form_html({'action': 'add_form_html'}, '', 800)">添加配置</span>
+                <span class="btn btn-danger ml-1 mb-2" onclick="post_update_statu('del_all', '666', '确定删除全部数据？')">删除全部</span>
+            </form>
+        </div>
+
+        <table class="table table-bordered table-hover text-center" style="background-color: #ffffff;">
+            <thead>
+                <tr>
+                    <th>创建时间[{{ total }}]</th>
+                    <th>总代理</th>
+                    <th>子代理</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for data in all_datas %}
+                    <tr>
+                        <td>{{ format_money(data.create_time or '', '%Y-%m-%d') }}</td>
+                        <td>{{ data.main_agency or '' }}</td>
+                        <td>{{ data.child_agency or '' }}</td>
+                        <td><span class="btn btn-danger btn-xs" onclick="post_update_statu('del', '{{ data.uuid }}', '确定删除该数据？')">删除</span></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% if not all_datas %}
+        <div class="no_data">
+            <img src="/static/common/images/no_data.png" alt="暂无数据">
+            <p>暂无数据</p>
+        </div>
+        {% endif %}
+        {% if pagination and pagination.links %}
+        <div class="text-center">{{ pagination.links }}</div>
+        {% endif %}
+    </div>
+{% endblock %}

@@ -1,0 +1,253 @@
+{% extends 'fenXi/base.html' %}
+
+{% block head %}
+    <script>
+        function toBackup_func(data_uuid) {
+            let html = '<div class="boxHtml" style="position: relative; overflow: hidden;">';
+            html += '</div>';
+            Swal({
+                title: '数据提交中,请勿刷新页面',
+                text: '数据提交中...',
+                html: html,
+                showCloseButton: false,
+                showCancelButton: false,
+                showconfirmButton: false,
+                allowOutsideClick: false,
+                onBeforeOpen: () => {
+                    Swal.showLoading()
+                }
+            });
+            xtajax.post({
+                'data': {'action': 'toBackup', 'data_uuid': data_uuid,},
+                'success': function (data) {
+                    if (data.code == 200){
+                        let html = '<div style="position: relative; overflow: hidden; box-sizing: border-box; display: block; text-align: center;">数据处理当前进度：' + data.data.total + ' / ' + '0</div>'
+                        $(".boxHtml").html(html);
+
+                        var progres_func = function (total) {
+                            xtajax.post({
+                                'data': {'action': 'getProgres'},
+                                'success': function (data) {
+                                    if (data.code == 200){
+                                        if (total <= data.data.v){
+                                            clearInterval(progresSet)
+                                            xtalert.alertSuccessToast();
+                                            return reloadpage();
+                                        }
+                                        let html = '<div style="position: relative; overflow: hidden; box-sizing: border-box; display: block; text-align: center;">数据处理当前进度：' + total + ' / ' + data.data.v + '</div>'
+                                        $(".boxHtml").html(html);
+                                    }else {
+                                        return xtalert.alertError(data.message);
+                                    }
+                                }
+                            })
+                        }
+
+                        var progresSet = setInterval(function () {
+                            let total = data.data.total;
+                            progres_func(total)
+                        }, 2000)
+
+                    }else {
+                        return xtalert.alertError(data.message);
+                    }
+                }
+            })
+        }
+        
+        function toRemote_func(data_uuid) {
+            let html = '<div class="boxHtml" style="position: relative; overflow: hidden;">';
+            html += '</div>';
+            Swal({
+                title: '数据提交中,请勿刷新页面',
+                text: '数据提交中...',
+                html: html,
+                showCloseButton: false,
+                showCancelButton: false,
+                showconfirmButton: false,
+                allowOutsideClick: false,
+                onBeforeOpen: () => {
+                    Swal.showLoading()
+                }
+            });
+            xtajax.post({
+                'data': {'action': 'toRemoteBackup', 'data_uuid': data_uuid,},
+                'success': function (data) {
+                    if (data.code === 200){
+                        let keyId = data.data.keyId;
+                        let html = '<div style="position: relative; overflow: hidden; box-sizing: border-box; display: block; text-align: center;"></div>';
+                        $(".boxHtml").html(html);
+
+                        var progres_func = function (keyId) {
+                            xtajax.post({
+                                'data': {'action': 'ycyyProgres', 'keyId': keyId},
+                                'success': function (data) {
+                                    if (data.code === 200){
+                                        let data_json = data.data;
+                                        if (data_json.statu === 'success'){
+                                            clearInterval(progresSet)
+                                            xtalert.alertSuccessToast('备份恢复成功！');
+                                            return reloadpage();
+                                        }else if(data_json.statu === 'error'){
+                                            clearInterval(progresSet)
+                                            xtalert.alertError('备份恢复失败！');
+                                            {#return reloadpage();#}
+                                        }
+                                        let html = '<div style="position: relative; overflow: hidden; box-sizing: border-box; display: block; text-align: center;">' + data_json.msg + '</div>';
+                                        $(".boxHtml").html(html);
+                                    }else {
+                                        return xtalert.alertError(data.message);
+                                    }
+                                }
+                            })
+                        }
+
+                        var progresSet = setInterval(function () {
+                            progres_func(keyId)
+                        }, 2000)
+
+                    }else {
+                        return xtalert.alertError(data.message);
+                    }
+                }
+            })
+        }
+        
+        function post_toBackup_fun(data_uuid,backup_type) {
+            xtalert.alertOneInput({
+                'text': '输入恢复数据密码:',
+                'placeholder': '输入恢复数据密码',
+                'confirmCallback': function (inputValue) {
+                    xtajax.post({
+                        'data': {'action': 'toBackup_chack', 'data_value':inputValue},
+                        'success': function (data) {
+                            if (data.code === 200){
+                                if (backup_type === '0'){
+                                    return toBackup_func(data_uuid)
+                                }else{
+                                    return toRemote_func(data_uuid)
+                                }
+                            }else {
+                                return xtalert.alertError(data.message)
+                            }
+                        }
+                    })
+                }
+            })
+        }
+
+        function post_form_html(action, data_uuid, title, width) {
+            if (!action || action == ''){ var action = ''}
+            if (!data_uuid || data_uuid == ''){ var data_uuid = '';}
+            let per = {'action': action};
+            if (data_uuid){
+                per['data_uuid'] = data_uuid
+            }
+            Swal({
+                title: false,
+                text: '数据请求中...',
+                showCloseButton: false,
+                showCancelButton: false,
+                showconfirmButton: false,
+                allowOutsideClick: false,
+                onBeforeOpen: () => {
+                    Swal.showLoading()
+                }
+            });
+            xtajax.post({
+                'data': per,
+                'success':function (data) {
+                    if(data.code===200){
+                        Swal({
+                            title: title ? title : '操作',
+                            width: width ? width : '',
+                            html: data.message,
+                            showCloseButton: true,
+                            showCancelButton: false,
+                            showConfirmButton: false,
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                        })
+                    }else{
+                        return xtalert.alertError(data.message);
+                    }
+                }
+            })
+        }
+        
+        function post_select_del() {
+            let backup_type = $.trim($("#backup_type").val());
+            let selectBackupDate = $.trim($("#selectBackupDate").val());
+            if (!selectBackupDate){return xtalert.showValidationError('请选择删除的日期范围！')}
+
+            xtajax.post({
+                'data': {'action': 'selectDel', 'selectBackupDate': selectBackupDate, 'backup_type': backup_type},
+                'success': function (data) {
+                    if (data.code === 200){
+                        xtalert.alertSuccessToast('删除成功！')
+                        reloadpage()
+                    }else{
+                        xtalert.alertError(data.message)
+                    }
+                }
+            })
+        }
+        
+    </script>
+{% endblock %}
+
+{% block content_main %}
+    <div class="col-lg-12">
+        <div class="alert alert-primary" role="alert">
+            <svg viewBox="64 64 896 896" focusable="false" data-icon="notification" width="1em" height="1em" fill="currentColor" aria-hidden="true"><path d="M880 112c-3.8 0-7.7.7-11.6 2.3L292 345.9H128c-8.8 0-16 7.4-16 16.6v299c0 9.2 7.2 16.6 16 16.6h101.7c-3.7 11.6-5.7 23.9-5.7 36.4 0 65.9 53.8 119.5 120 119.5 55.4 0 102.1-37.6 115.9-88.4l408.6 164.2c3.9 1.5 7.8 2.3 11.6 2.3 16.9 0 32-14.2 32-33.2V145.2C912 126.2 897 112 880 112zM344 762.3c-26.5 0-48-21.4-48-47.8 0-11.2 3.9-21.9 11-30.4l84.9 34.1c-2 24.6-22.7 44.1-47.9 44.1zm496 58.4L318.8 611.3l-12.9-5.2H184V417.9h121.9l12.9-5.2L840 203.3v617.4z"></path></svg>
+            每天下午三点，数据库数据自动备份。 点击相对应备份可恢复对应数据。
+        </div>
+        <div class="list-group-item pb-0">
+            <form class="form-inline">
+                <label for=""><strong>筛选：</strong></label>
+                <select class="form-control mr-sm-2 mb-2" name="backup_type" aria-label="">
+                    <option value="">备份类型</option>
+                    <option value="local" {% if search_res.backup_type == 'local' %}selected{% endif %}>本地备份</option>
+                    <option value="remote" {% if search_res.backup_type == 'remote' %}selected{% endif %}>FTP 远程备份</option>
+                </select>
+                <button class="btn btn-primary mb-2">筛选</button>
+                <span class="btn btn-default ml-1 mb-2" onclick="exitsearch()">重置</span>
+                <span class="btn btn-danger ml-1 mb-2" onclick="post_form_html('selectDelBackup_html', '', '删除备份', 500)">批量删除备份</span>
+            </form>
+        </div>
+        <table class="table table-bordered table-hover text-center" style="background-color: #ffffff;">
+            <thead class="thead-light">
+                <tr>
+                    <th>名称</th>
+                    <th>备份数据量</th>
+                    <th>备份时间</th>
+                    <th>备注</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for data in all_datas %}
+                    <tr>
+                        <td>{{ data.name }}</td>
+                        <td>{{ data.data_count or 0 }}</td>
+                        <td>{{ format_datetime(data._create_time) or '' }}</td>
+                        <td>{{ data.note or '' }}</td>
+                        <td width="200">
+                            <span class="btn btn-primary btn-xs" onclick="post_toBackup_fun('{{ data.uuid }}', '{{ '0' if data.backup_type == 'local' else '1' }}')">恢复备份</span>
+                            <span class="btn btn-danger btn-xs" onclick="post_update_statu('del', '{{ data.uuid }}', '确认书删除该数据？')">删除</span>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% if not all_datas %}
+        <div class="no_data">
+            <img src="/static/common/images/no_data.png" alt="暂无数据">
+            <p>暂无数据</p>
+        </div>
+        {% endif %}
+        {% if pagination and pagination.links %}
+        <div class="text-center">{{ pagination.links }}</div>
+        {% endif %}
+    </div>
+{% endblock %}

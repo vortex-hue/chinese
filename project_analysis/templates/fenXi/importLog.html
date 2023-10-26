@@ -1,0 +1,55 @@
+{% extends 'fenXi/base.html' %}
+
+{% block head %}
+    <style>
+
+    </style>
+{% endblock %}
+
+{% block content_main %}
+    <div class="col-lg-12">
+        <div class="list-group-item pb-0">
+            <form class="form-inline">
+                <label for=""><strong>筛选：</strong></label>
+                <input type="text" class="form-control mb-2 mr-sm-2" name="file_name" value="{{ search_res.file_name }}" placeholder="导入文件名称" aria-label="">
+                <input type="text" class="form-control mb-2 mr-sm-2" name="data_count" value="{{ search_res.data_count }}" placeholder="数据量" aria-label="">
+                <input type="text" class="form-control mb-2 mr-sm-2 pickerdate" name="create_time" value="{{ search_res.create_time }}" placeholder="导入时间" readonly>
+                <button class="btn btn-primary mb-2">筛选</button>
+                <span class="btn btn-default ml-1 mb-2" onclick="exitsearch()">重置</span>
+                <span class="btn btn-danger ml-1 mb-2" onclick="post_update_statu('del_all', 'tyj', '确定删除全部数据？')">删除全部</span>
+            </form>
+        </div>
+        <table class="table table-bordered table-hover text-center" style="background-color: #ffffff;">
+            <thead>
+                <tr>
+                    <th>导入文件名称 [统计：{{ total or 0 }}]</th>
+                    <th>数据量</th>
+                    <th>导入时间</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for data in all_datas %}
+                    <tr>
+                        <td>{{ data.file_name }}</td>
+                        <td>{{ data.data_count or '' }}</td>
+                        <td>{{ format_datetime(data.create_time) }}</td>
+                        <td width="200">
+                            <a class="btn btn-primary btn-xs" href="{{ data.file_path }}">下载文件</a>
+                            <span class="btn btn-danger btn-xs" onclick="post_update_statu('del', '{{ data.uuid }}', '确认删除该数据？')">删除数据</span>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% if not all_datas %}
+        <div class="no_data">
+            <img src="/static/common/images/no_data.png" alt="暂无数据">
+            <p>暂无数据</p>
+        </div>
+        {% endif %}
+        {% if pagination and pagination.links %}
+        <div class="text-center">{{ pagination.links }}</div>
+        {% endif %}
+    </div>
+{% endblock %}
